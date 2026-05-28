@@ -2,33 +2,44 @@ name: Tu dong Dong Mo server Railway
 
 on:
   schedule:
-    - cron: '0 17 * * *'    # 12h đêm VN
-    - cron: '30 0 * * *'   # 7h30 sáng VN
-  workflow_dispatch:        # Giúp xuất hiện nút bấm chạy thử bằng tay
+    - cron: '0 17 * * *'   # 12h đêm VN (17:00 UTC)
+    - cron: '30 0 * * *'   # 7h30 sáng VN (00:30 UTC)
+  workflow_dispatch:        # Nút bấm chạy thử bằng tay
 
 jobs:
   control-service:
     runs-on: ubuntu-latest
     steps:
-      - name: Khoi tao moi truong Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Cai dat cong cu dieu khien Railway
-        run: npm install -g @railway/cli
-
-      - name: Kiem tra gio va thuc thi lenh
+      - name: Kiem tra gio va goi Railway API
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          # Lấy tại: Railway Dashboard > dự án > service > Settings > Service ID
+          RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_SERVICE_ID }}
+          # Lấy tại: Railway Dashboard > dự án > Settings > Project ID
+          RAILWAY_ENVIRONMENT_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
         run: |
           CURRENT_HOUR=$(date -u +%H)
-          echo "Gio UTC hien tai la: $CURRENT_HOUR"
+          CURRENT_MIN=$(date -u +%M)
+          echo "Gio UTC hien tai: ${CURRENT_HOUR}:${CURRENT_MIN}"
 
           if [ "$CURRENT_HOUR" -eq 17 ]; then
-            echo "Con meo den keu: Den gio di ngu! Dang tat dịch vu..."
-            railway down --service nihongo-production --assumeyes
+            REPLICAS=0
+            echo "12h dem VN: Tat service (replicas=0)..."
           else
-            echo "Binh minh len! Dang bat lai dịch vu..."
-            railway up --service nihongo-production --detach
+            REPLICAS=1
+            echo "7h30 sang VN: Bat service (replicas=1)..."
           fi
+
+          # Goi Railway GraphQL API de thay doi so replicas
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+            -H "Authorization: Bearer $RAILWAY_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data "{\"query\": \"mutation { serviceInstanceUpdate(environmentId: \\\"$RAILWAY_ENVIRONMENT_ID\\\", serviceId: \\\"$RAILWAY_SERVICE_ID\\\", input: { numReplicas: $REPLICAS }) }\"}" \
+            https://backboard.railway.app/graphql/v2)
+
+          echo "HTTP Status: $RESPONSE"
+          if [ "$RESPONSE" -ne 200 ]; then
+            echo "Loi! API tra ve HTTP $RESPONSE"
+            exit 1
+          fi
+          echo "Thanh cong! Service da duoc cap nhat replicas=$REPLICAS"
