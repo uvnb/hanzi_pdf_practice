@@ -33,8 +33,8 @@ phục starter data.
 
 Tạo service từ repository và đặt **Root Directory** là `backend`. Railway sẽ
 dùng [backend/Dockerfile](backend/Dockerfile) và
-[backend/railway.toml](backend/railway.toml). Cấu hình health check
-`/api/health` nếu dashboard chưa tự nhận config file.
+[backend/railway.toml](backend/railway.toml). Health check mặc định dùng `/`;
+endpoint `/api/health` vẫn có sẵn để kiểm tra thủ công hoặc dùng trên Render.
 
 Đặt các biến môi trường:
 
@@ -94,6 +94,7 @@ cùng origin vẫn là lựa chọn nên dùng cho đăng nhập.
 ## 5. Kiểm tra sau deploy
 
 ```bash
+curl -fsS https://<backend-domain>/
 curl -fsS https://<backend-domain>/api/health
 curl -I https://<frontend-domain>/
 ```

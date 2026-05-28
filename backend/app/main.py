@@ -38,3 +38,8 @@ app.include_router(ai_router)
 @app.get("/api/health", tags=["system"])
 async def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/", tags=["system"])
+async def root_health() -> dict[str, str]:
+    return {"status": "ok"}

@@ -33,8 +33,11 @@ async def seed_characters() -> None:
 def test_health() -> None:
     with TestClient(app) as client:
         response = client.get("/api/health")
+        root_response = client.get("/")
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
+    assert root_response.status_code == 200
+    assert root_response.json() == {"status": "ok"}
 
 
 def test_hosted_postgres_url_uses_async_driver_and_ssl_parameter() -> None:
