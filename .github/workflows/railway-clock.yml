@@ -20,62 +20,93 @@ jobs:
   control-service:
     runs-on: ubuntu-latest
     steps:
-      - name: Xac dinh hanh dong va goi Railway API
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_SERVICE_ID }}
-          RAILWAY_ENVIRONMENT_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
+      - name: Xac dinh hanh dong
+        id: decide
         run: |
           ACTION="${{ github.event.inputs.action || 'auto' }}"
           CURRENT_HOUR=$(date -u +%H)
           CURRENT_MIN=$(date -u +%M)
           echo "Gio UTC hien tai: ${CURRENT_HOUR}:${CURRENT_MIN}"
-          echo "Action: $ACTION"
+          echo "Input action: $ACTION"
 
           if [ "$ACTION" = "stop" ]; then
-            REPLICAS=0
-            echo "Thu cong: Tat service (replicas=0)..."
+            DECISION="stop"
           elif [ "$ACTION" = "start" ]; then
-            REPLICAS=1
-            echo "Thu cong: Bat service (replicas=1)..."
+            DECISION="start"
           else
-            # Khung gio tat: 17:00 UTC -> 00:29 UTC (12h dem -> 7h29 sang VN)
-            # Khung gio bat: 00:30 UTC -> 16:59 UTC (7h30 sang -> 11h59 dem VN)
             HOUR_INT=$((10#$CURRENT_HOUR))
             MIN_INT=$((10#$CURRENT_MIN))
-
-            if [ "$HOUR_INT" -ge 17 ] || [ "$HOUR_INT" -lt 0 ] || { [ "$HOUR_INT" -eq 0 ] && [ "$MIN_INT" -lt 30 ]; }; then
-              REPLICAS=0
-              echo "Trong khung gio ngu (17:00-00:29 UTC / 0h-7h29 VN): Tat service..."
+            # Khung gio tat: 17:00 - 00:29 UTC (0h - 7h29 VN)
+            if [ "$HOUR_INT" -ge 17 ] || { [ "$HOUR_INT" -eq 0 ] && [ "$MIN_INT" -lt 30 ]; }; then
+              DECISION="stop"
             else
-              REPLICAS=1
-              echo "Trong khung gio hoat dong (00:30-16:59 UTC / 7h30-23h59 VN): Bat service..."
+              DECISION="start"
             fi
           fi
 
-          echo "===== Goi Railway API: replicas=$REPLICAS ====="
+          echo "decision=$DECISION" >> "$GITHUB_OUTPUT"
+          echo "Quyet dinh: $DECISION"
 
-          BODY=$(curl -s -w "\n%{http_code}" -X POST \
+      - name: TAT - Xoa deployment hien tai
+        if: steps.decide.outputs.decision == 'stop'
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_SERVICE_ID }}
+          RAILWAY_ENVIRONMENT_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
+        run: |
+          echo "Buoc 1: Lay deployment ID hien tai..."
+          QUERY='query { deployments(input: { environmentId: \"'$RAILWAY_ENVIRONMENT_ID'\", serviceId: \"'$RAILWAY_SERVICE_ID'\" }, first: 1) { edges { node { id status } } } }'
+
+          RESULT=$(curl -s -X POST \
             -H "Authorization: Bearer $RAILWAY_TOKEN" \
             -H "Content-Type: application/json" \
-            --data "{\"query\": \"mutation { serviceInstanceUpdate(environmentId: \\\"$RAILWAY_ENVIRONMENT_ID\\\", serviceId: \\\"$RAILWAY_SERVICE_ID\\\", input: { numReplicas: $REPLICAS }) }\"}" \
+            --data "{\"query\": \"$QUERY\"}" \
             https://backboard.railway.app/graphql/v2)
 
-          HTTP_CODE=$(echo "$BODY" | tail -1)
-          RESPONSE=$(echo "$BODY" | sed '$d')
+          echo "Query result: $RESULT"
 
-          echo "HTTP Status: $HTTP_CODE"
-          echo "Response body: $RESPONSE"
+          DEPLOY_ID=$(echo "$RESULT" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
 
-          if [ "$HTTP_CODE" -ne 200 ]; then
-            echo "LOI: API tra ve HTTP $HTTP_CODE"
+          if [ -z "$DEPLOY_ID" ]; then
+            echo "Khong tim thay deployment nao dang chay. Co the da tat roi."
+            exit 0
+          fi
+
+          echo "Buoc 2: Xoa deployment $DEPLOY_ID..."
+          REMOVE_RESULT=$(curl -s -X POST \
+            -H "Authorization: Bearer $RAILWAY_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data "{\"query\": \"mutation { deploymentRemove(id: \\\"$DEPLOY_ID\\\") }\"}" \
+            https://backboard.railway.app/graphql/v2)
+
+          echo "Remove result: $REMOVE_RESULT"
+
+          if echo "$REMOVE_RESULT" | grep -q '"errors"'; then
+            echo "LOI khi xoa deployment!"
             exit 1
           fi
 
-          # Kiem tra loi GraphQL trong response
-          if echo "$RESPONSE" | grep -q '"errors"'; then
-            echo "LOI: Railway API tra ve loi GraphQL!"
+          echo "Da tat service thanh cong!"
+
+      - name: BAT - Redeploy service
+        if: steps.decide.outputs.decision == 'start'
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_SERVICE_ID }}
+          RAILWAY_ENVIRONMENT_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
+        run: |
+          echo "Dang redeploy service..."
+          RESULT=$(curl -s -X POST \
+            -H "Authorization: Bearer $RAILWAY_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data "{\"query\": \"mutation { serviceInstanceRedeploy(environmentId: \\\"$RAILWAY_ENVIRONMENT_ID\\\", serviceId: \\\"$RAILWAY_SERVICE_ID\\\") }\"}" \
+            https://backboard.railway.app/graphql/v2)
+
+          echo "Redeploy result: $RESULT"
+
+          if echo "$RESULT" | grep -q '"errors"'; then
+            echo "LOI khi redeploy!"
             exit 1
           fi
 
-          echo "Thanh cong! replicas=$REPLICAS"
+          echo "Da bat service thanh cong!"
