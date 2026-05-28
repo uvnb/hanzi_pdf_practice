@@ -1,37 +1,36 @@
-name: Tự động Đóng/Mở server Railway
+name: Tu dong Dong Mo server Railway
 on:
   schedule:
-    # 17:00 UTC chính là 00:00 (12h đêm) giờ Việt Nam
-    - cron: '0 17 * * *'
-    # 00:30 UTC chính là 07:30 sáng giờ Việt Nam
-    - cron: '30 0 * * *'
+    - cron: '0 17 * * *'    # 12h đêm VN
+    - cron: '30 0 * * *'   # 7h30 sáng VN
+  workflow_dispatch:        # Dòng này giúp bạn có thể bấm CHẠY THỬ THỦ CÔNG trên GitHub để test luôn
 
 jobs:
   control-service:
     runs-on: ubuntu-latest
     steps:
-      - name: Khởi tạo môi trường Node để dùng Railway CLI
+      - name: Khoi tao moi truong Node
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Cài đặt công cụ điều khiển Railway
+      - name: Cai dat công cu dieu khien Railway
         run: npm install -g @railway/cli
 
-      - name: Kiểm tra giờ và thực thi lệnh Đóng/Mở
+      - name: Kiem tra gio va thuc thi lenh
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          # Lấy giờ hiện tại theo định dạng UTC (0-23)
           CURRENT_HOUR=$(date -u +%H)
 
-          # Nếu rơi vào khung giờ 17h UTC (tức 12h đêm VN) -> TẮT DEPLOYMENT
-          if [ "$CURRENT_HOUR" -eq 17 ]; then
-            echo "Đang là 12h đêm Việt Nam. Tiến hành tắt dịch vụ..."
-            railway down --service nihongo-production --assumeyes
+          # Biện pháp cưỡng chế liên kết tài khoản bằng Token
+          railway auth:token $RAILWAY_TOKEN
 
-          # Nếu rơi vào khung giờ 00h UTC (tức 7h30 sáng VN) -> BẬT DEPLOYMENT
+          if [ "$CURRENT_HOUR" -eq 17 ]; then
+            echo "Tắt dịch vụ..."
+            # Truyền thêm tham số --project để CLI biết chính xác mục tiêu
+            railway down --project ${{ secrets.RAILWAY_PROJECT_ID }} --service nihongo-production --assumeyes
           else
-            echo "Đang là 7h30 sáng Việt Nam. Tiến hành kích hoạt lại dịch vụ..."
-            railway up --service nihongo-production --detach
+            echo "Bật dịch vụ..."
+            railway up --project ${{ secrets.RAILWAY_PROJECT_ID }} --service nihongo-production --detach
           fi
