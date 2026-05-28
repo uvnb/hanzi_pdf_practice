@@ -27,7 +27,9 @@ python -m scripts.seed_hsk1
 
 `seed_hsk1` chỉ thêm chữ chưa tồn tại, không ghi đè metadata đã được Gemini làm
 giàu. Chỉ dùng `python -m scripts.seed_hsk1 --refresh` khi có chủ ý muốn khôi
-phục starter data.
+phục starter data. Nếu `DATABASE_URL` chưa được cấu hình, container vẫn khởi
+động để health check `/` pass, nhưng các endpoint dùng database sẽ lỗi cho tới
+khi thêm biến này.
 
 ## 2. Backend trên Railway
 

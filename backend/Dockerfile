@@ -15,4 +15,4 @@ COPY app ./app
 COPY scripts ./scripts
 COPY seed ./seed
 
-CMD ["sh", "-c", "alembic upgrade head && python -m scripts.seed_hsk1 && exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT}"]
+CMD ["sh", "scripts/start.sh"]
