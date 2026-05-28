@@ -1,9 +1,10 @@
 name: Tu dong Dong Mo server Railway
+
 on:
   schedule:
     - cron: '0 17 * * *'    # 12h đêm VN
     - cron: '30 0 * * *'   # 7h30 sáng VN
-  workflow_dispatch:        # Dòng này giúp bạn có thể bấm CHẠY THỬ THỦ CÔNG trên GitHub để test luôn
+  workflow_dispatch:        # Giúp xuất hiện nút bấm chạy thử bằng tay
 
 jobs:
   control-service:
@@ -14,7 +15,7 @@ jobs:
         with:
           node-version: 18
 
-      - name: Cai dat công cu dieu khien Railway
+      - name: Cai dat cong cu dieu khien Railway
         run: npm install -g @railway/cli
 
       - name: Kiem tra gio va thuc thi lenh
@@ -22,15 +23,12 @@ jobs:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           CURRENT_HOUR=$(date -u +%H)
-
-          # Biện pháp cưỡng chế liên kết tài khoản bằng Token
-          railway auth:token $RAILWAY_TOKEN
+          echo "Gio UTC hien tai la: $CURRENT_HOUR"
 
           if [ "$CURRENT_HOUR" -eq 17 ]; then
-            echo "Tắt dịch vụ..."
-            # Truyền thêm tham số --project để CLI biết chính xác mục tiêu
-            railway down --project ${{ secrets.RAILWAY_PROJECT_ID }} --service nihongo-production --assumeyes
+            echo "Con meo den keu: Den gio di ngu! Dang tat dịch vu..."
+            railway down --service nihongo-production --assumeyes
           else
-            echo "Bật dịch vụ..."
-            railway up --project ${{ secrets.RAILWAY_PROJECT_ID }} --service nihongo-production --detach
+            echo "Binh minh len! Dang bat lai dịch vu..."
+            railway up --service nihongo-production --detach
           fi
