@@ -2,9 +2,9 @@ name: Tu dong Dong Mo server Railway
 
 on:
   schedule:
-    - cron: '0 17 * * *'   # 12h đêm VN (17:00 UTC)
-    - cron: '30 0 * * *'   # 7h30 sáng VN (00:30 UTC)
-  workflow_dispatch:        # Nút bấm chạy thử bằng tay
+    - cron: '0 17 * * *'   # 12h đêm VN (17:00 UTC) -> TAT
+    - cron: '30 0 * * *'   # 7h30 sáng VN (00:30 UTC) -> BAT
+  workflow_dispatch:
     inputs:
       action:
         description: 'Chon hanh dong (auto/stop/start)'
@@ -20,44 +20,62 @@ jobs:
   control-service:
     runs-on: ubuntu-latest
     steps:
-      - name: Kiem tra gio va goi Railway API
+      - name: Xac dinh hanh dong va goi Railway API
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
           RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_SERVICE_ID }}
           RAILWAY_ENVIRONMENT_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
         run: |
           ACTION="${{ github.event.inputs.action || 'auto' }}"
+          CURRENT_HOUR=$(date -u +%H)
+          CURRENT_MIN=$(date -u +%M)
+          echo "Gio UTC hien tai: ${CURRENT_HOUR}:${CURRENT_MIN}"
+          echo "Action: $ACTION"
 
           if [ "$ACTION" = "stop" ]; then
             REPLICAS=0
-            echo "Che do thu cong: Tat service (replicas=0)..."
+            echo "Thu cong: Tat service (replicas=0)..."
           elif [ "$ACTION" = "start" ]; then
             REPLICAS=1
-            echo "Che do thu cong: Bat service (replicas=1)..."
+            echo "Thu cong: Bat service (replicas=1)..."
           else
-            CURRENT_HOUR=$(date -u +%H)
-            CURRENT_MIN=$(date -u +%M)
-            echo "Gio UTC hien tai: ${CURRENT_HOUR}:${CURRENT_MIN}"
+            # Khung gio tat: 17:00 UTC -> 00:29 UTC (12h dem -> 7h29 sang VN)
+            # Khung gio bat: 00:30 UTC -> 16:59 UTC (7h30 sang -> 11h59 dem VN)
+            HOUR_INT=$((10#$CURRENT_HOUR))
+            MIN_INT=$((10#$CURRENT_MIN))
 
-            if [ "$CURRENT_HOUR" -eq 17 ]; then
+            if [ "$HOUR_INT" -ge 17 ] || [ "$HOUR_INT" -lt 0 ] || { [ "$HOUR_INT" -eq 0 ] && [ "$MIN_INT" -lt 30 ]; }; then
               REPLICAS=0
-              echo "12h dem VN: Tat service (replicas=0)..."
+              echo "Trong khung gio ngu (17:00-00:29 UTC / 0h-7h29 VN): Tat service..."
             else
               REPLICAS=1
-              echo "7h30 sang VN: Bat service (replicas=1)..."
+              echo "Trong khung gio hoat dong (00:30-16:59 UTC / 7h30-23h59 VN): Bat service..."
             fi
           fi
 
-          # Goi Railway GraphQL API de thay doi so replicas
-          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+          echo "===== Goi Railway API: replicas=$REPLICAS ====="
+
+          BODY=$(curl -s -w "\n%{http_code}" -X POST \
             -H "Authorization: Bearer $RAILWAY_TOKEN" \
             -H "Content-Type: application/json" \
             --data "{\"query\": \"mutation { serviceInstanceUpdate(environmentId: \\\"$RAILWAY_ENVIRONMENT_ID\\\", serviceId: \\\"$RAILWAY_SERVICE_ID\\\", input: { numReplicas: $REPLICAS }) }\"}" \
             https://backboard.railway.app/graphql/v2)
 
-          echo "HTTP Status: $RESPONSE"
-          if [ "$RESPONSE" -ne 200 ]; then
-            echo "Loi! API tra ve HTTP $RESPONSE"
+          HTTP_CODE=$(echo "$BODY" | tail -1)
+          RESPONSE=$(echo "$BODY" | sed '$d')
+
+          echo "HTTP Status: $HTTP_CODE"
+          echo "Response body: $RESPONSE"
+
+          if [ "$HTTP_CODE" -ne 200 ]; then
+            echo "LOI: API tra ve HTTP $HTTP_CODE"
             exit 1
           fi
-          echo "Thanh cong! Service da duoc cap nhat replicas=$REPLICAS"
+
+          # Kiem tra loi GraphQL trong response
+          if echo "$RESPONSE" | grep -q '"errors"'; then
+            echo "LOI: Railway API tra ve loi GraphQL!"
+            exit 1
+          fi
+
+          echo "Thanh cong! replicas=$REPLICAS"
