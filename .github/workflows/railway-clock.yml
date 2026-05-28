@@ -5,6 +5,16 @@ on:
     - cron: '0 17 * * *'   # 12h đêm VN (17:00 UTC)
     - cron: '30 0 * * *'   # 7h30 sáng VN (00:30 UTC)
   workflow_dispatch:        # Nút bấm chạy thử bằng tay
+    inputs:
+      action:
+        description: 'Chon hanh dong (auto/stop/start)'
+        required: true
+        default: 'auto'
+        type: choice
+        options:
+        - auto
+        - stop
+        - start
 
 jobs:
   control-service:
@@ -13,21 +23,29 @@ jobs:
       - name: Kiem tra gio va goi Railway API
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          # Lấy tại: Railway Dashboard > dự án > service > Settings > Service ID
           RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_SERVICE_ID }}
-          # Lấy tại: Railway Dashboard > dự án > Settings > Project ID
           RAILWAY_ENVIRONMENT_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
         run: |
-          CURRENT_HOUR=$(date -u +%H)
-          CURRENT_MIN=$(date -u +%M)
-          echo "Gio UTC hien tai: ${CURRENT_HOUR}:${CURRENT_MIN}"
+          ACTION="${{ github.event.inputs.action || 'auto' }}"
 
-          if [ "$CURRENT_HOUR" -eq 17 ]; then
+          if [ "$ACTION" = "stop" ]; then
             REPLICAS=0
-            echo "12h dem VN: Tat service (replicas=0)..."
-          else
+            echo "Che do thu cong: Tat service (replicas=0)..."
+          elif [ "$ACTION" = "start" ]; then
             REPLICAS=1
-            echo "7h30 sang VN: Bat service (replicas=1)..."
+            echo "Che do thu cong: Bat service (replicas=1)..."
+          else
+            CURRENT_HOUR=$(date -u +%H)
+            CURRENT_MIN=$(date -u +%M)
+            echo "Gio UTC hien tai: ${CURRENT_HOUR}:${CURRENT_MIN}"
+
+            if [ "$CURRENT_HOUR" -eq 17 ]; then
+              REPLICAS=0
+              echo "12h dem VN: Tat service (replicas=0)..."
+            else
+              REPLICAS=1
+              echo "7h30 sang VN: Bat service (replicas=1)..."
+            fi
           fi
 
           # Goi Railway GraphQL API de thay doi so replicas
