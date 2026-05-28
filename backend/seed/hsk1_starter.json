@@ -1,0 +1,58 @@
+[
+  {
+    "character": "你",
+    "pinyin": "nǐ",
+    "hsk_level": 1,
+    "meaning_vi": "bạn",
+    "example_sentences": [{"hanzi": "你好！", "pinyin": "Nǐ hǎo!", "vi": "Xin chào!"}],
+    "ai_enriched": false
+  },
+  {
+    "character": "好",
+    "pinyin": "hǎo",
+    "hsk_level": 1,
+    "meaning_vi": "tốt; khỏe",
+    "example_sentences": [{"hanzi": "我很好。", "pinyin": "Wǒ hěn hǎo.", "vi": "Tôi rất khỏe."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "我",
+    "pinyin": "wǒ",
+    "hsk_level": 1,
+    "meaning_vi": "tôi",
+    "example_sentences": [{"hanzi": "我是学生。", "pinyin": "Wǒ shì xuéshēng.", "vi": "Tôi là học sinh."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "人",
+    "pinyin": "rén",
+    "hsk_level": 1,
+    "meaning_vi": "người",
+    "example_sentences": [{"hanzi": "他是中国人。", "pinyin": "Tā shì Zhōngguó rén.", "vi": "Anh ấy là người Trung Quốc."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "中",
+    "pinyin": "zhōng",
+    "hsk_level": 1,
+    "meaning_vi": "giữa; Trung Quốc",
+    "example_sentences": [{"hanzi": "我学中文。", "pinyin": "Wǒ xué Zhōngwén.", "vi": "Tôi học tiếng Trung."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "文",
+    "pinyin": "wén",
+    "hsk_level": 1,
+    "meaning_vi": "chữ viết; văn",
+    "example_sentences": [{"hanzi": "我学中文。", "pinyin": "Wǒ xué Zhōngwén.", "vi": "Tôi học tiếng Trung."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "学",
+    "pinyin": "xué",
+    "hsk_level": 1,
+    "meaning_vi": "học",
+    "example_sentences": [{"hanzi": "我学习汉语。", "pinyin": "Wǒ xuéxí Hànyǔ.", "vi": "Tôi học tiếng Hán."}],
+    "ai_enriched": false
+  }
+]
