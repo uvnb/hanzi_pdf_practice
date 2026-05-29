@@ -46,7 +46,11 @@ export default function HeroSection({ nav, hero }: HeroSectionProps) {
       </nav>
 
       <div className="newHeroContent">
-        <h1 className="newHeroTitle">{hero.title}</h1>
+        <h1 className="newHeroTitle">
+          {hero.title.split(' ').map((word, i) => (
+            <span key={i}>{word}</span>
+          ))}
+        </h1>
         
         <div className="newHeroSubtitleCol">
           <p className="newHeroSubtitle">{hero.subtitle}</p>

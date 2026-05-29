@@ -44,15 +44,16 @@
   top: 0;
   left: 0;
   height: 100%;
-  width: 100%;
+  width: 55vw;
+  min-width: 600px;
   z-index: 1;
 }
 
 .newHeroBg img {
   object-fit: cover;
   object-position: left center;
-  -webkit-mask-image: linear-gradient(to right, black 40%, transparent 90%);
-  mask-image: linear-gradient(to right, black 40%, transparent 90%);
+  -webkit-mask-image: linear-gradient(to right, black 80%, transparent 100%);
+  mask-image: linear-gradient(to right, black 80%, transparent 100%);
 }
 
 .newHeroNav {
@@ -85,48 +86,50 @@
   z-index: 10;
   display: flex;
   flex-direction: row-reverse;
-  gap: clamp(30px, 6vw, 80px);
-  align-items: flex-start;
+  gap: clamp(30px, 5vw, 60px);
+  align-items: center;
   margin-left: auto;
-  padding: 120px 10vw 60px 0;
-  height: 80vh;
+  padding: 120px 8vw 60px 0;
+  height: 100vh;
 }
 
 .newHeroTitle {
   font-family: var(--font-brush);
-  font-size: clamp(80px, 12vw, 180px);
+  font-size: clamp(60px, 8vw, 130px);
   font-weight: normal;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
   color: #1a1614;
   margin: 0;
-  line-height: 1.1;
+  line-height: 1.05;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
 }
 
 .newHeroSubtitleCol {
   border-right: 1.5px solid #7a6b5d;
-  padding-right: clamp(15px, 3vw, 40px);
-  margin-top: 80px;
-  height: 60%;
+  padding-right: clamp(15px, 2vw, 30px);
+  height: auto;
+  max-height: 70vh;
 }
 
 .newHeroSubtitle {
   font-family: var(--font-script);
-  font-size: clamp(24px, 3vw, 36px);
+  font-size: clamp(20px, 2.5vw, 28px);
   writing-mode: vertical-rl;
   text-orientation: mixed;
   color: #3d342b;
   margin: 0;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.1em;
   line-height: 1.5;
+  white-space: nowrap;
 }
 
 .newHeroCtas {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  margin-top: auto;
-  margin-bottom: 40px;
+  gap: 20px;
+  margin-right: 20px;
 }
 
 .newHeroCta, .newHeroCtaSecondary {
@@ -134,15 +137,13 @@
   border: 2px solid #3d342b;
   color: #3d342b;
   font-family: var(--font-serif);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
-  padding: 24px 14px;
+  padding: 14px 28px;
   text-align: center;
   text-decoration: none;
   transition: all 0.2s;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.1em;
 }
 
 .newHeroCta:hover, .newHeroCtaSecondary:hover {
