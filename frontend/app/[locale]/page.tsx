@@ -1,40 +1,113 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import AccountActions from "@/components/Auth/AccountActions";
-import { Link } from "@/i18n/navigation";
+import HeroSection from "@/components/Landing/HeroSection";
+import FeaturesSection from "@/components/Landing/FeaturesSection";
+import PricingSection from "@/components/Landing/PricingSection";
+import LandingFooter from "@/components/Landing/LandingFooter";
+import "../landing.css";
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations("Home");
-  const nav = await getTranslations("Nav");
+  const t = await getTranslations("Landing");
 
   return (
-    <main className="home">
-      <nav className="nav">
-        <span className="brand">汉字 Hanzi</span>
-        <div className="navActions">
-          <Link className="navLink" href="/practice">
-            {nav("practice")}
-          </Link>
-          <Link className="navLink" href="/pdf">
-            {nav("pdf")}
-          </Link>
-          <AccountActions />
-        </div>
-      </nav>
-      <section className="hero">
-        <p className="eyebrow">{t("eyebrow")}</p>
-        <h1>{t("title")}</h1>
-        <p className="lede">{t("lede")}</p>
-        <div className="heroActions">
-          <Link className="primaryButton" href="/practice">
-            {t("start")}
-          </Link>
-          <Link className="secondaryLink" href="/pdf">
-            {t("pdf")}
-          </Link>
-        </div>
-      </section>
-    </main>
+    <div className="landing">
+      <HeroSection
+        hero={{
+          title: t("heroTitle"),
+          subtitle: t("heroSubtitle"),
+          ctaPractice: t("ctaPractice"),
+          ctaCourses: t("ctaCourses"),
+        }}
+        nav={{
+          home: t("navHome"),
+          features: t("navFeatures"),
+          pricing: t("navPricing"),
+          login: t("navLogin"),
+          register: t("navRegister"),
+        }}
+        sidebar={{
+          home: t("sideHome"),
+          courses: t("sideCourses"),
+          practice: t("sidePractice"),
+          community: t("sideCommunity"),
+          about: t("sideAbout"),
+        }}
+      />
+
+      <FeaturesSection
+        features={[
+          {
+            icon: "/landing/icon-0.png",
+            title: t("featHome"),
+            description: t("featHomeDesc"),
+            href: "/",
+          },
+          {
+            icon: "/landing/icon-1.png",
+            title: t("featPractice"),
+            description: t("featPracticeDesc"),
+            href: "/practice",
+          },
+          {
+            icon: "/landing/icon-2.png",
+            title: t("featPdf"),
+            description: t("featPdfDesc"),
+            href: "/pdf",
+          },
+          {
+            icon: "/landing/icon-3.png",
+            title: t("featLogin"),
+            description: t("featLoginDesc"),
+            href: "/auth/login",
+          },
+        ]}
+        moreLabel={t("learnMore")}
+        nav={{
+          home: { label: t("featHome"), emoji: "🏠" },
+          practice: { label: t("featPractice"), emoji: "✍️" },
+          pdf: { label: t("featPdf"), emoji: "📄" },
+          login: { label: t("featLogin"), emoji: "🚪" },
+        }}
+        subtitle={t("featuresSubtitle")}
+        title={t("featuresTitle")}
+      />
+
+      <PricingSection
+        tiers={[
+          {
+            name: t("tierFree"),
+            price: t("tierFreePrice"),
+            period: "",
+            features: [t("tierFreeF1"), t("tierFreeF2")],
+            cta: t("tierFreeCta"),
+          },
+          {
+            name: t("tierPro"),
+            price: t("tierProPrice"),
+            period: t("tierPeriod"),
+            features: [t("tierProF1"), t("tierProF2"), t("tierProF3")],
+            cta: t("tierProCta"),
+            popular: true,
+            badge: t("tierPopular"),
+          },
+          {
+            name: t("tierMaster"),
+            price: t("tierMasterPrice"),
+            period: t("tierPeriod"),
+            features: [t("tierMasterF1"), t("tierMasterF2"), t("tierMasterF3")],
+            cta: t("tierMasterCta"),
+          },
+        ]}
+        title={t("pricingTitle")}
+      />
+
+      <LandingFooter
+        brand={t("footerBrand")}
+        copyright={t("footerCopy")}
+        privacy={t("footerPrivacy")}
+        terms={t("footerTerms")}
+      />
+    </div>
   );
 }
