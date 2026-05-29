@@ -1,26 +1,28 @@
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@400;700&display=swap");
+
 :root {
-  --background: #fbf8f3;
-  --paper: #fffdf8;
-  --ink: #211b16;
-  --muted: #72675c;
-  --line: #e7dbce;
-  --accent: #a23c29;
-  --accent-dark: #7b281d;
-  --shadow: 0 16px 42px rgba(63, 40, 21, 0.09);
+  --background: #f5f0e5;
+  --paper: #faf6ef;
+  --ink: #2a2320;
+  --muted: #7a6b5d;
+  --line: #dccfb8;
+  --accent: #1b3a5f;
+  --accent-dark: #14304f;
+  --shadow: 0 16px 42px rgba(27, 58, 95, 0.08);
   --input: #fff;
   color-scheme: light;
 }
 
 :root[data-theme="dark"] {
-  --background: #191513;
-  --paper: #241f1b;
-  --ink: #f0e7db;
-  --muted: #bca997;
-  --line: #453a32;
-  --accent: #d8785e;
-  --accent-dark: #eda58f;
-  --shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
-  --input: #2d2722;
+  --background: #0f172a;
+  --paper: #1e293b;
+  --ink: #f1f5f9;
+  --muted: #94a3b8;
+  --line: #334155;
+  --accent: #3b82f6;
+  --accent-dark: #60a5fa;
+  --shadow: 0 18px 44px rgba(0, 0, 0, 0.4);
+  --input: #0f172a;
   color-scheme: dark;
 }
 
@@ -59,8 +61,8 @@ a {
 
 .brand {
   color: var(--accent-dark);
-  font-family: Georgia, "Noto Serif SC", serif;
-  font-size: 25px;
+  font-family: "Dancing Script", "Noto Serif SC", cursive;
+  font-size: 32px;
   font-weight: 700;
 }
 
@@ -179,8 +181,8 @@ button:hover:not(:disabled) {
 }
 
 .pageHeader h1 {
-  font-family: Georgia, serif;
-  font-size: 35px;
+  font-family: "Dancing Script", "Noto Serif SC", cursive;
+  font-size: 42px;
   line-height: 1;
   margin: 0;
 }
