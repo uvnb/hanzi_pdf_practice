@@ -43,17 +43,15 @@
   position: absolute;
   top: 0;
   left: 0;
-  height: 100%;
-  width: 60vw; /* Keep it constrained to the left so it doesn't overlap text */
-  min-width: 600px;
+  height: 100vh;
+  /* Match the image aspect ratio (1600x1536) so it never gets cropped by object-fit: cover */
+  aspect-ratio: 1600 / 1536;
   z-index: 1;
-  -webkit-mask-image: radial-gradient(ellipse at left center, black 60%, transparent 100%);
-  mask-image: radial-gradient(ellipse at left center, black 60%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 80%, transparent 100%);
+  mask-image: linear-gradient(to right, black 80%, transparent 100%);
 }
 
 .newHeroBg img {
-  object-fit: contain;
-  object-position: left center;
 }
 
 .newHeroHeader {
