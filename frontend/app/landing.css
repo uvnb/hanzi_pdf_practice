@@ -31,7 +31,7 @@
    HERO SECTION
    =========================== */
 .newHeroSection {
-  background-color: #c5baa4; /* Blends perfectly with the image edge */
+  background-color: #c8beaa; /* Exact match to the image's right edge */
   min-height: 100vh;
   position: relative;
   overflow: hidden;
@@ -52,6 +52,9 @@
 .newHeroBg img {
   object-fit: cover;
   object-position: left center;
+  /* Fade only the last 10% of the image (empty space) to blend smoothly without blurring the flower */
+  -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
+  mask-image: linear-gradient(to right, black 90%, transparent 100%);
 }
 
 .newHeroHeader {
