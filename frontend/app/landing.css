@@ -71,18 +71,21 @@
 }
 
 .heroTopNav {
+  align-items: center;
   display: flex;
-  gap: 32px;
-  left: 60px;
+  gap: 42px;
+  height: 112px;
+  left: 56px;
   position: absolute;
-  top: 36px;
+  top: 0;
 }
 
 .heroTopNav a {
   color: var(--muted);
   font-family: var(--font-chinese-brush);
-  font-size: 24px;
+  font-size: 26px;
   letter-spacing: 0.04em;
+  line-height: 1;
   text-decoration: none;
   transition: color 0.2s;
 }
@@ -461,9 +464,10 @@
   }
 
   .heroTopNav {
+    height: 84px;
     gap: 30px;
     left: 40px;
-    top: 28px;
+    top: 0;
   }
 
   .heroArt {
@@ -499,6 +503,7 @@
   .heroTopNav {
     flex-wrap: wrap;
     gap: 18px;
+    height: auto;
     left: 24px;
     top: 20px;
   }
