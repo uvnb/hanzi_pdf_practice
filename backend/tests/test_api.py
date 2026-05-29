@@ -64,7 +64,7 @@ def test_hanzi_endpoints() -> None:
     assert item.status_code == 200
     assert item.json()["pinyin"] == "xué"
     assert listing.status_code == 200
-    assert len(listing.json()) >= 7
+    assert len(listing.json()) == 7
     assert [record["character"] for record in batch.json()] == ["学", "你"]
     assert batch.json()[0]["meaning_vi"] == "học"
 

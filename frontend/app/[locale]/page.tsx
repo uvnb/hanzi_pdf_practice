@@ -23,7 +23,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           home: t("navHome"),
           features: t("navFeatures"),
           pricing: t("navPricing"),
-          notebook: t("navNotebook"),
           login: t("navLogin"),
           register: t("navRegister"),
         }}
@@ -58,9 +57,9 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           },
           {
             icon: "/landing/icon-3.png",
-            title: t("featNotebook"),
-            description: t("featNotebookDesc"),
-            href: "/notebook",
+            title: t("featLogin"),
+            description: t("featLoginDesc"),
+            href: "/auth/login",
           },
         ]}
         moreLabel={t("learnMore")}
@@ -68,7 +67,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           home: { label: t("featHome"), emoji: "🏠" },
           practice: { label: t("featPractice"), emoji: "✍️" },
           pdf: { label: t("featPdf"), emoji: "📄" },
-          notebook: { label: t("featNotebook"), emoji: "⭐" },
+          login: { label: t("featLogin"), emoji: "🚪" },
         }}
         subtitle={t("featuresSubtitle")}
         title={t("featuresTitle")}
@@ -82,7 +81,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             period: "",
             features: [t("tierFreeF1"), t("tierFreeF2")],
             cta: t("tierFreeCta"),
-            href: "/practice",
           },
           {
             name: t("tierPro"),
@@ -90,7 +88,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             period: t("tierPeriod"),
             features: [t("tierProF1"), t("tierProF2"), t("tierProF3")],
             cta: t("tierProCta"),
-            href: "/auth/login",
             popular: true,
             badge: t("tierPopular"),
           },
@@ -100,7 +97,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             period: t("tierPeriod"),
             features: [t("tierMasterF1"), t("tierMasterF2"), t("tierMasterF3")],
             cta: t("tierMasterCta"),
-            href: "/auth/login",
           },
         ]}
         title={t("pricingTitle")}

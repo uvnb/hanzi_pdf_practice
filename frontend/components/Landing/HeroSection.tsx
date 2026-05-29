@@ -6,7 +6,6 @@ interface HeroSectionProps {
     home: string;
     features: string;
     pricing: string;
-    notebook: string;
     login: string;
     register: string;
   };
@@ -41,7 +40,6 @@ export default function HeroSection({ nav, hero, sidebar }: HeroSectionProps) {
           <a href="#hero">{nav.home}</a>
           <a href="#features">{nav.features}</a>
           <a href="#pricing">{nav.pricing}</a>
-          <Link href="/notebook">{nav.notebook}</Link>
           <Link href="/auth/login">{nav.login}</Link>
           <Link href="/auth/login">{nav.register}</Link>
         </nav>
@@ -53,9 +51,9 @@ export default function HeroSection({ nav, hero, sidebar }: HeroSectionProps) {
           <Link className="heroCta" href="/practice">
             {hero.ctaPractice}
           </Link>
-          <Link className="heroCta" href="/pdf">
+          <a className="heroCta" href="#features">
             {hero.ctaCourses}
-          </Link>
+          </a>
         </div>
       </div>
 
