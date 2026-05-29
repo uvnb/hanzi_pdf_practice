@@ -17,8 +17,9 @@
   --ink: #2a2320;
   --muted: #7a6b5d;
   --border-ornate: #c4a56e;
-  --font-brush: "Merienda", "Noto Serif SC", cursive;
-  --font-chinese-brush: "Ma Shan Zheng", "Noto Serif SC", serif;
+  --font-brush: "ThuPhap", "Merienda", "Noto Serif SC", cursive;
+  --font-chinese-brush: "Kaiti SC", "STKaiti", "Ma Shan Zheng", "Noto Serif SC", serif;
+  --font-script: "ThuPhapScript", "Merienda", "Noto Serif SC", cursive;
   --font-serif: "Noto Serif SC", Georgia, serif;
   --font-body: "Noto Sans SC", Arial, sans-serif;
   color: var(--ink);
@@ -96,8 +97,8 @@
 
 .heroTitle {
   font-family: var(--font-brush);
-  font-size: clamp(58px, 6.4vw, 96px);
-  font-weight: 700;
+  font-size: clamp(68px, 8vw, 110px);
+  font-weight: normal;
   letter-spacing: -0.04em;
   line-height: 1.12;
   margin: 0 0 18px;
@@ -105,8 +106,8 @@
 
 .heroSubtitle {
   color: var(--muted);
-  font-family: var(--font-brush);
-  font-size: clamp(18px, 2vw, 24px);
+  font-family: var(--font-script);
+  font-size: clamp(22px, 2.5vw, 32px);
   font-style: italic;
   letter-spacing: -0.03em;
   margin: 0 0 44px;
@@ -191,8 +192,8 @@
 /* feature header */
 .featuresTitle {
   font-family: var(--font-brush);
-  font-size: clamp(42px, 5vw, 72px);
-  font-weight: 700;
+  font-size: clamp(48px, 6vw, 82px);
+  font-weight: normal;
   margin: 0 0 14px;
 }
 
@@ -268,8 +269,8 @@
 
 .pricingTitle {
   font-family: var(--font-brush);
-  font-size: clamp(40px, 5vw, 68px);
-  font-weight: 700;
+  font-size: clamp(48px, 6vw, 78px);
+  font-weight: normal;
   margin: 0 0 60px;
 }
 

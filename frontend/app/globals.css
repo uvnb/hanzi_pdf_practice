@@ -1,5 +1,21 @@
 @import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@400;700&display=swap");
 
+@font-face {
+  font-family: 'ThuPhap';
+  src: url('/fonts/thuphap.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ThuPhapScript';
+  src: url('/fonts/script.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --background: #f5f0e5;
   --paper: #faf6ef;
@@ -61,9 +77,10 @@ a {
 
 .brand {
   color: var(--accent-dark);
-  font-family: "Dancing Script", "Noto Serif SC", cursive;
-  font-size: 32px;
-  font-weight: 700;
+  font-family: "ThuPhap", "Dancing Script", "Noto Serif SC", cursive;
+  font-size: 38px;
+  font-weight: normal;
+  padding-bottom: 5px;
 }
 
 .navLink {
@@ -181,8 +198,9 @@ button:hover:not(:disabled) {
 }
 
 .pageHeader h1 {
-  font-family: "Dancing Script", "Noto Serif SC", cursive;
-  font-size: 42px;
+  font-family: "ThuPhap", "Dancing Script", "Noto Serif SC", cursive;
+  font-size: 48px;
+  font-weight: normal;
   line-height: 1;
   margin: 0;
 }
