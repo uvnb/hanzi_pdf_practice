@@ -55,15 +55,6 @@ export default function HeroSection({ nav, hero }: HeroSectionProps) {
         <div className="newHeroSubtitleCol">
           <p className="newHeroSubtitle">{hero.subtitle}</p>
         </div>
-
-        <div className="newHeroCtas">
-          <Link className="newHeroCta" href="/practice">
-            {hero.ctaPractice}
-          </Link>
-          <a className="newHeroCtaSecondary" href="#features">
-            {hero.ctaCourses}
-          </a>
-        </div>
       </div>
     </section>
   );
