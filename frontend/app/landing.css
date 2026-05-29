@@ -74,9 +74,11 @@
 .heroTopNav {
   align-items: center;
   display: flex;
-  gap: 50px;
+  justify-content: center;
+  gap: clamp(40px, 6vw, 80px);
   height: 90px;
-  left: 60px;
+  left: 0;
+  right: 0;
   position: absolute;
   top: 0;
 }
