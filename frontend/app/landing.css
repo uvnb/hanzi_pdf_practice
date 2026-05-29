@@ -44,11 +44,11 @@
   top: 0;
   left: 0;
   height: 100%;
-  width: 55vw;
+  width: 65vw;
   min-width: 600px;
   z-index: 1;
-  -webkit-mask-image: linear-gradient(to right, black 95%, transparent 100%);
-  mask-image: linear-gradient(to right, black 95%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
+  mask-image: linear-gradient(to right, black 90%, transparent 100%);
 }
 
 .newHeroBg img {
