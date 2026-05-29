@@ -60,10 +60,10 @@ export default function HeroSection({ nav, hero, sidebar }: HeroSectionProps) {
       <div className="heroArt">
         <Image
           alt="Traditional Chinese magnolia painting"
-          height={1200}
+          fill
           priority
+          sizes="(max-width: 1024px) 100vw, 45vw"
           src="/landing/magnolia.png"
-          width={800}
         />
       </div>
     </section>
