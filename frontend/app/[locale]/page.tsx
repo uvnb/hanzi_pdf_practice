@@ -105,8 +105,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       <LandingFooter
         brand={t("footerBrand")}
         copyright={t("footerCopy")}
-        privacy={t("footerPrivacy")}
-        terms={t("footerTerms")}
       />
     </div>
   );

@@ -386,59 +386,120 @@
    FOOTER
    =========================== */
 .landingFooter {
-  background: var(--cream);
-  border-top: 3px solid var(--navy);
-  padding: 48px 40px 36px;
-  text-align: center;
+  background: linear-gradient(135deg, #1b3a5f 0%, #2e7fb2 100%);
+  border-top: 3px solid var(--gold);
+  color: #fff;
+  padding: 56px 56px 30px;
+}
+
+.footerGrid {
+  display: grid;
+  gap: 48px;
+  grid-template-columns: minmax(220px, 1.1fr) minmax(180px, 0.8fr) minmax(290px, 1fr);
+  margin: 0 auto 36px;
+  max-width: 1120px;
+}
+
+.footerBrand,
+.footerRoadmap h2,
+.footerContact h2 {
+  font-family: var(--font-brush);
+  font-weight: 700;
 }
 
 .footerBrand {
-  font-family: var(--font-brush);
   font-size: 36px;
-  font-weight: 700;
-  margin: 0 0 20px;
+  margin: 0 0 14px;
 }
 
-.footerLinks {
+.footerDescription {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 15px;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.footerRoadmap {
   display: flex;
-  gap: 36px;
-  justify-content: center;
-  margin-bottom: 24px;
+  flex-direction: column;
+  gap: 13px;
 }
 
-.footerLinks a {
-  color: var(--muted);
+.footerRoadmap h2,
+.footerContact h2 {
+  font-size: 27px;
+  margin: 0 0 8px;
+}
+
+.footerRoadmap a {
+  color: rgba(255, 255, 255, 0.82);
   font-size: 15px;
   text-decoration: none;
   transition: color 0.2s;
 }
 
-.footerLinks a:hover {
-  color: var(--ink);
+.footerRoadmap a:hover {
+  color: #fff;
 }
 
-.footerSocials {
+.footerContact {
   display: flex;
-  gap: 20px;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.footerContactHeading,
+.footerContactItem {
+  align-items: center;
+  display: flex;
+  gap: 14px;
+}
+
+.footerContactHeading span,
+.footerContactItem span {
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  color: #fff;
+  display: inline-flex;
+  flex: 0 0 30px;
+  font-size: 15px;
+  height: 30px;
   justify-content: center;
-  margin-bottom: 22px;
+  width: 30px;
 }
 
-.footerSocials a {
-  color: var(--ink);
-  font-size: 26px;
+.footerContactItem {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 15px;
+  line-height: 1.4;
+  margin: 0;
   text-decoration: none;
-  transition: opacity 0.2s;
 }
 
-.footerSocials a:hover {
-  opacity: 0.7;
+.footerContactItem:hover {
+  color: #fff;
 }
 
 .footerCopy {
-  color: var(--muted);
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.66);
   font-size: 14px;
-  margin: 0;
+  margin: 0 auto;
+  max-width: 1120px;
+  padding-top: 22px;
+  text-align: left;
+}
+
+@media (max-width: 760px) {
+  .footerGrid {
+    gap: 34px;
+    grid-template-columns: 1fr;
+  }
+
+  .footerCopy {
+    text-align: center;
+  }
 }
 
 /* ===========================
@@ -570,8 +631,7 @@
     padding: 36px 20px 28px;
   }
 
-  .footerLinks {
-    flex-direction: column;
-    gap: 14px;
+  .footerGrid {
+    gap: 30px;
   }
 }
