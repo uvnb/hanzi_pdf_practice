@@ -74,9 +74,9 @@
 .heroTopNav {
   align-items: center;
   display: flex;
-  gap: 42px;
-  height: 112px;
-  left: 56px;
+  gap: 50px;
+  height: 90px;
+  left: 60px;
   position: absolute;
   top: 0;
 }
@@ -84,8 +84,8 @@
 .heroTopNav a {
   color: var(--muted);
   font-family: var(--font-chinese-brush);
-  font-size: 26px;
-  letter-spacing: 0.04em;
+  font-size: 20px;
+  letter-spacing: 0.1em;
   line-height: 1;
   text-decoration: none;
   transition: color 0.2s;
