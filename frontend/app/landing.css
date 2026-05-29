@@ -30,128 +30,124 @@
 /* ===========================
    HERO SECTION
    =========================== */
-.heroSection {
-  display: grid;
-  grid-template-columns: 80px 1fr 45%;
+.newHeroSection {
+  background-color: #c5baa4; /* Blends perfectly with the image edge */
   min-height: 100vh;
-}
-
-/* --- sidebar --- */
-.heroSidebar {
-  align-items: center;
-  background: var(--navy);
-  display: flex;
-  flex-direction: column;
-  gap: 38px;
-  justify-content: center;
-  padding: 40px 0;
-}
-
-.heroSidebar a {
-  color: #d0c8bc;
-  font-family: var(--font-chinese-brush);
-  font-size: 28px;
-  letter-spacing: 0.08em;
-  text-decoration: none;
-  transition: color 0.2s;
-  writing-mode: vertical-rl;
-}
-
-.heroSidebar a:hover {
-  color: #fff;
-}
-
-/* --- main content --- */
-.heroMain {
-  background: var(--cream);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 40px 60px 60px;
   position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
 }
 
-.heroTopNav {
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  gap: clamp(40px, 6vw, 80px);
-  height: 90px;
-  left: 0;
-  right: 0;
+.newHeroBg {
   position: absolute;
   top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
 }
 
-.heroTopNav a {
-  color: var(--muted);
+.newHeroBg img {
+  object-fit: cover;
+  object-position: left center;
+  -webkit-mask-image: linear-gradient(to right, black 40%, transparent 90%);
+  mask-image: linear-gradient(to right, black 40%, transparent 90%);
+}
+
+.newHeroNav {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  gap: clamp(30px, 5vw, 60px);
+  position: absolute;
+  top: 40px;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.newHeroNav a {
+  color: #3b3024;
   font-family: var(--font-chinese-brush);
   font-size: 20px;
   letter-spacing: 0.1em;
-  line-height: 1;
   text-decoration: none;
   transition: color 0.2s;
 }
 
-.heroTopNav a:hover {
-  color: var(--ink);
+.newHeroNav a:hover {
+  color: #000;
 }
 
-.heroTitle {
-  font-family: var(--font-brush);
-  font-size: clamp(68px, 8vw, 110px);
-  font-weight: normal;
-  letter-spacing: -0.04em;
-  line-height: 1.12;
-  margin: 0 0 18px;
-}
-
-.heroSubtitle {
-  color: var(--muted);
-  font-family: var(--font-script);
-  font-size: clamp(22px, 2.5vw, 32px);
-  font-style: italic;
-  letter-spacing: -0.03em;
-  margin: 0 0 44px;
-}
-
-.heroCtas {
+.newHeroContent {
+  position: relative;
+  z-index: 10;
   display: flex;
-  gap: 20px;
+  flex-direction: row-reverse;
+  gap: clamp(30px, 6vw, 80px);
+  align-items: flex-start;
+  margin-left: auto;
+  padding: 120px 10vw 60px 0;
+  height: 80vh;
 }
 
-.heroCta {
-  background: var(--navy);
-  border: none;
-  color: #fff;
-  cursor: pointer;
+.newHeroTitle {
   font-family: var(--font-brush);
-  font-size: 20px;
-  padding: 22px 32px;
+  font-size: clamp(80px, 12vw, 180px);
+  font-weight: normal;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  color: #1a1614;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.newHeroSubtitleCol {
+  border-right: 1.5px solid #7a6b5d;
+  padding-right: clamp(15px, 3vw, 40px);
+  margin-top: 80px;
+  height: 60%;
+}
+
+.newHeroSubtitle {
+  font-family: var(--font-script);
+  font-size: clamp(24px, 3vw, 36px);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  color: #3d342b;
+  margin: 0;
+  letter-spacing: 0.15em;
+  line-height: 1.5;
+}
+
+.newHeroCtas {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: auto;
+  margin-bottom: 40px;
+}
+
+.newHeroCta, .newHeroCtaSecondary {
+  background: transparent;
+  border: 2px solid #3d342b;
+  color: #3d342b;
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 700;
+  padding: 24px 14px;
   text-align: center;
   text-decoration: none;
-  transition: background 0.2s, transform 0.15s;
+  transition: all 0.2s;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  letter-spacing: 0.2em;
 }
 
-.heroCta:hover {
-  background: #14304f;
-  transform: translateY(-2px);
-}
-
-/* --- magnolia panel --- */
-.heroArt {
-  background: var(--navy);
-  min-height: 100vh;
-  overflow: hidden;
-  position: relative;
-}
-
-.heroArt img {
-  display: block;
-  height: 100%;
-  object-fit: cover;
-  object-position: center center;
-  width: 100%;
+.newHeroCta:hover, .newHeroCtaSecondary:hover {
+  background: #3d342b;
+  color: #f5f0e5;
 }
 
 /* ===========================
@@ -506,37 +502,13 @@
    RESPONSIVE — TABLET
    =========================== */
 @media (max-width: 1024px) {
-  .heroSection {
-    grid-template-columns: 1fr;
-    min-height: auto;
+  .newHeroContent {
+    padding: 100px 5vw 40px 0;
   }
 
-  .heroSidebar {
-    flex-direction: row;
-    gap: 24px;
-    order: -1;
-    padding: 16px 24px;
-  }
-
-  .heroSidebar a {
-    font-size: 24px;
-    writing-mode: horizontal-tb;
-  }
-
-  .heroMain {
-    padding: 100px 40px 60px;
-  }
-
-  .heroTopNav {
-    height: 84px;
+  .newHeroNav {
+    top: 20px;
     gap: 30px;
-    left: 40px;
-    top: 0;
-  }
-
-  .heroArt {
-    height: 420px;
-    min-height: 0;
   }
 
   .featuresGrid {
@@ -556,37 +528,29 @@
    RESPONSIVE — MOBILE
    =========================== */
 @media (max-width: 640px) {
-  .heroSidebar {
-    display: none;
+  .newHeroContent {
+    padding: 80px 20px 20px 0;
+    gap: 20px;
   }
 
-  .heroMain {
-    padding: 80px 24px 48px;
-  }
-
-  .heroTopNav {
+  .newHeroNav {
     flex-wrap: wrap;
-    gap: 18px;
-    height: auto;
-    left: 24px;
-    top: 20px;
+    gap: 15px;
+    top: 15px;
   }
 
-  .heroTopNav a {
-    font-size: 20px;
+  .newHeroNav a {
+    font-size: 16px;
   }
 
-  .heroCtas {
-    flex-direction: column;
+  .newHeroCtas {
+    gap: 12px;
   }
 
-  .heroCta {
-    font-size: 18px;
-    padding: 18px 24px;
+  .newHeroCta, .newHeroCtaSecondary {
+    padding: 16px 10px;
+    font-size: 14px;
   }
-
-  .heroArt {
-    height: 300px;
   }
 
   .featuresSection {
