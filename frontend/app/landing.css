@@ -71,7 +71,7 @@
 
 .heroTopNav {
   display: flex;
-  gap: 48px;
+  gap: 32px;
   left: 60px;
   position: absolute;
   top: 36px;
@@ -204,8 +204,16 @@
 }
 
 .featureCard {
+  color: inherit;
+  display: block;
   padding: 10px 20px 30px;
   text-align: center;
+  text-decoration: none;
+  transition: transform 0.18s ease;
+}
+
+.featureCard:hover {
+  transform: translateY(-4px);
 }
 
 .featureCard img {

@@ -1,9 +1,12 @@
+import { Link } from "@/i18n/navigation";
+
 interface PricingTier {
   name: string;
   price: string;
   period: string;
   features: string[];
   cta: string;
+  href: string;
   popular?: boolean;
   badge?: string;
 }
@@ -40,9 +43,9 @@ export default function PricingSection({ title, tiers }: PricingSectionProps) {
               ))}
             </ul>
 
-            <button className="pricingCta" type="button">
+            <Link className="pricingCta" href={tier.href}>
               {tier.cta}
-            </button>
+            </Link>
           </article>
         ))}
       </div>

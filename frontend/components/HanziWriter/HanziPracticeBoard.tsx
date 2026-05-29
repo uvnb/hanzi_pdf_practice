@@ -5,7 +5,20 @@ import { useTranslations } from "next-intl";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import FavoriteButton from "@/components/Notebook/FavoriteButton";
 
-const STARTER_CHARACTERS = ["学", "你", "好", "中", "文", "人"];
+const STARTER_CHARACTERS = [
+  "学",
+  "你",
+  "好",
+  "我",
+  "爱",
+  "中",
+  "文",
+  "人",
+  "日",
+  "月",
+  "水",
+  "火",
+];
 const DATA_CDN =
   "https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/";
 

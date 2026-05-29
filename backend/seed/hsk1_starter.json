@@ -54,5 +54,173 @@
     "meaning_vi": "học",
     "example_sentences": [{"hanzi": "我学习汉语。", "pinyin": "Wǒ xuéxí Hànyǔ.", "vi": "Tôi học tiếng Hán."}],
     "ai_enriched": false
+  },
+  {
+    "character": "日",
+    "pinyin": "rì",
+    "hsk_level": 1,
+    "meaning_vi": "ngày; mặt trời",
+    "example_sentences": [{"hanzi": "今天是星期日。", "pinyin": "Jīntiān shì xīngqīrì.", "vi": "Hôm nay là Chủ nhật."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "月",
+    "pinyin": "yuè",
+    "hsk_level": 1,
+    "meaning_vi": "tháng; mặt trăng",
+    "example_sentences": [{"hanzi": "一月很冷。", "pinyin": "Yī yuè hěn lěng.", "vi": "Tháng một rất lạnh."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "水",
+    "pinyin": "shuǐ",
+    "hsk_level": 1,
+    "meaning_vi": "nước",
+    "example_sentences": [{"hanzi": "我喝水。", "pinyin": "Wǒ hē shuǐ.", "vi": "Tôi uống nước."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "火",
+    "pinyin": "huǒ",
+    "hsk_level": 1,
+    "meaning_vi": "lửa",
+    "example_sentences": [{"hanzi": "火很热。", "pinyin": "Huǒ hěn rè.", "vi": "Lửa rất nóng."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "木",
+    "pinyin": "mù",
+    "hsk_level": 1,
+    "meaning_vi": "cây; gỗ",
+    "example_sentences": [{"hanzi": "这里有木头。", "pinyin": "Zhèlǐ yǒu mùtou.", "vi": "Ở đây có gỗ."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "口",
+    "pinyin": "kǒu",
+    "hsk_level": 1,
+    "meaning_vi": "miệng",
+    "example_sentences": [{"hanzi": "请开口说。", "pinyin": "Qǐng kāikǒu shuō.", "vi": "Hãy mở miệng nói."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "大",
+    "pinyin": "dà",
+    "hsk_level": 1,
+    "meaning_vi": "to; lớn",
+    "example_sentences": [{"hanzi": "学校很大。", "pinyin": "Xuéxiào hěn dà.", "vi": "Trường học rất lớn."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "小",
+    "pinyin": "xiǎo",
+    "hsk_level": 1,
+    "meaning_vi": "nhỏ",
+    "example_sentences": [{"hanzi": "这本书很小。", "pinyin": "Zhè běn shū hěn xiǎo.", "vi": "Quyển sách này rất nhỏ."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "上",
+    "pinyin": "shàng",
+    "hsk_level": 1,
+    "meaning_vi": "trên; lên",
+    "example_sentences": [{"hanzi": "书在桌子上。", "pinyin": "Shū zài zhuōzi shàng.", "vi": "Sách ở trên bàn."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "下",
+    "pinyin": "xià",
+    "hsk_level": 1,
+    "meaning_vi": "dưới; xuống",
+    "example_sentences": [{"hanzi": "书在桌子下。", "pinyin": "Shū zài zhuōzi xià.", "vi": "Sách ở dưới bàn."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "一",
+    "pinyin": "yī",
+    "hsk_level": 1,
+    "meaning_vi": "một",
+    "example_sentences": [{"hanzi": "我有一本书。", "pinyin": "Wǒ yǒu yī běn shū.", "vi": "Tôi có một quyển sách."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "二",
+    "pinyin": "èr",
+    "hsk_level": 1,
+    "meaning_vi": "hai",
+    "example_sentences": [{"hanzi": "我有二十块钱。", "pinyin": "Wǒ yǒu èrshí kuài qián.", "vi": "Tôi có hai mươi đồng."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "三",
+    "pinyin": "sān",
+    "hsk_level": 1,
+    "meaning_vi": "ba",
+    "example_sentences": [{"hanzi": "这里有三个人。", "pinyin": "Zhèlǐ yǒu sān ge rén.", "vi": "Ở đây có ba người."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "四",
+    "pinyin": "sì",
+    "hsk_level": 1,
+    "meaning_vi": "bốn",
+    "example_sentences": [{"hanzi": "我四点回家。", "pinyin": "Wǒ sì diǎn huí jiā.", "vi": "Tôi về nhà lúc bốn giờ."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "五",
+    "pinyin": "wǔ",
+    "hsk_level": 1,
+    "meaning_vi": "năm",
+    "example_sentences": [{"hanzi": "今天星期五。", "pinyin": "Jīntiān xīngqīwǔ.", "vi": "Hôm nay là thứ sáu."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "六",
+    "pinyin": "liù",
+    "hsk_level": 1,
+    "meaning_vi": "sáu",
+    "example_sentences": [{"hanzi": "他六岁。", "pinyin": "Tā liù suì.", "vi": "Em ấy sáu tuổi."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "爱",
+    "pinyin": "ài",
+    "hsk_level": 1,
+    "meaning_vi": "yêu; thích",
+    "example_sentences": [{"hanzi": "我爱学习汉语。", "pinyin": "Wǒ ài xuéxí Hànyǔ.", "vi": "Tôi thích học tiếng Hán."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "家",
+    "pinyin": "jiā",
+    "hsk_level": 1,
+    "meaning_vi": "nhà; gia đình",
+    "example_sentences": [{"hanzi": "我回家。", "pinyin": "Wǒ huí jiā.", "vi": "Tôi về nhà."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "朋",
+    "pinyin": "péng",
+    "hsk_level": 1,
+    "meaning_vi": "bạn; bè",
+    "example_sentences": [{"hanzi": "他是我的朋友。", "pinyin": "Tā shì wǒ de péngyou.", "vi": "Anh ấy là bạn của tôi."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "友",
+    "pinyin": "yǒu",
+    "hsk_level": 1,
+    "meaning_vi": "bạn",
+    "example_sentences": [{"hanzi": "我们是朋友。", "pinyin": "Wǒmen shì péngyou.", "vi": "Chúng tôi là bạn bè."}],
+    "ai_enriched": false
+  },
+  {
+    "character": "语",
+    "pinyin": "yǔ",
+    "hsk_level": 1,
+    "meaning_vi": "ngôn ngữ; tiếng",
+    "example_sentences": [{"hanzi": "我学习汉语。", "pinyin": "Wǒ xuéxí Hànyǔ.", "vi": "Tôi học tiếng Hán."}],
+    "ai_enriched": false
   }
 ]

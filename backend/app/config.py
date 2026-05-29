@@ -8,7 +8,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     app_name: str = "Hanzi Practice API"
-    database_url: str = "postgresql+asyncpg://hanzi:hanzi@localhost:5432/hanzi"
+    database_url: str = "sqlite+aiosqlite:///./hanzi_dev.db"
     frontend_origin: str = "http://localhost:3000"
     auto_create_tables: bool = True
     google_client_id: str = ""

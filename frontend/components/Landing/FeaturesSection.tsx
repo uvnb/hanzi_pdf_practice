@@ -13,7 +13,7 @@ interface FeaturesSectionProps {
     home: { label: string; emoji: string };
     practice: { label: string; emoji: string };
     pdf: { label: string; emoji: string };
-    login: { label: string; emoji: string };
+    notebook: { label: string; emoji: string };
   };
   title: string;
   subtitle: string;
@@ -32,7 +32,7 @@ export default function FeaturesSection({
     { ...nav.home, href: "/" },
     { ...nav.practice, href: "/practice" },
     { ...nav.pdf, href: "/pdf" },
-    { ...nav.login, href: "/auth/login" },
+    { ...nav.notebook, href: "/notebook" },
   ];
 
   return (
@@ -51,7 +51,7 @@ export default function FeaturesSection({
 
       <div className="featuresGrid">
         {features.map((feature) => (
-          <article className="featureCard" key={feature.title}>
+          <Link className="featureCard" href={feature.href} key={feature.title}>
             <Image
               alt={feature.title}
               height={150}
@@ -60,7 +60,7 @@ export default function FeaturesSection({
             />
             <h3>{feature.title}</h3>
             <p>{feature.description}</p>
-          </article>
+          </Link>
         ))}
       </div>
 
