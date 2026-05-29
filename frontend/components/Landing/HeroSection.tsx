@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
+import LanguageSwitcher from "@/components/Layout/LanguageSwitcher";
 
 interface HeroSectionProps {
   nav: {
@@ -37,13 +38,19 @@ export default function HeroSection({ nav, hero }: HeroSectionProps) {
         />
       </div>
 
-      <nav className="newHeroNav">
-        <a href="#hero">{nav.home}</a>
-        <a href="#features">{nav.features}</a>
-        <a href="#pricing">{nav.pricing}</a>
-        <Link href="/auth/login">{nav.login}</Link>
-        <Link href="/auth/login">{nav.register}</Link>
-      </nav>
+      <header className="newHeroHeader">
+        <nav className="newHeroNav">
+          <a href="#hero">{nav.home}</a>
+          <a href="#features">{nav.features}</a>
+          <a href="#pricing">{nav.pricing}</a>
+          <Link href="/auth/login">{nav.login}</Link>
+          <Link href="/auth/login">{nav.register}</Link>
+        </nav>
+        
+        <div className="newHeroLang">
+          <LanguageSwitcher />
+        </div>
+      </header>
 
       <div className="newHeroContent">
         <h1 className="newHeroTitle">
