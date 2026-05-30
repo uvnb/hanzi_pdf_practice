@@ -17,10 +17,10 @@
   --ink: #2a2320;
   --muted: #7a6b5d;
   --border-ornate: #c4a56e;
-  --font-brush: "Merienda", "Noto Serif SC", cursive;
-  --font-chinese-brush: "Ma Shan Zheng", "Noto Serif SC", serif;
-  --font-serif: "Noto Serif SC", Georgia, serif;
-  --font-body: "Noto Sans SC", Arial, sans-serif;
+  --font-brush: "ThuPhapScript", "ThuPhap", "Dancing Script", "Merienda", "Noto Serif SC", cursive;
+  --font-chinese-brush: "ThuPhap", "ThuPhapScript", "Dancing Script", "Merienda", "Ma Shan Zheng", "Noto Serif SC", serif;
+  --font-serif: Georgia, "Noto Serif SC", serif;
+  --font-body: Arial, "Noto Sans SC", sans-serif;
   color: var(--ink);
   font-family: var(--font-body);
   overflow-x: hidden;
