@@ -5,9 +5,10 @@ import { useTranslations } from "next-intl";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import FavoriteButton from "@/components/Notebook/FavoriteButton";
 
-const STARTER_CHARACTERS = ["学", "你", "好", "中", "文", "人"];
-const DATA_CDN =
-  "https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/";
+import { fetchHanziDetail, fetchHskList, HanziDetail } from "@/lib/hanzi-api";
+import { HanziMetadata } from "@/lib/pdf-worksheet";
+
+const DATA_CDN = "https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/";
 
 function firstHanzi(value: string): string | undefined {
   return Array.from(value.trim()).find((char) =>
@@ -21,8 +22,25 @@ export default function HanziPracticeBoard() {
   const writerRef = useRef<HanziWriter | null>(null);
   const [input, setInput] = useState("学");
   const [character, setCharacter] = useState("学");
+  const [detail, setDetail] = useState<HanziDetail | null>(null);
+  const [hskList, setHskList] = useState<HanziMetadata[]>([]);
   const [message, setMessage] = useState(() => t("defaultMessage"));
   const [loading, setLoading] = useState(true);
+
+  // Fetch HSK 1 list on mount
+  useEffect(() => {
+    fetchHskList(1).then(setHskList).catch(console.error);
+  }, []);
+
+  // Fetch character details when character changes
+  useEffect(() => {
+    fetchHanziDetail(character)
+      .then(setDetail)
+      .catch((err) => {
+        console.error(err);
+        setDetail(null); // fallback if not in DB
+      });
+  }, [character]);
 
   useEffect(() => {
     const target = targetRef.current;
@@ -145,18 +163,31 @@ export default function HanziPracticeBoard() {
           </div>
           <p id="characterHint">{t("hint")}</p>
         </form>
-        <div className="examples" aria-label={t("samples")}>
-          {STARTER_CHARACTERS.map((sample) => (
-            <button
-              className={sample === character ? "selected" : undefined}
-              key={sample}
-              onClick={() => selectCharacter(sample)}
-              type="button"
-            >
-              {sample}
-            </button>
-          ))}
+        
+        <div style={{ marginTop: 32 }}>
+          <label style={{ fontSize: 14, fontWeight: 700 }}>HSK 1 Starter</label>
+          <div className="characterList" aria-label={t("samples")}>
+            {hskList.map((sample) => (
+              <button
+                className={sample.character === character ? "selected" : undefined}
+                key={sample.character}
+                onClick={() => selectCharacter(sample.character)}
+                type="button"
+              >
+                {sample.character}
+              </button>
+            ))}
+          </div>
         </div>
+      </div>
+
+      <div className="writerPanel">
+        <div
+          className={`tianGrid ${isShaking ? "shake" : ""}`}
+          ref={targetRef}
+          aria-label={t("writer", { character })}
+        />
+        <p className="currentCharacter">{character}</p>
         <div className="actions">
           <button disabled={loading} onClick={startQuiz} type="button">
             {t("start")}
@@ -171,17 +202,39 @@ export default function HanziPracticeBoard() {
           </button>
           <FavoriteButton character={character} />
         </div>
-        <p className="feedback" aria-live="polite">
+        <p className="feedback" aria-live="polite" style={{ marginTop: 12, textAlign: "center" }}>
           {message}
         </p>
       </div>
-      <div className="writerPanel">
-        <div
-          className={`tianGrid ${isShaking ? "shake" : ""}`}
-          ref={targetRef}
-          aria-label={t("writer", { character })}
-        />
-        <p className="currentCharacter">{character}</p>
+
+      <div className="infoPanel">
+        {detail ? (
+          <>
+            <div className="detailItem">
+              <h3>Phiên âm & Nghĩa</h3>
+              <p className="pinyin">{detail.pinyin}</p>
+              <p className="meaning">{detail.meaning_vi}</p>
+            </div>
+            
+            {detail.etymology_vi && (
+              <div className="detailItem">
+                <h3>Chiết tự</h3>
+                <p className="etymology">{detail.etymology_vi}</p>
+              </div>
+            )}
+            
+            {(detail.radicals && detail.radicals.length > 0) && (
+              <div className="detailItem">
+                <h3>Bộ thủ</h3>
+                <p className="meaning">{detail.radicals.join(", ")}</p>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="detailItem">
+            <p className="meaning">Đang tải thông tin...</p>
+          </div>
+        )}
       </div>
     </section>
   );

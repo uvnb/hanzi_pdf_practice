@@ -218,20 +218,36 @@ button:hover:not(:disabled) {
   border-radius: 22px;
   box-shadow: var(--shadow);
   display: grid;
-  gap: 52px;
-  grid-template-columns: minmax(265px, 1fr) 370px;
+  gap: 32px;
+  grid-template-columns: 240px minmax(320px, 370px) minmax(260px, 1fr);
+  grid-template-areas: "sidebar center info";
   margin: 42px auto;
-  max-width: 850px;
-  padding: 42px;
+  max-width: 1024px;
+  padding: 32px;
+}
+
+@media (max-width: 992px) {
+  .practiceCard {
+    grid-template-columns: 240px 1fr;
+    grid-template-areas:
+      "sidebar center"
+      "sidebar info";
+    max-width: 850px;
+  }
 }
 
 @media (max-width: 768px) {
   .practiceCard {
     grid-template-columns: 1fr;
+    grid-template-areas: 
+      "center"
+      "info"
+      "sidebar";
     gap: 32px;
     padding: 24px 16px 80px; /* add bottom padding to prevent overlap with sticky bar */
     margin: 20px auto;
   }
+
 
   .actions {
     position: fixed;
@@ -696,13 +712,6 @@ button:disabled {
     margin-top: 96px;
   }
 
-  .practiceCard {
-    display: flex;
-    flex-direction: column-reverse;
-    gap: 32px;
-    padding: 22px;
-  }
-
   .pageHeader {
     flex-wrap: wrap;
   }
@@ -740,4 +749,71 @@ button:disabled {
     margin-top: 60px;
     padding: 30px 22px;
   }
+}
+
+.controls { grid-area: sidebar; }
+.writerPanel { grid-area: center; }
+.infoPanel { grid-area: info; }
+
+.infoPanel h3 {
+  font-size: 14px;
+  color: var(--accent);
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.infoPanel .detailItem {
+  margin-bottom: 24px;
+}
+
+.infoPanel .pinyin {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 6px;
+}
+
+.infoPanel .meaning {
+  font-size: 16px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.infoPanel .etymology {
+  font-size: 15px;
+  color: var(--ink);
+  line-height: 1.6;
+  background: var(--input);
+  padding: 14px;
+  border-radius: 12px;
+  margin: 0;
+}
+
+.characterList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.characterList button {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 20px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+
+.characterList button:hover {
+  border-color: var(--accent);
+}
+
+.characterList button.selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
 }
