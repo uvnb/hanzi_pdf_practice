@@ -166,8 +166,10 @@ function drawHeader(
     context.restore();
   }
   context.fillStyle = "#241e19";
-  context.font = 'bold 42px Georgia, "Noto Serif SC", serif';
-  context.fillText(labels.title, MARGIN, 94);
+  context.font = 'bold 36px Georgia, "Noto Serif SC", serif';
+  context.textAlign = "center";
+  context.fillText(labels.title, PAGE_WIDTH / 2, 120);
+  context.textAlign = "left";
 }
 
 function drawFooter(
