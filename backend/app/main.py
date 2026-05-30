@@ -24,17 +24,7 @@ async def lifespan(_: FastAPI):
     if settings.auto_create_tables:
         await create_tables()
         
-        # Auto-seed if database is practically empty (less than 150 chars)
-        try:
-            from sqlalchemy import func
-            async with AsyncSessionLocal() as session:
-                count = await session.scalar(select(func.count(HanziCharacter.id)))
-                if count is None or count < 150:
-                    from scripts.seed_hsk import seed
-                    print("Auto-seeding database from JSON files...")
-                    await seed()
-        except Exception as e:
-            print(f"Auto-seed failed: {e}")
+        pass
             
     yield
 
