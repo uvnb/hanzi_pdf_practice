@@ -56,18 +56,16 @@ export default function CharacterSelector({ character, onSelectCharacter, onList
   return (
     <div className="controls">
       <form className="searchForm" onSubmit={submitCharacter}>
-        <label htmlFor="character">{t("label")}</label>
         <div className="inputRow">
           <input
             id="character"
             maxLength={8}
             value={input}
             onChange={(event) => setInput(event.target.value)}
-            aria-describedby="characterHint"
+            placeholder="Nhập 1 chữ..."
           />
           <button type="submit">{t("load")}</button>
         </div>
-        <p id="characterHint">{t("hint")}</p>
       </form>
       
       <div style={{ marginTop: 32 }}>
