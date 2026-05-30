@@ -24,7 +24,6 @@ export default function LandingFooter({
           <Link href="/practice">Bắt đầu luyện viết</Link>
           <Link href="/pdf">Tạo phiếu PDF</Link>
           <Link href="/notebook">Sổ tay từ vựng</Link>
-          <Link href="/auth/login">Đăng nhập</Link>
         </section>
 
         <section className="footerContact" aria-labelledby="footerContactTitle">
@@ -54,8 +53,6 @@ export default function LandingFooter({
           </p>
         </section>
       </div>
-
-      <p className="footerCopy">{copyright}</p>
     </footer>
   );
 }
