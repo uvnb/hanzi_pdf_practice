@@ -25,14 +25,18 @@ export default function CharacterSelector({ character, onSelectCharacter, onList
     }).catch(console.error);
   }, [hskLevel]);
 
-  const topics = HSK_TOPICS[hskLevel] || [];
+  const availableTopics = useMemo(() => {
+    return HSK_TOPICS.filter(t => 
+      hskList.some(sample => t.chars.includes(sample.character))
+    );
+  }, [hskList]);
 
   const filteredList = useMemo(() => {
     if (selectedTopic === "Tất cả") return hskList;
-    const topic = topics.find(t => t.name === selectedTopic);
+    const topic = availableTopics.find(t => t.name === selectedTopic);
     if (!topic) return hskList;
     return hskList.filter(sample => topic.chars.includes(sample.character));
-  }, [hskList, selectedTopic, topics]);
+  }, [hskList, selectedTopic, availableTopics]);
 
   useEffect(() => {
     if (onListLoaded) onListLoaded(filteredList);
@@ -83,16 +87,16 @@ export default function CharacterSelector({ character, onSelectCharacter, onList
           </select>
         </div>
 
-        {topics.length > 0 && (
+        {availableTopics.length > 0 && (
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
             <label style={{ fontSize: 14, fontWeight: 700, margin: 0 }}>Chủ đề</label>
             <select
               value={selectedTopic}
               onChange={(e) => setSelectedTopic(e.target.value)}
-              style={{ padding: "4px 8px", borderRadius: 6, border: "1px solid var(--line)", background: "var(--paper)", color: "var(--ink)", outline: "none", maxWidth: 160 }}
+              style={{ padding: "4px 8px", borderRadius: 6, border: "1px solid var(--line)", background: "var(--paper)", color: "var(--ink)", outline: "none", maxWidth: 170 }}
             >
               <option value="Tất cả">Tất cả</option>
-              {topics.map(t => (
+              {availableTopics.map(t => (
                 <option key={t.name} value={t.name}>{t.name}</option>
               ))}
             </select>
