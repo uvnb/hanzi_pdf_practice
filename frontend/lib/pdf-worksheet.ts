@@ -165,13 +165,7 @@ function drawHeader(
   context.fillStyle = "#241e19";
   context.font = 'bold 42px Georgia, "Noto Serif SC", serif';
   context.fillText(labels.title, MARGIN, 94);
-  context.fillStyle = "#775e50";
-  context.font = "22px Arial, sans-serif";
-  context.fillText(
-    style === "tian" ? labels.subtitleTian : labels.subtitleMi,
-    MARGIN,
-    140,
-  );
+  
   context.textAlign = "right";
   context.fillText(labels.page(pageNumber, pageCount), PAGE_WIDTH - MARGIN, 92);
   context.textAlign = "left";
@@ -180,22 +174,10 @@ function drawHeader(
   context.moveTo(MARGIN, 174);
   context.lineTo(PAGE_WIDTH - MARGIN, 174);
   context.stroke();
-
-  context.fillStyle = "#806c60";
-  context.font = "18px Arial, sans-serif";
-  context.fillText(labels.sample, MARGIN + 29, GRID_TOP - 42);
-  context.fillText(labels.trace, MARGIN + CELL_SIZE + 18, GRID_TOP - 42);
-  context.fillText(labels.selfPractice, MARGIN + CELL_SIZE * 2 + 28, GRID_TOP - 42);
 }
 
 function drawFooter(context: CanvasRenderingContext2D, labels: WorksheetLabels) {
-  context.fillStyle = "#806c60";
-  context.font = "17px Arial, sans-serif";
-  context.fillText(
-    labels.footer,
-    MARGIN,
-    PAGE_HEIGHT - 78,
-  );
+  // Footer text removed per user request
 }
 
 function truncateText(
