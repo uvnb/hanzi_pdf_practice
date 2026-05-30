@@ -2,37 +2,25 @@
 
 import HanziWriter from "hanzi-writer";
 import { useTranslations } from "next-intl";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import FavoriteButton from "@/components/Notebook/FavoriteButton";
-import PracticeStatsPanel from "@/components/HanziWriter/PracticeStatsPanel";
-import { playCorrectStroke, playMistake, playFanfare, speakCharacter } from "@/lib/audio";
-
-import { fetchHanziDetail, fetchHskList, logAttempt, HanziDetail } from "@/lib/hanzi-api";
-import { HanziMetadata } from "@/lib/pdf-worksheet";
+import CharacterSelector from "./CharacterSelector";
+import CharacterInfo from "./CharacterInfo";
+import { playCorrectStroke, playMistake, playFanfare } from "@/lib/audio";
+import { fetchHanziDetail, logAttempt, HanziDetail } from "@/lib/hanzi-api";
 
 const DATA_CDN = "https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/";
-
-function firstHanzi(value: string): string | undefined {
-  return Array.from(value.trim()).find((char) =>
-    /\p{Script=Han}/u.test(char),
-  );
-}
 
 export default function HanziPracticeBoard() {
   const t = useTranslations("Board");
   const targetRef = useRef<HTMLDivElement>(null);
   const writerRef = useRef<HanziWriter | null>(null);
-  const [input, setInput] = useState("学");
+  
   const [character, setCharacter] = useState("学");
   const [detail, setDetail] = useState<HanziDetail | null>(null);
-  const [hskList, setHskList] = useState<HanziMetadata[]>([]);
   const [message, setMessage] = useState(() => t("defaultMessage"));
   const [loading, setLoading] = useState(true);
-
-  // Fetch HSK 1 list on mount
-  useEffect(() => {
-    fetchHskList(1).then(setHskList).catch(console.error);
-  }, []);
+  const [isShaking, setIsShaking] = useState(false);
 
   // Fetch character details when character changes
   useEffect(() => {
@@ -91,24 +79,6 @@ export default function HanziPracticeBoard() {
     };
   }, [character, t]);
 
-  function selectCharacter(nextCharacter: string) {
-    setInput(nextCharacter);
-    setCharacter(nextCharacter);
-  }
-
-  function submitCharacter(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const nextCharacter = firstHanzi(input);
-    if (!nextCharacter) {
-      setMessage(t("invalid"));
-      return;
-    }
-    setCharacter(nextCharacter);
-    setInput(nextCharacter);
-  }
-
-  const [isShaking, setIsShaking] = useState(false);
-
   function triggerConfetti() {
     import("canvas-confetti").then((confetti) => {
       confetti.default({
@@ -156,40 +126,7 @@ export default function HanziPracticeBoard() {
 
   return (
     <section className="practiceCard">
-      <div className="controls">
-        <form className="searchForm" onSubmit={submitCharacter}>
-          <label htmlFor="character">{t("label")}</label>
-          <div className="inputRow">
-            <input
-              id="character"
-              maxLength={8}
-              value={input}
-              onChange={(event) => setInput(event.target.value)}
-              aria-describedby="characterHint"
-            />
-            <button type="submit">{t("load")}</button>
-          </div>
-          <p id="characterHint">{t("hint")}</p>
-        </form>
-        
-        <div style={{ marginTop: 32 }}>
-          <label style={{ fontSize: 14, fontWeight: 700 }}>HSK 1 Starter</label>
-          <div className="characterList" aria-label={t("samples")}>
-            {hskList.map((sample) => (
-              <button
-                className={sample.character === character ? "selected" : undefined}
-                key={sample.character}
-                onClick={() => selectCharacter(sample.character)}
-                type="button"
-              >
-                {sample.character}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <PracticeStatsPanel />
-      </div>
+      <CharacterSelector character={character} onSelectCharacter={setCharacter} />
 
       <div className="writerPanel">
         <div
@@ -217,45 +154,7 @@ export default function HanziPracticeBoard() {
         </p>
       </div>
 
-      <div className="infoPanel">
-        {detail ? (
-          <>
-            <div className="detailItem">
-              <h3>Phiên âm & Nghĩa</h3>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <p className="pinyin" style={{ margin: 0 }}>{detail.pinyin}</p>
-                <button 
-                  onClick={() => speakCharacter(character)}
-                  title="Phát âm"
-                  style={{ background: "var(--input)", color: "var(--ink)", padding: "4px 8px", fontSize: 14 }}
-                  type="button"
-                >
-                  🔊
-                </button>
-              </div>
-              <p className="meaning" style={{ marginTop: 6 }}>{detail.meaning_vi}</p>
-            </div>
-            
-            {detail.etymology_vi && (
-              <div className="detailItem">
-                <h3>Chiết tự</h3>
-                <p className="etymology">{detail.etymology_vi}</p>
-              </div>
-            )}
-            
-            {(detail.radicals && detail.radicals.length > 0) && (
-              <div className="detailItem">
-                <h3>Bộ thủ</h3>
-                <p className="meaning">{detail.radicals.join(", ")}</p>
-              </div>
-            )}
-          </>
-        ) : (
-          <div className="detailItem">
-            <p className="meaning">Đang tải thông tin...</p>
-          </div>
-        )}
-      </div>
+      <CharacterInfo character={character} detail={detail} />
     </section>
   );
 }
