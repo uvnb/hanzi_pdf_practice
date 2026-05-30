@@ -30,9 +30,10 @@
    HERO SECTION
    =========================== */
 .heroSection {
-  background-image: url('/landing/hero-bg.png');
+  background-color: #f4efe6;
+  background-image: url('/landing/hero-bg.jpg');
   background-size: cover;
-  background-position: center;
+  background-position: center top;
   background-repeat: no-repeat;
   min-height: 100vh;
   display: flex;
