@@ -9,6 +9,7 @@ from app.database import create_tables
 from app.routers.ai import router as ai_router
 from app.routers.auth import router as auth_router
 from app.routers.hanzi import router as hanzi_router
+from app.routers.practice import router as practice_router
 from app.routers.users import router as users_router
 
 settings = get_settings()
@@ -33,6 +34,7 @@ app.include_router(hanzi_router)
 app.include_router(auth_router)
 app.include_router(users_router)
 app.include_router(ai_router)
+app.include_router(practice_router)
 
 
 @app.get("/api/health", tags=["system"])
