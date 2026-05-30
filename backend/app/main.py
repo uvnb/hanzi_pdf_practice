@@ -15,10 +15,26 @@ from app.routers.users import router as users_router
 settings = get_settings()
 
 
+from sqlalchemy import select
+from app.database import create_tables, AsyncSessionLocal
+from app.models.hanzi import HanziCharacter
+
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     if settings.auto_create_tables:
         await create_tables()
+        
+        # Auto-seed if database is practically empty
+        try:
+            async with AsyncSessionLocal() as session:
+                count = await session.scalar(select(HanziCharacter).limit(1))
+                if not count:
+                    from scripts.seed_hsk import seed
+                    print("Auto-seeding database from JSON files...")
+                    await seed()
+        except Exception as e:
+            print(f"Auto-seed failed: {e}")
+            
     yield
 
 
