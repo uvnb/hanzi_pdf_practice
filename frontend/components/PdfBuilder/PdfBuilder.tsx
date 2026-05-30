@@ -159,14 +159,20 @@ export default function PdfBuilder() {
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-          <label style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)", margin: 0 }}>Nền giấy (Background)</label>
+          <label style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)", margin: 0 }}>Background</label>
           <select
             value={background}
             onChange={(e) => setBackground(e.target.value)}
             style={{ padding: "4px 8px", borderRadius: "6px", border: "1px solid var(--line)", background: "var(--paper)", color: "var(--ink)", outline: "none", fontSize: "14px", cursor: "pointer", maxWidth: 170 }}
           >
             <option value="none">Trắng (Mặc định)</option>
-            <option value="1.jpeg">Mẫu cổ phong</option>
+            <option value="1.jpeg">Mẫu 1</option>
+            <option value="2.jpeg">Mẫu 2</option>
+            <option value="3.jpeg">Mẫu 3</option>
+            <option value="4.jpeg">Mẫu 4</option>
+            <option value="5.jpeg">Mẫu 5</option>
+            <option value="6.jpeg">Mẫu 6</option>
+            <option value="7.jpeg">Mẫu 7</option>
           </select>
         </div>
 

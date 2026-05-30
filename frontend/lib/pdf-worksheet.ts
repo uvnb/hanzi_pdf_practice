@@ -182,6 +182,11 @@ function drawFooter(
     PAGE_HEIGHT - 60
   );
   context.textAlign = "left";
+  context.fillText(
+    "cre: uvnb",
+    MARGIN,
+    PAGE_HEIGHT - 60
+  );
 }
 
 function truncateText(
