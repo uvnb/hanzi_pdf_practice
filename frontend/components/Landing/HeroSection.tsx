@@ -58,6 +58,10 @@ export default function HeroSection({ nav, hero }: HeroSectionProps) {
             <span key={i}>{word}</span>
           ))}
         </h1>
+        
+        <div className="newHeroSubtitleCol">
+          <p className="newHeroSubtitle">{hero.subtitle}</p>
+        </div>
       </div>
     </section>
   );
