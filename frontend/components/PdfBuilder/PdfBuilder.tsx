@@ -35,6 +35,7 @@ export default function PdfBuilder() {
     () => searchParams.get("characters") || DEFAULT_CHARACTERS,
   );
   const [style, setStyle] = useState<GridStyle>("tian");
+  const [background, setBackground] = useState<string>("1.jpeg");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [pdfBytes, setPdfBytes] = useState<Uint8Array | null>(null);
   const [status, setStatus] = useState<string>("");
@@ -63,7 +64,7 @@ export default function PdfBuilder() {
     }, 800);
 
     return () => clearTimeout(timer);
-  }, [characters, style]);
+  }, [characters, style, background]);
 
   async function generatePreview() {
     setBusy(true);
@@ -78,6 +79,7 @@ export default function PdfBuilder() {
       const generated = await buildWorksheet(
         characters,
         style,
+        background,
         {
           title: t("worksheetTitle"),
           subtitleTian: t("worksheetSubtitleTian"),
@@ -144,7 +146,7 @@ export default function PdfBuilder() {
           value={text}
         />
         
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", marginTop: "16px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", marginTop: "16px" }}>
           <label style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)", margin: 0 }}>Kiểu lưới</label>
           <select
             value={style}
@@ -153,6 +155,18 @@ export default function PdfBuilder() {
           >
             <option value="tian">{t("tian")}</option>
             <option value="mi">{t("mi")}</option>
+          </select>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+          <label style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)", margin: 0 }}>Nền giấy (Background)</label>
+          <select
+            value={background}
+            onChange={(e) => setBackground(e.target.value)}
+            style={{ padding: "4px 8px", borderRadius: "6px", border: "1px solid var(--line)", background: "var(--paper)", color: "var(--ink)", outline: "none", fontSize: "14px", cursor: "pointer", maxWidth: 170 }}
+          >
+            <option value="none">Trắng (Mặc định)</option>
+            <option value="1.jpeg">Mẫu cổ phong</option>
           </select>
         </div>
 

@@ -59,6 +59,16 @@ export function collectHanzi(text: string): string[] {
   return Array.from(unique);
 }
 
+function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
 function loadCharacterData(
   character: string,
   labels: WorksheetLabels,
@@ -144,9 +154,14 @@ function drawHeader(
   pageCount: number,
   style: GridStyle,
   labels: WorksheetLabels,
+  bgImage: HTMLImageElement | null,
 ) {
-  context.fillStyle = "#fffdf9";
-  context.fillRect(0, 0, PAGE_WIDTH, PAGE_HEIGHT);
+  if (bgImage) {
+    context.drawImage(bgImage, 0, 0, PAGE_WIDTH, PAGE_HEIGHT);
+  } else {
+    context.fillStyle = "#fffdf9";
+    context.fillRect(0, 0, PAGE_WIDTH, PAGE_HEIGHT);
+  }
   context.fillStyle = "#241e19";
   context.font = 'bold 42px Georgia, "Noto Serif SC", serif';
   context.fillText(labels.title, MARGIN, 94);
@@ -227,6 +242,7 @@ function createPageCanvas(
   pageNumber: number,
   pageCount: number,
   labels: WorksheetLabels,
+  bgImage: HTMLImageElement | null,
 ): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
   canvas.width = PAGE_WIDTH;
@@ -236,7 +252,7 @@ function createPageCanvas(
     throw new Error(labels.canvasError);
   }
 
-  drawHeader(context, pageNumber, pageCount, style, labels);
+  drawHeader(context, pageNumber, pageCount, style, labels, bgImage);
   characters.forEach((character, row) => {
     const y = GRID_TOP + row * ROW_PITCH;
     drawMetadata(context, character, metadata.get(character), y);
@@ -272,6 +288,7 @@ function canvasToJpeg(
 export async function buildWorksheet(
   characters: string[],
   style: GridStyle,
+  background: string,
   labels: WorksheetLabels,
   metadata: HanziMetadata[] = [],
   onProgress?: (progress: string) => void,
@@ -285,6 +302,16 @@ export async function buildWorksheet(
   const metadataByCharacter = new Map(
     metadata.map((entry) => [entry.character, entry]),
   );
+  
+  let bgImageElement: HTMLImageElement | null = null;
+  if (background && background !== "none") {
+    try {
+      bgImageElement = await loadImage(`/background_pdf/${background}`);
+    } catch (e) {
+      console.error("Failed to load background image", e);
+    }
+  }
+
   let previewUrl = "";
 
   for (let pageIndex = 0; pageIndex < pageCount; pageIndex += 1) {
@@ -301,6 +328,7 @@ export async function buildWorksheet(
       pageIndex + 1,
       pageCount,
       labels,
+      bgImageElement
     );
     onProgress?.(labels.rendering(pageIndex + 1, pageCount));
     pages.push({
