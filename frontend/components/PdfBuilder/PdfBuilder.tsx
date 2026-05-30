@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
@@ -36,20 +36,36 @@ export default function PdfBuilder() {
   );
   const [style, setStyle] = useState<GridStyle>("tian");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [pdfBytes, setPdfBytes] = useState<Uint8Array | null>(null);
   const [status, setStatus] = useState<string>("");
   const [busy, setBusy] = useState(false);
   const characters = useMemo(() => collectHanzi(text), [text]);
 
-  async function generatePdf() {
+  const [metadataCount, setMetadataCount] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
+
+  useEffect(() => {
     if (characters.length === 0) {
+      setPreviewUrl(null);
+      setPdfBytes(null);
       setStatus(t("invalid"));
       return;
     }
     if (characters.length > MAX_CHARACTERS) {
+      setPreviewUrl(null);
+      setPdfBytes(null);
       setStatus(t("limit", { count: MAX_CHARACTERS }));
       return;
     }
 
+    const timer = setTimeout(() => {
+      generatePreview();
+    }, 800);
+
+    return () => clearTimeout(timer);
+  }, [characters, style]);
+
+  async function generatePreview() {
     setBusy(true);
     try {
       setStatus(t("metadata"));
@@ -84,25 +100,34 @@ export default function PdfBuilder() {
         setStatus,
       );
       setPreviewUrl(generated.previewUrl);
-      triggerDownload(generated.pdfBytes);
+      setPdfBytes(generated.pdfBytes);
+      setPageCount(generated.pageCount);
+      setMetadataCount(metadata.length);
+      setStatus(""); // clear status after generation
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : t("error"));
+      setPreviewUrl(null);
+      setPdfBytes(null);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function downloadPdf() {
+    if (pdfBytes) {
+      triggerDownload(pdfBytes);
       setStatus(
-        metadata.length > 0
+        metadataCount > 0
           ? t("downloadedAnnotated", {
-              pages: generated.pageCount,
+              pages: pageCount,
               count: characters.length,
-              metadata: metadata.length,
+              metadata: metadataCount,
             })
           : t("downloaded", {
-              pages: generated.pageCount,
+              pages: pageCount,
               count: characters.length,
             }),
       );
-    } catch (error) {
-      setStatus(
-        error instanceof Error ? error.message : t("error"),
-      );
-    } finally {
-      setBusy(false);
     }
   }
 
@@ -117,43 +142,33 @@ export default function PdfBuilder() {
           onChange={(event) => setText(event.target.value)}
           rows={5}
           value={text}
-        />        <fieldset className="gridChoice">
-          <legend>{t("gridStyle")}</legend>
-          <label className={style === "tian" ? "checked" : undefined}>
-            <input
-              checked={style === "tian"}
-              name="gridStyle"
-              onChange={() => setStyle("tian")}
-              type="radio"
-            />
-            <span className="gridIcon">田</span>
-            {t("tian")}
-          </label>
-          <label className={style === "mi" ? "checked" : undefined}>
-            <input
-              checked={style === "mi"}
-              name="gridStyle"
-              onChange={() => setStyle("mi")}
-              type="radio"
-            />
-            <span className="gridIcon">米</span>
-            {t("mi")}
-          </label>
-        </fieldset>
+        />
+        
+        <div style={{ display: "flex", flexDirection: "column", gap: "6px", marginBottom: "24px", marginTop: "16px" }}>
+          <label style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)" }}>Kiểu lưới</label>
+          <select
+            value={style}
+            onChange={(e) => setStyle(e.target.value as GridStyle)}
+            style={{ padding: "8px", borderRadius: "6px", border: "1px solid var(--line)", background: "var(--input)", color: "var(--ink)", outline: "none", fontSize: "14px", cursor: "pointer" }}
+          >
+            <option value="tian">{t("tian")}</option>
+            <option value="mi">{t("mi")}</option>
+          </select>
+        </div>
 
-        <button disabled={busy} onClick={generatePdf} type="button">
+        <button disabled={busy || !pdfBytes} onClick={downloadPdf} type="button">
           {busy ? t("generating") : t("generate")}
         </button>
-        <p className="feedback pdfStatus" aria-live="polite">
-          {status}
-        </p>
+        {status && (
+          <p className="feedback pdfStatus" aria-live="polite">
+            {status}
+          </p>
+        )}
       </div>
 
       <div className="previewPanel">
         <p className="previewTitle">{t("preview")}</p>
         {previewUrl ? (
-          // The preview is generated from the same local canvas as the PDF.
-          // eslint-disable-next-line @next/next/no-img-element
           <img alt={t("preview")} src={previewUrl} />
         ) : (
           <div className={`emptyPreview ${style}`}>
