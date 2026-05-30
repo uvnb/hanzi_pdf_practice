@@ -73,7 +73,7 @@
     "downloadedAnnotated": "Đã tải PDF {pages} trang cho {count} chữ, có chú thích cho {metadata} chữ.",
     "error": "Không thể tạo PDF lúc này.",
     "privacy": "PDF được tạo trong trình duyệt. Khi backend hoạt động, danh sách chữ được gửi tới API nội bộ để lấy pinyin và nghĩa tiếng Việt.",
-    "preview": "Xem trước trang đầu",
+    "preview": "Bản xem trước",
     "emptyPreview": "Bản xem trước xuất hiện sau khi tạo PDF.",
     "progressLoad": "Đang tải dữ liệu trang {page}/{pages}...",
     "progressRender": "Đang dựng trang {page}/{pages}...",

@@ -36,7 +36,7 @@ export default function PdfBuilder() {
   );
   const [style, setStyle] = useState<GridStyle>("tian");
   const [background, setBackground] = useState<string>("1.jpeg");
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [pdfBytes, setPdfBytes] = useState<Uint8Array | null>(null);
   const [status, setStatus] = useState<string>("");
   const [busy, setBusy] = useState(false);
@@ -47,13 +47,13 @@ export default function PdfBuilder() {
 
   useEffect(() => {
     if (characters.length === 0) {
-      setPreviewUrl(null);
+      setPreviewUrls([]);
       setPdfBytes(null);
       setStatus(t("invalid"));
       return;
     }
     if (characters.length > MAX_CHARACTERS) {
-      setPreviewUrl(null);
+      setPreviewUrls([]);
       setPdfBytes(null);
       setStatus(t("limit", { count: MAX_CHARACTERS }));
       return;
@@ -101,14 +101,14 @@ export default function PdfBuilder() {
         metadata,
         setStatus,
       );
-      setPreviewUrl(generated.previewUrl);
+      setPreviewUrls(generated.previewUrls);
       setPdfBytes(generated.pdfBytes);
       setPageCount(generated.pageCount);
       setMetadataCount(metadata.length);
       setStatus(""); // clear status after generation
     } catch (error) {
       setStatus(error instanceof Error ? error.message : t("error"));
-      setPreviewUrl(null);
+      setPreviewUrls([]);
       setPdfBytes(null);
     } finally {
       setBusy(false);
@@ -182,8 +182,12 @@ export default function PdfBuilder() {
 
       <div className="previewPanel">
         <p className="previewTitle">{t("preview")}</p>
-        {previewUrl ? (
-          <img alt={t("preview")} src={previewUrl} />
+        {previewUrls.length > 0 ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxHeight: "calc(100vh - 180px)", overflowY: "auto", paddingRight: "8px" }}>
+            {previewUrls.map((url, i) => (
+              <img key={i} alt={`${t("preview")} ${i + 1}`} src={url} style={{ display: "block", width: "100%", border: "1px solid var(--line)" }} />
+            ))}
+          </div>
         ) : (
           <div className={`emptyPreview ${style}`}>
             <span>{style === "tian" ? "田" : "米"}</span>

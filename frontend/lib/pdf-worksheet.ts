@@ -14,7 +14,7 @@ export interface HanziMetadata {
 
 export interface WorksheetResult {
   pdfBytes: Uint8Array;
-  previewUrl: string;
+  previewUrls: string[];
   pageCount: number;
 }
 
@@ -312,7 +312,7 @@ export async function buildWorksheet(
     }
   }
 
-  let previewUrl = "";
+  const previewUrls: string[] = [];
 
   for (let pageIndex = 0; pageIndex < pageCount; pageIndex += 1) {
     const pageCharacters = characters.slice(pageIndex * ROWS, (pageIndex + 1) * ROWS);
@@ -336,15 +336,13 @@ export async function buildWorksheet(
       width: canvas.width,
       height: canvas.height,
     });
-    if (pageIndex === 0) {
-      previewUrl = canvas.toDataURL("image/jpeg", 0.85);
-    }
+    previewUrls.push(canvas.toDataURL("image/jpeg", 0.85));
   }
 
   onProgress?.(labels.packaging);
   return {
     pdfBytes: encodeJpegPagesAsPdf(pages),
-    previewUrl,
+    previewUrls,
     pageCount,
   };
 }
