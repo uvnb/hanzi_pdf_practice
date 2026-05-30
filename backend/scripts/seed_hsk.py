@@ -38,6 +38,8 @@ async def seed(refresh: bool = False, level: int = None) -> None:
                 )
                 if existing and refresh:
                     for field, value in record.items():
+                        if field in ["ai_enriched", "example_sentences"] and existing.ai_enriched:
+                            continue
                         setattr(existing, field, value)
                     updated += 1
                 elif existing is None:
