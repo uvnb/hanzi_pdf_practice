@@ -25,43 +25,50 @@ interface HeroSectionProps {
   };
 }
 
-export default function HeroSection({ nav, hero }: HeroSectionProps) {
+export default function HeroSection({ nav, hero, sidebar }: HeroSectionProps) {
   return (
-    <section className="newHeroSection" id="hero">
-      <div className="newHeroBg">
-        <Image
-          alt="Traditional classical painting"
-          fill
-          priority
-          style={{ objectFit: "cover", objectPosition: "left center" }}
-          src="/landing/new-hero-bg.png"
-        />
-      </div>
+    <section className="heroSection" id="hero">
+      <aside className="heroSidebar" aria-label="Quick links">
+        <a href="#hero">{sidebar.home}</a>
+        <a href="#features">{sidebar.courses}</a>
+        <a href="#features">{sidebar.practice}</a>
+        <a href="#pricing">{sidebar.community}</a>
+        <a href="#footer">{sidebar.about}</a>
+      </aside>
 
-      <header className="newHeroHeader">
-        <nav className="newHeroNav">
+      <div className="heroMain">
+        <nav className="heroTopNav">
           <a href="#hero">{nav.home}</a>
           <a href="#features">{nav.features}</a>
           <a href="#pricing">{nav.pricing}</a>
           <Link href="/auth/login">{nav.login}</Link>
           <Link href="/auth/login">{nav.register}</Link>
         </nav>
-        
-        <div className="newHeroLang">
+        <div className="heroLang">
           <LanguageSwitcher />
         </div>
-      </header>
 
-      <div className="newHeroContent">
-        <h1 className="newHeroTitle">
-          {hero.title.split(' ').map((word, i) => (
-            <span key={i}>{word}</span>
-          ))}
-        </h1>
-        
-        <div className="newHeroSubtitleCol">
-          <p className="newHeroSubtitle">{hero.subtitle}</p>
+        <h1 className="heroTitle">{hero.title}</h1>
+        <p className="heroSubtitle">{hero.subtitle}</p>
+
+        <div className="heroCtas">
+          <Link className="heroCta" href="/practice">
+            {hero.ctaPractice}
+          </Link>
+          <a className="heroCta" href="#features">
+            {hero.ctaCourses}
+          </a>
         </div>
+      </div>
+
+      <div className="heroArt">
+        <Image
+          alt="Traditional Chinese magnolia painting"
+          fill
+          priority
+          sizes="(max-width: 1024px) 100vw, 45vw"
+          src="/landing/magnolia.png"
+        />
       </div>
     </section>
   );
