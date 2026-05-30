@@ -38,6 +38,7 @@ export default function PdfBuilder() {
   const [background, setBackground] = useState<string>("1.jpeg");
   const [bgOpacity, setBgOpacity] = useState<number>(70);
   const [customBackgroundUrl, setCustomBackgroundUrl] = useState<string | null>(null);
+  const [customFileName, setCustomFileName] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [pdfBytes, setPdfBytes] = useState<Uint8Array | null>(null);
@@ -205,7 +206,8 @@ export default function PdfBuilder() {
                 borderRadius: "8px", 
                 textAlign: "center", 
                 background: isDragging ? 'rgba(0,0,0,0.02)' : 'var(--paper)',
-                transition: "all 0.2s ease"
+                transition: "all 0.2s ease",
+                cursor: "pointer"
               }}
               onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
               onDragLeave={(e) => { e.preventDefault(); setIsDragging(false); }}
@@ -213,25 +215,30 @@ export default function PdfBuilder() {
                 e.preventDefault();
                 setIsDragging(false);
                 if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                  const file = e.dataTransfer.files[0];
                   if (customBackgroundUrl) URL.revokeObjectURL(customBackgroundUrl);
-                  setCustomBackgroundUrl(URL.createObjectURL(e.dataTransfer.files[0]));
+                  setCustomBackgroundUrl(URL.createObjectURL(file));
+                  setCustomFileName(file.name);
                 }
               }}
+              onClick={() => document.getElementById("customFileInput")?.click()}
             >
               <input
+                id="customFileInput"
                 type="file"
                 accept="image/*"
                 onChange={(e) => {
                   if (e.target.files && e.target.files[0]) {
+                    const file = e.target.files[0];
                     if (customBackgroundUrl) URL.revokeObjectURL(customBackgroundUrl);
-                    const url = URL.createObjectURL(e.target.files[0]);
-                    setCustomBackgroundUrl(url);
+                    setCustomBackgroundUrl(URL.createObjectURL(file));
+                    setCustomFileName(file.name);
                   }
                 }}
-                style={{ fontSize: "14px", width: "100%", color: "var(--ink)" }}
+                style={{ display: "none" }}
               />
-              <div style={{ fontSize: "12px", color: "var(--ink)", marginTop: "8px", opacity: 0.7 }}>
-                Hoặc kéo thả ảnh vào đây
+              <div style={{ fontSize: "14px", color: "var(--ink)", opacity: 0.7 }}>
+                {customFileName ? `Đã chọn: ${customFileName}` : "Kéo thả ảnh hoặc bấm để chọn file."}
               </div>
             </div>
           )}
