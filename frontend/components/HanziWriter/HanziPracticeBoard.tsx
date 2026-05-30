@@ -4,6 +4,7 @@ import HanziWriter from "hanzi-writer";
 import { useTranslations } from "next-intl";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import FavoriteButton from "@/components/Notebook/FavoriteButton";
+import { playCorrectStroke, playMistake, playFanfare, speakCharacter } from "@/lib/audio";
 
 import { fetchHanziDetail, fetchHskList, HanziDetail } from "@/lib/hanzi-api";
 import { HanziMetadata } from "@/lib/pdf-worksheet";
@@ -122,15 +123,18 @@ export default function HanziPracticeBoard() {
     writerRef.current?.quiz({
       onMistake: () => {
         setMessage(t("mistake"));
+        playMistake();
         setIsShaking(true);
         setTimeout(() => setIsShaking(false), 500);
       },
       onCorrectStroke: () => {
         setMessage(t("correct"));
+        playCorrectStroke();
       },
       onComplete: ({ totalMistakes }) => {
         if (totalMistakes === 0) {
           setMessage(t("completePerfect"));
+          playFanfare();
           triggerConfetti();
         } else {
           setMessage(t("completeMistakes", { count: totalMistakes }));
@@ -212,8 +216,18 @@ export default function HanziPracticeBoard() {
           <>
             <div className="detailItem">
               <h3>Phiên âm & Nghĩa</h3>
-              <p className="pinyin">{detail.pinyin}</p>
-              <p className="meaning">{detail.meaning_vi}</p>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <p className="pinyin" style={{ margin: 0 }}>{detail.pinyin}</p>
+                <button 
+                  onClick={() => speakCharacter(character)}
+                  title="Phát âm"
+                  style={{ background: "var(--input)", color: "var(--ink)", padding: "4px 8px", fontSize: 14 }}
+                  type="button"
+                >
+                  🔊
+                </button>
+              </div>
+              <p className="meaning" style={{ marginTop: 6 }}>{detail.meaning_vi}</p>
             </div>
             
             {detail.etymology_vi && (
