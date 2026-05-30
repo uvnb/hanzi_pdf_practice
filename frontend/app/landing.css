@@ -299,6 +299,7 @@
   grid-template-columns: repeat(3, 1fr);
   margin: 0 auto;
   max-width: 1000px;
+  align-items: stretch;
 }
 
 .pricingCard {
@@ -310,6 +311,9 @@
   padding: 40px 28px 36px;
   position: relative;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .pricingCard.popular {
@@ -353,6 +357,7 @@
   margin: 24px 0 32px;
   padding: 0;
   text-align: left;
+  flex-grow: 1;
 }
 
 .pricingFeatures li {
@@ -383,6 +388,7 @@
   padding: 12px 32px;
   text-decoration: none;
   transition: all 0.2s;
+  margin-top: auto;
 }
 
 .pricingCta:hover {
@@ -413,7 +419,7 @@
   display: grid;
   gap: 48px;
   grid-template-columns: minmax(220px, 1.1fr) minmax(180px, 0.8fr) minmax(290px, 1fr);
-  margin: 0 auto 36px;
+  margin: 0 auto;
   max-width: 1120px;
   text-align: left;
 }
