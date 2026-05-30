@@ -53,12 +53,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           },
         ]}
         moreLabel={t("learnMore")}
-        nav={{
-          home: { label: t("featHome"), emoji: "🏠" },
-          practice: { label: t("featPractice"), emoji: "✍️" },
-          pdf: { label: t("featPdf"), emoji: "📄" },
-          login: { label: t("featLogin"), emoji: "🚪" },
-        }}
         subtitle={t("featuresSubtitle")}
         title={t("featuresTitle")}
       />

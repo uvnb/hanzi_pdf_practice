@@ -9,12 +9,6 @@ interface FeatureItem {
 }
 
 interface FeaturesSectionProps {
-  nav: {
-    home: { label: string; emoji: string };
-    practice: { label: string; emoji: string };
-    pdf: { label: string; emoji: string };
-    login: { label: string; emoji: string };
-  };
   title: string;
   subtitle: string;
   features: FeatureItem[];
@@ -22,30 +16,14 @@ interface FeaturesSectionProps {
 }
 
 export default function FeaturesSection({
-  nav,
   title,
   subtitle,
   features,
   moreLabel,
 }: FeaturesSectionProps) {
-  const navItems = [
-    { ...nav.home, href: "/" },
-    { ...nav.practice, href: "/practice" },
-    { ...nav.pdf, href: "/pdf" },
-    { ...nav.login, href: "/auth/login" },
-  ];
 
   return (
     <section className="featuresSection" id="features">
-      <nav className="featuresNav">
-        {navItems.map((item) => (
-          <Link className="featuresNavItem" href={item.href} key={item.href}>
-            <span className="featuresNavIcon">{item.emoji}</span>
-            {item.label}
-          </Link>
-        ))}
-      </nav>
-
       <h2 className="featuresTitle">{title}</h2>
       <p className="featuresSubtitle">{subtitle}</p>
 
