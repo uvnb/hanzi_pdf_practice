@@ -78,14 +78,14 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           {
             name: t("tierFree"),
             price: t("tierFreePrice"),
-            period: "",
+            period: t("tierFreePeriod"),
             features: [t("tierFreeF1"), t("tierFreeF2")],
             cta: t("tierFreeCta"),
           },
           {
             name: t("tierPro"),
             price: t("tierProPrice"),
-            period: t("tierPeriod"),
+            period: t("tierProPeriod"),
             features: [t("tierProF1"), t("tierProF2"), t("tierProF3")],
             cta: t("tierProCta"),
             popular: true,
@@ -94,7 +94,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           {
             name: t("tierMaster"),
             price: t("tierMasterPrice"),
-            period: t("tierPeriod"),
+            period: t("tierMasterPeriod"),
             features: [t("tierMasterF1"), t("tierMasterF2"), t("tierMasterF3")],
             cta: t("tierMasterCta"),
           },
