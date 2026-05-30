@@ -30,146 +30,139 @@
    HERO SECTION
    =========================== */
 .heroSection {
-  display: grid;
-  grid-template-columns: 100px 1fr 45%;
+  background-image: url('/landing/new-hero-bg.png');
+  background-size: cover;
+  background-position: center;
   min-height: 100vh;
-}
-
-/* --- sidebar --- */
-.heroSidebar {
-  align-items: center;
-  background: var(--navy);
-  display: flex;
-  flex-direction: column;
-  gap: 38px;
-  justify-content: center;
-  padding: 40px 0;
-}
-
-.heroSidebar a {
-  color: #d0c8bc;
-  font-family: var(--font-chinese-brush);
-  font-size: 28px;
-  letter-spacing: 0.08em;
-  text-decoration: none;
-  transition: color 0.2s;
-  writing-mode: vertical-rl;
-}
-
-.heroSidebar a:hover {
-  color: #fff;
-}
-
-/* --- main content --- */
-.heroMain {
-  background: var(--cream);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 40px 60px 60px;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .heroTopNav {
   display: flex;
-  gap: 32px;
-  left: 60px;
-  position: absolute;
-  top: 36px;
+  justify-content: center;
+  gap: 40px;
+  padding: 40px 20px;
+  position: relative;
+  z-index: 10;
 }
 
 .heroTopNav a {
-  color: var(--muted);
-  font-family: var(--font-chinese-brush);
-  font-size: 24px;
-  letter-spacing: 0.04em;
+  color: #000;
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 600;
   text-decoration: none;
   transition: color 0.2s;
 }
 
+.heroTopNav a:first-child,
 .heroTopNav a:hover {
-  color: var(--ink);
+  color: #c1272d;
 }
 
-.heroLang {
-  position: absolute;
-  top: 36px;
-  right: 60px;
-}
-
-.heroLang select {
-  background: transparent;
-  border: 1px solid rgba(122, 107, 93, 0.4);
-  color: #3b3024;
-  font-family: var(--font-serif);
-  font-size: 16px;
-  padding: 6px 12px;
-  border-radius: 4px;
-  outline: none;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.heroLang select:hover {
-  border-color: #3b3024;
+.heroMain {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 20px 60px;
+  position: relative;
+  z-index: 10;
 }
 
 .heroTitle {
-  font-family: var(--font-brush);
-  font-size: clamp(58px, 6.4vw, 96px);
-  font-weight: 700;
-  letter-spacing: -0.04em;
-  line-height: 1.12;
-  margin: 0 0 18px;
+  font-family: var(--font-chinese-brush);
+  font-size: clamp(60px, 12vw, 150px);
+  color: #000;
+  margin: 0 0 20px;
+  line-height: 1.1;
+  text-align: center;
+  text-shadow: 2px 2px 10px rgba(255,255,255,0.7);
 }
 
-.heroSubtitle {
-  color: var(--muted);
-  font-family: var(--font-brush);
-  font-size: clamp(18px, 2vw, 24px);
-  font-style: italic;
-  letter-spacing: -0.03em;
-  margin: 0 0 44px;
+.heroPoemWrapper {
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  padding: 6px;
+  margin-bottom: 40px;
+  position: relative;
+  background: rgba(255, 255, 255, 0.3);
 }
 
-.heroCtas {
+.heroPoemInner {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 30px 50px;
   display: flex;
-  gap: 20px;
+  flex-direction: row-reverse;
+  gap: 30px;
+}
+
+.heroPoemCol {
+  writing-mode: vertical-rl;
+  font-family: var(--font-chinese-brush);
+  font-size: 26px;
+  color: #000;
+  line-height: 1.8;
+  letter-spacing: 0.2em;
+}
+
+.heroSeal {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  border: 2px solid #c1272d;
+  color: #c1272d;
+  font-family: var(--font-chinese-brush);
+  padding: 4px;
+  font-size: 16px;
+  writing-mode: vertical-rl;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.7);
 }
 
 .heroCta {
-  background: var(--navy);
+  background-color: #c1272d;
+  color: #ffffff;
   border: none;
-  color: #fff;
-  cursor: pointer;
-  font-family: var(--font-brush);
+  border-radius: 4px;
+  padding: 18px 48px;
   font-size: 20px;
-  padding: 22px 32px;
-  text-align: center;
+  font-family: var(--font-body);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.15s;
   text-decoration: none;
-  transition: background 0.2s, transform 0.15s;
+  box-shadow: 0 4px 14px rgba(193, 39, 45, 0.4);
 }
 
 .heroCta:hover {
-  background: #14304f;
+  background-color: #9e1f24;
   transform: translateY(-2px);
 }
 
-/* --- magnolia panel --- */
-.heroArt {
-  background: var(--navy);
-  min-height: 100vh;
-  overflow: hidden;
-  position: relative;
+@media (max-width: 1024px) {
+  .heroTitle {
+    font-size: clamp(50px, 10vw, 100px);
+  }
 }
 
-.heroArt img {
-  display: block;
-  height: 100%;
-  object-fit: cover;
-  object-position: center center;
-  width: 100%;
+@media (max-width: 760px) {
+  .heroTopNav {
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+  }
+  .heroPoemInner {
+    padding: 15px 20px;
+    gap: 15px;
+  }
+  .heroPoemCol {
+    font-size: 20px;
+  }
 }
+
 
 /* ===========================
    FEATURES SECTION
@@ -557,37 +550,6 @@
    RESPONSIVE — TABLET
    =========================== */
 @media (max-width: 1024px) {
-  .heroSection {
-    grid-template-columns: 1fr;
-    min-height: auto;
-  }
-
-  .heroSidebar {
-    flex-direction: row;
-    gap: 24px;
-    order: -1;
-    padding: 16px 24px;
-  }
-
-  .heroSidebar a {
-    font-size: 24px;
-    writing-mode: horizontal-tb;
-  }
-
-  .heroMain {
-    padding: 100px 40px 60px;
-  }
-
-  .heroTopNav {
-    gap: 30px;
-    left: 40px;
-    top: 28px;
-  }
-
-  .heroArt {
-    height: 420px;
-    min-height: 0;
-  }
 
   .featuresGrid {
     grid-template-columns: repeat(2, 1fr);
@@ -606,37 +568,6 @@
    RESPONSIVE — MOBILE
    =========================== */
 @media (max-width: 640px) {
-  .heroSidebar {
-    display: none;
-  }
-
-  .heroMain {
-    padding: 80px 24px 48px;
-  }
-
-  .heroTopNav {
-    flex-wrap: wrap;
-    gap: 18px;
-    left: 24px;
-    top: 20px;
-  }
-
-  .heroTopNav a {
-    font-size: 20px;
-  }
-
-  .heroCtas {
-    flex-direction: column;
-  }
-
-  .heroCta {
-    font-size: 18px;
-    padding: 18px 24px;
-  }
-
-  .heroArt {
-    height: 300px;
-  }
 
   .featuresSection {
     padding: 50px 20px 60px;

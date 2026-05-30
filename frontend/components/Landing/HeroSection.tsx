@@ -1,6 +1,4 @@
-import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import LanguageSwitcher from "@/components/Layout/LanguageSwitcher";
 
 interface HeroSectionProps {
   nav: {
@@ -12,50 +10,38 @@ interface HeroSectionProps {
   };
   hero: {
     title: string;
-    subtitle: string;
     ctaPractice: string;
-    ctaCourses: string;
   };
 }
 
 export default function HeroSection({ nav, hero }: HeroSectionProps) {
   return (
     <section className="heroSection" id="hero">
-      <aside className="heroSidebar" aria-label="Quick links"></aside>
+      <nav className="heroTopNav">
+        <a href="#hero">{nav.home}</a>
+        <a href="#features">{nav.features}</a>
+        <a href="#pricing">{nav.pricing}</a>
+        <Link href="/auth/login">{nav.login}</Link>
+      </nav>
 
       <div className="heroMain">
-        <nav className="heroTopNav">
-          <a href="#hero">{nav.home}</a>
-          <a href="#features">{nav.features}</a>
-          <a href="#pricing">{nav.pricing}</a>
-          <Link href="/auth/login">{nav.login}</Link>
-          <Link href="/auth/login">{nav.register}</Link>
-        </nav>
-        <div className="heroLang">
-          <LanguageSwitcher />
-        </div>
-
         <h1 className="heroTitle">{hero.title}</h1>
-        <p className="heroSubtitle">{hero.subtitle}</p>
-
-        <div className="heroCtas">
-          <Link className="heroCta" href="/practice">
-            {hero.ctaPractice}
-          </Link>
-          <a className="heroCta" href="#features">
-            {hero.ctaCourses}
-          </a>
+        
+        <div className="heroPoemWrapper">
+          <div className="heroPoemInner">
+            <div className="heroPoemCol">Con<br/>tim<br/>sáng<br/>ngời</div>
+            <div className="heroPoemCol">Đất<br/>tập<br/>chỉ<br/>hướng</div>
+            <div className="heroPoemCol">Bút<br/>viết<br/>cỏ<br/>cây</div>
+            <div className="heroPoemCol">Tạo<br/>nên<br/>dáng<br/>vóc</div>
+          </div>
+          <div className="heroSeal">
+            Hán<br/>Tự
+          </div>
         </div>
-      </div>
 
-      <div className="heroArt">
-        <Image
-          alt="Traditional Chinese magnolia painting"
-          fill
-          priority
-          sizes="(max-width: 1024px) 100vw, 45vw"
-          src="/landing/magnolia.png"
-        />
+        <Link className="heroCta" href="/practice">
+          {hero.ctaPractice}
+        </Link>
       </div>
     </section>
   );

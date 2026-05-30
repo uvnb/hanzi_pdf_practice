@@ -15,9 +15,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       <HeroSection
         hero={{
           title: t("heroTitle"),
-          subtitle: t("heroSubtitle"),
           ctaPractice: t("ctaPractice"),
-          ctaCourses: t("ctaCourses"),
         }}
         nav={{
           home: t("navHome"),
