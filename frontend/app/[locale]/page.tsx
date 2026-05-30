@@ -42,13 +42,13 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             href: "/practice",
           },
           {
-            icon: "/landing/icon-0.png",
+            icon: "/landing/icon-2.png",
             title: t("featEtymology"),
             description: t("featEtymologyDesc"),
             href: "/practice",
           },
           {
-            icon: "/landing/icon-2.png",
+            icon: "/landing/icon-3.png",
             title: t("featPdf"),
             description: t("featPdfDesc"),
             href: "/pdf",
