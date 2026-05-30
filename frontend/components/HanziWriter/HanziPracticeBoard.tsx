@@ -9,6 +9,7 @@ import CharacterInfo from "./CharacterInfo";
 import { playCorrectStroke, playMistake, playFanfare } from "@/lib/audio";
 import { fetchHanziDetail, logAttempt, HanziDetail } from "@/lib/hanzi-api";
 import { HanziMetadata } from "@/lib/pdf-worksheet";
+import PracticeStatsPanel from "./PracticeStatsPanel";
 
 const DATA_CDN = "https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/";
 
@@ -153,10 +154,10 @@ export default function HanziPracticeBoard() {
       <CharacterSelector character={character} onSelectCharacter={setCharacter} onListLoaded={setHskList} />
 
       <div className="writerPanel">
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px" }}>
+        <div className="navGridContainer">
           <button 
             type="button"
-            className="navButton"
+            className="navButton prevBtn"
             onClick={goPrev} 
             disabled={hskList.findIndex(c => c.character === character) <= 0}
             title="Chữ trước đó"
@@ -164,7 +165,7 @@ export default function HanziPracticeBoard() {
             ←
           </button>
 
-          <div style={{ position: "relative" }}>
+          <div className="gridWrapper">
             <div
               className={`tianGrid ${isShaking ? "shake" : ""}`}
               ref={targetRef}
@@ -184,15 +185,16 @@ export default function HanziPracticeBoard() {
 
           <button 
             type="button"
-            className="navButton"
+            className="navButton nextBtn"
             onClick={goNext}
             disabled={hskList.findIndex(c => c.character === character) >= hskList.length - 1}
             title="Chữ tiếp theo"
           >
             →
           </button>
+          
+          <p className="currentCharacter">{character}</p>
         </div>
-        <p className="currentCharacter">{character}</p>
         <div className="actions">
           <button disabled={loading} onClick={startQuiz} type="button">
             {t("start")}
@@ -212,7 +214,10 @@ export default function HanziPracticeBoard() {
         </p>
       </div>
 
-      <CharacterInfo character={character} detail={detail} />
+      <div className="infoPanel" style={{ display: "flex", flexDirection: "column" }}>
+        <CharacterInfo character={character} detail={detail} />
+        <PracticeStatsPanel />
+      </div>
     </section>
   );
 }

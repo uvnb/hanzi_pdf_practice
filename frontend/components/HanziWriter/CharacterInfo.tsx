@@ -10,7 +10,7 @@ interface Props {
 
 export default function CharacterInfo({ character, detail }: Props) {
   return (
-    <div className="infoPanel">
+    <div className="infoContent">
       {detail ? (
         <>
           <div className="detailItem">
