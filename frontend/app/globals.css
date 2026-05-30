@@ -219,10 +219,10 @@ button:hover:not(:disabled) {
   box-shadow: var(--shadow);
   display: grid;
   gap: 32px;
-  grid-template-columns: 240px minmax(320px, 370px) minmax(260px, 1fr);
+  grid-template-columns: 240px minmax(460px, 480px) minmax(260px, 1fr);
   grid-template-areas: "sidebar center info";
   margin: 42px auto;
-  max-width: 1024px;
+  max-width: 1120px;
   padding: 32px;
 }
 
