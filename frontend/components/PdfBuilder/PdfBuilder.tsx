@@ -36,9 +36,7 @@ export default function PdfBuilder() {
   );
   const [style, setStyle] = useState<GridStyle>("tian");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [status, setStatus] = useState(
-    () => t("initialStatus"),
-  );
+  const [status, setStatus] = useState<string>("");
   const [busy, setBusy] = useState(false);
   const characters = useMemo(() => collectHanzi(text), [text]);
 
@@ -119,15 +117,7 @@ export default function PdfBuilder() {
           onChange={(event) => setText(event.target.value)}
           rows={5}
           value={text}
-        />
-        <p className="fieldHint">
-          {t("summary", {
-            count: characters.length,
-            pages: Math.max(1, Math.ceil(characters.length / 10)),
-          })}
-        </p>
-
-        <fieldset className="gridChoice">
+        />        <fieldset className="gridChoice">
           <legend>{t("gridStyle")}</legend>
           <label className={style === "tian" ? "checked" : undefined}>
             <input
@@ -157,9 +147,6 @@ export default function PdfBuilder() {
         <p className="feedback pdfStatus" aria-live="polite">
           {status}
         </p>
-        <p className="privacyNote">
-          {t("privacy")}
-        </p>
       </div>
 
       <div className="previewPanel">
@@ -171,7 +158,6 @@ export default function PdfBuilder() {
         ) : (
           <div className={`emptyPreview ${style}`}>
             <span>{style === "tian" ? "田" : "米"}</span>
-            <p>{t("emptyPreview")}</p>
           </div>
         )}
       </div>
