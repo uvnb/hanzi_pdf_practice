@@ -38,15 +38,15 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       <FeaturesSection
         features={[
           {
-            icon: "/landing/icon-0.png",
-            title: t("featHome"),
-            description: t("featHomeDesc"),
-            href: "/",
-          },
-          {
             icon: "/landing/icon-1.png",
             title: t("featPractice"),
             description: t("featPracticeDesc"),
+            href: "/practice",
+          },
+          {
+            icon: "/landing/icon-0.png",
+            title: t("featEtymology"),
+            description: t("featEtymologyDesc"),
             href: "/practice",
           },
           {
@@ -54,12 +54,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             title: t("featPdf"),
             description: t("featPdfDesc"),
             href: "/pdf",
-          },
-          {
-            icon: "/landing/icon-3.png",
-            title: t("featLogin"),
-            description: t("featLoginDesc"),
-            href: "/auth/login",
           },
         ]}
         moreLabel={t("learnMore")}
