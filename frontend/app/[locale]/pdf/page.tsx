@@ -20,9 +20,6 @@ export default async function PdfPage({ params }: { params: Promise<{ locale: st
           <h1>{t("title")}</h1>
         </div>
         <div className="headerActions">
-          <Link className="pageAction" href="/notebook">
-            {t("notebook")}
-          </Link>
           <AccountActions />
         </div>
       </header>

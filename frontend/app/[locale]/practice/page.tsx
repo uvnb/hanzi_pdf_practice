@@ -23,9 +23,6 @@ export default async function PracticePage({
           <h1>{t("title")}</h1>
         </div>
         <div className="headerActions">
-          <Link className="pageAction" href="/pdf">
-            {t("pdf")}
-          </Link>
           <AccountActions />
         </div>
       </header>

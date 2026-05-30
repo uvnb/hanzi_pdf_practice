@@ -23,9 +23,6 @@ export default async function NotebookPage({
           <h1>{t("title")}</h1>
         </div>
         <div className="headerActions">
-          <Link className="pageAction" href="/practice">
-            {t("practice")}
-          </Link>
           <AccountActions />
         </div>
       </header>
