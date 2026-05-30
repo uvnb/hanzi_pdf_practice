@@ -84,24 +84,18 @@ export default function CharacterSelector({ character, onSelectCharacter, onList
         </div>
 
         {topics.length > 0 && (
-          <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: 16 }}>
-            <button 
-              type="button" 
-              onClick={() => setSelectedTopic("Tất cả")}
-              style={{ padding: "4px 10px", fontSize: 12, borderRadius: 14, border: "1px solid var(--line)", background: selectedTopic === "Tất cả" ? "var(--accent)" : "var(--paper)", color: selectedTopic === "Tất cả" ? "#fff" : "var(--ink)", cursor: "pointer", transition: "all 0.2s" }}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+            <label style={{ fontSize: 14, fontWeight: 700, margin: 0 }}>Chủ đề</label>
+            <select
+              value={selectedTopic}
+              onChange={(e) => setSelectedTopic(e.target.value)}
+              style={{ padding: "4px 8px", borderRadius: 6, border: "1px solid var(--line)", background: "var(--paper)", color: "var(--ink)", outline: "none", maxWidth: 160 }}
             >
-              Tất cả
-            </button>
-            {topics.map(t => (
-              <button 
-                key={t.name}
-                type="button" 
-                onClick={() => setSelectedTopic(t.name)}
-                style={{ padding: "4px 10px", fontSize: 12, borderRadius: 14, border: "1px solid var(--line)", background: selectedTopic === t.name ? "var(--accent)" : "var(--paper)", color: selectedTopic === t.name ? "#fff" : "var(--ink)", cursor: "pointer", transition: "all 0.2s" }}
-              >
-                {t.name}
-              </button>
-            ))}
+              <option value="Tất cả">Tất cả</option>
+              {topics.map(t => (
+                <option key={t.name} value={t.name}>{t.name}</option>
+              ))}
+            </select>
           </div>
         )}
 
