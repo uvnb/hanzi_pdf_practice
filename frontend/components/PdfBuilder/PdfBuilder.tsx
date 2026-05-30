@@ -144,12 +144,12 @@ export default function PdfBuilder() {
           value={text}
         />
         
-        <div style={{ display: "flex", flexDirection: "column", gap: "6px", marginBottom: "24px", marginTop: "16px" }}>
-          <label style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)" }}>Kiểu lưới</label>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", marginTop: "16px" }}>
+          <label style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)", margin: 0 }}>Kiểu lưới</label>
           <select
             value={style}
             onChange={(e) => setStyle(e.target.value as GridStyle)}
-            style={{ padding: "8px", borderRadius: "6px", border: "1px solid var(--line)", background: "var(--input)", color: "var(--ink)", outline: "none", fontSize: "14px", cursor: "pointer" }}
+            style={{ padding: "4px 8px", borderRadius: "6px", border: "1px solid var(--line)", background: "var(--paper)", color: "var(--ink)", outline: "none", fontSize: "14px", cursor: "pointer", maxWidth: 170 }}
           >
             <option value="tian">{t("tian")}</option>
             <option value="mi">{t("mi")}</option>
