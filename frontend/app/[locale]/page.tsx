@@ -19,10 +19,15 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         }}
         nav={{
           home: t("navHome"),
-          features: t("navFeatures"),
-          pricing: t("navPricing"),
+          practice: t("navPractice"),
+          pdf: t("navPdf"),
           login: t("navLogin"),
-          register: t("navRegister"),
+        }}
+        poem={{
+          col1: ["Tạo", "nên", "dáng", "vóc", "nhân"],
+          col2: ["Bút", "viết", "cỏ", "cây", "tốn", "đá", "màu"],
+          col3: ["Đất", "tập", "chỉ", "hướng", "tìm", "đường", "tạ"],
+          col4: ["Con", "sìn", "cữ", "vạn", "tốn", "phất", "nong", "kiệt"],
         }}
       />
 

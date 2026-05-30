@@ -30,136 +30,224 @@
    HERO SECTION
    =========================== */
 .heroSection {
-  background-image: url('/landing/new-hero-bg.png');
+  background-image: url('/landing/hero-bg.png');
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   min-height: 100vh;
-  position: relative;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
+/* --- top nav --- */
 .heroTopNav {
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 40px;
-  padding: 40px 20px;
+  gap: 48px;
+  padding: 36px 40px;
   position: relative;
   z-index: 10;
 }
 
-.heroTopNav a {
-  color: #000;
+.heroNavLinks {
+  display: flex;
+  gap: 48px;
+}
+
+.heroNavLinks a {
+  color: #2a2320;
   font-family: var(--font-body);
   font-size: 18px;
   font-weight: 600;
+  letter-spacing: 0.02em;
   text-decoration: none;
-  transition: color 0.2s;
+  transition: color 0.25s;
 }
 
-.heroTopNav a:first-child,
-.heroTopNav a:hover {
+.heroNavLinks a.heroNavActive {
   color: #c1272d;
 }
 
+.heroNavLinks a:hover {
+  color: #c1272d;
+}
+
+.heroLang {
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.heroLang select {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(42, 35, 32, 0.25);
+  color: #2a2320;
+  font-size: 15px;
+  padding: 6px 14px;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* --- main content --- */
 .heroMain {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px 20px 60px;
+  padding: 0 20px 80px;
   position: relative;
-  z-index: 10;
+  z-index: 5;
 }
 
 .heroTitle {
   font-family: var(--font-chinese-brush);
-  font-size: clamp(60px, 12vw, 150px);
-  color: #000;
-  margin: 0 0 20px;
+  font-size: clamp(64px, 10vw, 140px);
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 30px;
   line-height: 1.1;
   text-align: center;
-  text-shadow: 2px 2px 10px rgba(255,255,255,0.7);
+  text-shadow: 2px 3px 8px rgba(255, 255, 255, 0.6);
 }
 
+/* --- poem box --- */
 .heroPoemWrapper {
-  border: 1px solid rgba(0, 0, 0, 0.4);
-  padding: 6px;
-  margin-bottom: 40px;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  padding: 5px;
+  margin-bottom: 44px;
   position: relative;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(2px);
 }
 
 .heroPoemInner {
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  padding: 30px 50px;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  padding: 28px 44px;
   display: flex;
-  flex-direction: row-reverse;
-  gap: 30px;
+  flex-direction: row;
+  gap: 28px;
 }
 
 .heroPoemCol {
+  display: flex;
+  flex-direction: column;
   writing-mode: vertical-rl;
   font-family: var(--font-chinese-brush);
-  font-size: 26px;
-  color: #000;
-  line-height: 1.8;
-  letter-spacing: 0.2em;
+  font-size: 22px;
+  color: #1a1a1a;
+  line-height: 1.6;
+  letter-spacing: 0.15em;
+  gap: 2px;
 }
 
+.heroPoemCol span {
+  display: block;
+}
+
+/* --- red seal --- */
 .heroSeal {
   position: absolute;
-  bottom: 12px;
-  left: 12px;
+  bottom: 14px;
+  left: 14px;
+  width: 36px;
+  height: 36px;
   border: 2px solid #c1272d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: "Noto Serif SC", serif;
+  font-size: 13px;
+  font-weight: 700;
   color: #c1272d;
-  font-family: var(--font-chinese-brush);
-  padding: 4px;
-  font-size: 16px;
-  writing-mode: vertical-rl;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.6);
+  line-height: 1.2;
 }
 
+/* --- CTA button --- */
 .heroCta {
+  display: inline-block;
   background-color: #c1272d;
   color: #ffffff;
   border: none;
-  border-radius: 4px;
-  padding: 18px 48px;
+  border-radius: 3px;
+  padding: 18px 52px;
   font-size: 20px;
   font-family: var(--font-body);
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.15s;
   text-decoration: none;
-  box-shadow: 0 4px 14px rgba(193, 39, 45, 0.4);
+  transition: background-color 0.25s, transform 0.15s, box-shadow 0.25s;
+  box-shadow: 0 4px 16px rgba(193, 39, 45, 0.35);
 }
 
 .heroCta:hover {
   background-color: #9e1f24;
   transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(193, 39, 45, 0.45);
 }
 
+/* --- hero responsive: tablet --- */
 @media (max-width: 1024px) {
   .heroTitle {
-    font-size: clamp(50px, 10vw, 100px);
+    font-size: clamp(48px, 9vw, 90px);
+  }
+  .heroTopNav {
+    gap: 32px;
+    padding: 28px 20px;
+  }
+  .heroNavLinks {
+    gap: 32px;
+  }
+  .heroNavLinks a {
+    font-size: 16px;
+  }
+  .heroLang {
+    right: 20px;
   }
 }
 
-@media (max-width: 760px) {
+/* --- hero responsive: mobile --- */
+@media (max-width: 640px) {
   .heroTopNav {
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px 16px;
+  }
+  .heroNavLinks {
     flex-wrap: wrap;
-    gap: 20px;
-    padding: 20px;
+    justify-content: center;
+    gap: 16px;
+  }
+  .heroNavLinks a {
+    font-size: 15px;
+  }
+  .heroLang {
+    position: static;
+    transform: none;
+  }
+  .heroTitle {
+    font-size: clamp(40px, 12vw, 72px);
+    margin-bottom: 20px;
+  }
+  .heroMain {
+    padding-bottom: 50px;
   }
   .heroPoemInner {
-    padding: 15px 20px;
-    gap: 15px;
+    padding: 16px 20px;
+    gap: 16px;
   }
   .heroPoemCol {
-    font-size: 20px;
+    font-size: 18px;
+  }
+  .heroCta {
+    padding: 14px 36px;
+    font-size: 17px;
   }
 }
 
