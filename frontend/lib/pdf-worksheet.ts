@@ -43,7 +43,7 @@ const PAGE_WIDTH = 1240;
 const PAGE_HEIGHT = 1754;
 const MARGIN = 90;
 const COLUMNS = 10;
-const ROWS = 10;
+const ROWS = 11;
 const CELL_SIZE = 106;
 const ROW_PITCH = 137;
 const GRID_TOP = 172;
@@ -156,14 +156,14 @@ function drawHeader(
   labels: WorksheetLabels,
   bgImage: HTMLImageElement | null,
 ) {
+  context.fillStyle = "#fffdf9";
+  context.fillRect(0, 0, PAGE_WIDTH, PAGE_HEIGHT);
+
   if (bgImage) {
     context.save();
-    context.globalAlpha = 0.35;
+    context.globalAlpha = 0.45;
     context.drawImage(bgImage, 0, 0, PAGE_WIDTH, PAGE_HEIGHT);
     context.restore();
-  } else {
-    context.fillStyle = "#fffdf9";
-    context.fillRect(0, 0, PAGE_WIDTH, PAGE_HEIGHT);
   }
   context.fillStyle = "#241e19";
   context.font = 'bold 42px Georgia, "Noto Serif SC", serif';
