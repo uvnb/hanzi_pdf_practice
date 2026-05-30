@@ -340,38 +340,15 @@
   text-align: center;
 }
 
-.featureCard::before {
-  align-items: center;
-  background: var(--navy);
-  border: 3px solid var(--cream-light);
-  border-radius: 999px;
-  color: #fff;
-  content: counter(step);
-  counter-increment: step;
-  display: inline-flex;
-  font-family: var(--font-serif);
-  font-size: 16px;
-  height: 34px;
-  justify-content: center;
-  left: 50%;
-  position: absolute;
-  top: -6px;
-  transform: translateX(-50%);
-  width: 34px;
-  z-index: 1;
-}
 
-.featuresGrid {
-  counter-reset: step;
-}
 
 .featureCard img {
   border-radius: 12px;
   display: block;
-  height: 150px;
-  margin: 0 auto 20px;
+  height: auto;
+  margin: 0 auto 24px;
   object-fit: contain;
-  width: 150px;
+  width: 250px;
 }
 
 .featureCard h3 {
@@ -696,8 +673,8 @@
   }
 
   .featureCard img {
-    height: 120px;
-    width: 120px;
+    height: auto;
+    width: 200px;
   }
 
   .pricingSection {

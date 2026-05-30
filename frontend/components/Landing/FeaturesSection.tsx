@@ -32,9 +32,9 @@ export default function FeaturesSection({
           <article className="featureCard" key={feature.title}>
             <Image
               alt={feature.title}
-              height={150}
+              height={168}
               src={feature.icon}
-              width={150}
+              width={250}
             />
             <h3>{feature.title}</h3>
             <p>{feature.description}</p>
