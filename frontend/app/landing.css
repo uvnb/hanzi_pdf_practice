@@ -124,6 +124,7 @@
   background: rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(2px);
   max-width: 380px;
+  padding-bottom: 48px;
 }
 
 .heroPoemInner {
@@ -173,7 +174,6 @@
 
 /* --- CTA button --- */
 .heroCta {
-  display: inline-block;
   background-color: #c1272d;
   color: #ffffff;
   border: none;
