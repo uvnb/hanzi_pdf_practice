@@ -303,7 +303,10 @@ export async function buildWorksheet(
   let bgImageElement: HTMLImageElement | null = null;
   if (background && background !== "none") {
     try {
-      bgImageElement = await loadImage(`/background_pdf/${background}`);
+      const src = background.startsWith("blob:") || background.startsWith("data:") 
+        ? background 
+        : `/background_pdf/${background}`;
+      bgImageElement = await loadImage(src);
     } catch (e) {
       console.error("Failed to load background image", e);
     }

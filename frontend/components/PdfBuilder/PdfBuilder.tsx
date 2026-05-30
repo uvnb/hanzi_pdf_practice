@@ -36,6 +36,7 @@ export default function PdfBuilder() {
   );
   const [style, setStyle] = useState<GridStyle>("tian");
   const [background, setBackground] = useState<string>("1.jpeg");
+  const [customBackgroundUrl, setCustomBackgroundUrl] = useState<string | null>(null);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [pdfBytes, setPdfBytes] = useState<Uint8Array | null>(null);
   const [status, setStatus] = useState<string>("");
@@ -64,7 +65,7 @@ export default function PdfBuilder() {
     }, 800);
 
     return () => clearTimeout(timer);
-  }, [characters, style, background]);
+  }, [characters, style, background, customBackgroundUrl]);
 
   async function generatePreview() {
     setBusy(true);
@@ -76,10 +77,13 @@ export default function PdfBuilder() {
       } catch {
         setStatus(t("fallback"));
       }
+      const activeBackground = background === "custom" && customBackgroundUrl 
+        ? customBackgroundUrl 
+        : background;
       const generated = await buildWorksheet(
         characters,
         style,
-        background,
+        activeBackground,
         {
           title: t("worksheetTitle"),
           subtitleTian: t("worksheetSubtitleTian"),
@@ -158,22 +162,41 @@ export default function PdfBuilder() {
           </select>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-          <label style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)", margin: 0 }}>Background</label>
-          <select
-            value={background}
-            onChange={(e) => setBackground(e.target.value)}
-            style={{ padding: "4px 8px", borderRadius: "6px", border: "1px solid var(--line)", background: "var(--paper)", color: "var(--ink)", outline: "none", fontSize: "14px", cursor: "pointer", maxWidth: 170 }}
-          >
-            <option value="none">Trắng (Mặc định)</option>
-            <option value="1.jpeg">Mẫu 1</option>
-            <option value="2.jpeg">Mẫu 2</option>
-            <option value="3.jpeg">Mẫu 3</option>
-            <option value="4.jpeg">Mẫu 4</option>
-            <option value="5.jpeg">Mẫu 5</option>
-            <option value="6.jpeg">Mẫu 6</option>
-            <option value="7.jpeg">Mẫu 7</option>
-          </select>
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "24px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <label style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)", margin: 0 }}>Background</label>
+            <select
+              value={background}
+              onChange={(e) => setBackground(e.target.value)}
+              style={{ padding: "4px 8px", borderRadius: "6px", border: "1px solid var(--line)", background: "var(--paper)", color: "var(--ink)", outline: "none", fontSize: "14px", cursor: "pointer", maxWidth: 170 }}
+            >
+              <option value="none">Trắng (Mặc định)</option>
+              <option value="custom">Tải ảnh của bạn</option>
+              <option value="1.jpeg">Mẫu 1</option>
+              <option value="2.jpeg">Mẫu 2</option>
+              <option value="3.jpeg">Mẫu 3</option>
+              <option value="4.jpeg">Mẫu 4</option>
+              <option value="5.jpeg">Mẫu 5</option>
+              <option value="6.jpeg">Mẫu 6</option>
+              <option value="7.jpeg">Mẫu 7</option>
+            </select>
+          </div>
+          {background === "custom" && (
+            <div style={{ padding: "12px", border: "2px dashed var(--line)", borderRadius: "8px", textAlign: "center", background: "var(--paper)" }}>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    if (customBackgroundUrl) URL.revokeObjectURL(customBackgroundUrl);
+                    const url = URL.createObjectURL(e.target.files[0]);
+                    setCustomBackgroundUrl(url);
+                  }
+                }}
+                style={{ fontSize: "14px", width: "100%", color: "var(--ink)" }}
+              />
+            </div>
+          )}
         </div>
 
         <button disabled={busy || !pdfBytes} onClick={downloadPdf} type="button">
