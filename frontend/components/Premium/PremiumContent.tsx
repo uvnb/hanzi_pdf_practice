@@ -30,38 +30,48 @@ export default function PremiumContent() {
   ];
 
   return (
-    <div className="landing premium-override">
+    <div className="premium-override">
       <style dangerouslySetInnerHTML={{ __html: `
-        .landing.premium-override {
+        .premium-override {
+          --font-brush: "ThuPhapScript", "ThuPhap", "Dancing Script", "Merienda", "Noto Serif SC", cursive;
+          --premium-text: var(--ink);
+          --premium-border: var(--line);
+          --premium-bg: var(--paper);
+          --premium-accent: var(--accent);
+        }
+        .premium-override .pricingSection {
           background: transparent !important;
-          color: var(--ink) !important;
+          padding: 20px 0 !important;
         }
-        .landing.premium-override .pricingSection {
+        .premium-override .pricingCard {
+          background: var(--premium-bg) !important;
+          border: 1px solid var(--premium-border) !important;
+          box-shadow: none !important;
+          color: var(--premium-text) !important;
+        }
+        .premium-override .pricingCard * {
+          color: var(--premium-text) !important;
+        }
+        .premium-override .pricingTitle {
+          color: var(--premium-text) !important;
+        }
+        .premium-override .pricingAmount {
+          color: var(--premium-accent) !important;
+        }
+        .premium-override .pricingAmount span {
+          color: var(--premium-text) !important;
+          opacity: 0.7 !important;
+        }
+        .premium-override .pricingFeatures li::before {
+          color: var(--premium-accent) !important;
+        }
+        .premium-override .pricingCta {
+          color: var(--premium-text) !important;
+          border: 1px solid var(--premium-border) !important;
           background: transparent !important;
-          padding: 20px 0;
         }
-        .landing.premium-override .pricingCard {
-          background: var(--paper) !important;
-          border-color: var(--line) !important;
-        }
-        .landing.premium-override .pricingTitle {
-          color: var(--ink) !important;
-        }
-        .landing.premium-override .pricingTier,
-        .landing.premium-override .pricingAmount,
-        .landing.premium-override .pricingFeatures li {
-          color: var(--ink) !important;
-        }
-        .landing.premium-override .pricingAmount span {
-          color: var(--ink) !important;
-          opacity: 0.6;
-        }
-        .landing.premium-override .pricingCta {
-          color: var(--ink) !important;
-          border-color: var(--line) !important;
-        }
-        .landing.premium-override .pricingCta:hover {
-          background: var(--line) !important;
+        .premium-override .pricingCta:hover {
+          background: var(--premium-border) !important;
         }
       `}} />
       <PricingSection title={t("pricingTitle")} tiers={tiers} />
