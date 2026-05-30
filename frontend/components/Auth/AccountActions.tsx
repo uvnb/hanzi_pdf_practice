@@ -23,11 +23,17 @@ const LogoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
 );
 
+import Modal from "@/components/Layout/Modal";
+import TermsContent from "@/components/Terms/TermsContent";
+import PremiumContent from "@/components/Premium/PremiumContent";
+
 export default function AccountActions() {
   const t = useTranslations("Nav");
   const { loading, logout, user } = useAuth();
   const pathname = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [termsModalOpen, setTermsModalOpen] = useState(false);
+  const [premiumModalOpen, setPremiumModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -119,7 +125,7 @@ export default function AccountActions() {
 
               <div style={{ padding: "4px 0" }}>
                 <button 
-                  onClick={() => setDropdownOpen(false)}
+                  onClick={() => { setDropdownOpen(false); setPremiumModalOpen(true); }}
                   style={{ ...menuItemStyle, color: "#f59e0b" }}
                   onMouseEnter={(e) => e.currentTarget.style.background = "rgba(0,0,0,0.03)"}
                   onMouseLeave={(e) => e.currentTarget.style.background = "none"}
@@ -137,7 +143,7 @@ export default function AccountActions() {
                   Giới thiệu bạn bè
                 </button>
                 <button 
-                  onClick={() => setDropdownOpen(false)}
+                  onClick={() => { setDropdownOpen(false); setTermsModalOpen(true); }}
                   style={{ ...menuItemStyle }}
                   onMouseEnter={(e) => e.currentTarget.style.background = "rgba(0,0,0,0.03)"}
                   onMouseLeave={(e) => e.currentTarget.style.background = "none"}
@@ -173,6 +179,14 @@ export default function AccountActions() {
       ) : null}
       <LanguageSwitcher />
       <ThemeToggle />
+
+      <Modal isOpen={termsModalOpen} onClose={() => setTermsModalOpen(false)} background="#f0f6fc">
+        <TermsContent />
+      </Modal>
+      
+      <Modal isOpen={premiumModalOpen} onClose={() => setPremiumModalOpen(false)} maxWidth="1100px" background="transparent">
+        <PremiumContent />
+      </Modal>
     </>
   );
 }
