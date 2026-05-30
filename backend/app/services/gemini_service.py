@@ -15,6 +15,8 @@ class GeneratedMetadata(BaseModel):
     pinyin: str = Field(description="Pinyin with tone marks")
     meaning_vi: str = Field(description="Concise Vietnamese meaning and Sino-Vietnamese note")
     example_sentences: list[GeneratedExample] = Field(min_length=2, max_length=3)
+    radicals: list[str] = Field(description="The radicals (bộ thủ) that make up this character, e.g. ['氵', '工']")
+    etymology_vi: str = Field(description="Mnemonic or etymology explanation in Vietnamese (Chiết tự)")
 
 
 async def enrich_character(character: str) -> GeneratedMetadata:
@@ -25,7 +27,9 @@ async def enrich_character(character: str) -> GeneratedMetadata:
     prompt = (
         f"Tạo dữ liệu học chữ Hán cho ký tự: {character}. "
         "Viết pinyin có dấu thanh, nghĩa tiếng Việt ngắn gọn kèm âm Hán Việt "
-        "nếu phù hợp, và 2 câu ví dụ đơn giản gồm tiếng Trung, pinyin, bản dịch Việt. "
+        "nếu phù hợp. Viết một đoạn giải thích chiết tự (nguồn gốc cấu tạo chữ "
+        "hoặc mẹo nhớ) bằng tiếng Việt thật dễ hiểu. Kể tên các bộ thủ. "
+        "Và tạo 2-3 câu ví dụ đơn giản gồm tiếng Trung, pinyin, bản dịch Việt. "
         "Chỉ trả dữ liệu đúng schema."
     )
     async with genai.Client(api_key=settings.gemini_api_key).aio as client:
