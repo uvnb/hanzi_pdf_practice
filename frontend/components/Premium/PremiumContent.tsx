@@ -30,7 +30,40 @@ export default function PremiumContent() {
   ];
 
   return (
-    <div className="landing">
+    <div className="landing premium-override">
+      <style dangerouslySetInnerHTML={{ __html: `
+        .landing.premium-override {
+          background: transparent !important;
+          color: var(--ink) !important;
+        }
+        .landing.premium-override .pricingSection {
+          background: transparent !important;
+          padding: 20px 0;
+        }
+        .landing.premium-override .pricingCard {
+          background: var(--paper) !important;
+          border-color: var(--line) !important;
+        }
+        .landing.premium-override .pricingTitle {
+          color: var(--ink) !important;
+        }
+        .landing.premium-override .pricingTier,
+        .landing.premium-override .pricingAmount,
+        .landing.premium-override .pricingFeatures li {
+          color: var(--ink) !important;
+        }
+        .landing.premium-override .pricingAmount span {
+          color: var(--ink) !important;
+          opacity: 0.6;
+        }
+        .landing.premium-override .pricingCta {
+          color: var(--ink) !important;
+          border-color: var(--line) !important;
+        }
+        .landing.premium-override .pricingCta:hover {
+          background: var(--line) !important;
+        }
+      `}} />
       <PricingSection title={t("pricingTitle")} tiers={tiers} />
     </div>
   );
