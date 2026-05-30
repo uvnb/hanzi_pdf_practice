@@ -9,17 +9,21 @@ import PracticeStatsPanel from "./PracticeStatsPanel";
 interface Props {
   character: string;
   onSelectCharacter: (char: string) => void;
+  onListLoaded?: (list: HanziMetadata[]) => void;
 }
 
-export default function CharacterSelector({ character, onSelectCharacter }: Props) {
+export default function CharacterSelector({ character, onSelectCharacter, onListLoaded }: Props) {
   const t = useTranslations("Board");
   const [input, setInput] = useState(character);
   const [hskLevel, setHskLevel] = useState<number>(1);
   const [hskList, setHskList] = useState<HanziMetadata[]>([]);
 
   useEffect(() => {
-    fetchHskList(hskLevel).then(setHskList).catch(console.error);
-  }, [hskLevel]);
+    fetchHskList(hskLevel).then((list) => {
+      setHskList(list);
+      if (onListLoaded) onListLoaded(list);
+    }).catch(console.error);
+  }, [hskLevel, onListLoaded]);
 
   function submitCharacter(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
