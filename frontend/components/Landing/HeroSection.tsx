@@ -21,6 +21,9 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ nav, hero, poem }: HeroSectionProps) {
+  /* Columns are rendered right-to-left as in traditional Chinese poetry */
+  const columns = [poem.col1, poem.col2, poem.col3, poem.col4];
+
   return (
     <section className="heroSection" id="hero">
       {/* ── Top navigation ── */}
@@ -43,10 +46,10 @@ export default function HeroSection({ nav, hero, poem }: HeroSectionProps) {
         {/* ── Poem box (4 vertical columns, read right→left) ── */}
         <div className="heroPoemWrapper">
           <div className="heroPoemInner">
-            {[poem.col4, poem.col3, poem.col2, poem.col1].map((col, i) => (
+            {columns.map((col, i) => (
               <div className="heroPoemCol" key={i}>
-                {col.map((line, j) => (
-                  <span key={j}>{line}</span>
+                {col.map((word, j) => (
+                  <span className="heroPoemWord" key={j}>{word}</span>
                 ))}
               </div>
             ))}
