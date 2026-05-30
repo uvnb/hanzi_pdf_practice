@@ -41,12 +41,12 @@ const CHARACTER_DATA_URL =
   "https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/";
 const PAGE_WIDTH = 1240;
 const PAGE_HEIGHT = 1754;
-const MARGIN = 60;
+const MARGIN = 90;
 const COLUMNS = 10;
 const ROWS = 10;
 const CELL_SIZE = 106;
 const ROW_PITCH = 137;
-const GRID_TOP = 272;
+const GRID_TOP = 172;
 const characterCache = new Map<string, Promise<CharacterData>>();
 
 export function collectHanzi(text: string): string[] {
@@ -157,7 +157,10 @@ function drawHeader(
   bgImage: HTMLImageElement | null,
 ) {
   if (bgImage) {
+    context.save();
+    context.globalAlpha = 0.35;
     context.drawImage(bgImage, 0, 0, PAGE_WIDTH, PAGE_HEIGHT);
+    context.restore();
   } else {
     context.fillStyle = "#fffdf9";
     context.fillRect(0, 0, PAGE_WIDTH, PAGE_HEIGHT);
@@ -181,12 +184,13 @@ function drawFooter(
     PAGE_WIDTH / 2,
     PAGE_HEIGHT - 60
   );
-  context.textAlign = "left";
+  context.textAlign = "right";
   context.fillText(
     "cre: uvnb",
-    MARGIN,
+    PAGE_WIDTH - MARGIN,
     PAGE_HEIGHT - 60
   );
+  context.textAlign = "left"; // reset for safety
 }
 
 function truncateText(
