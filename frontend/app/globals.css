@@ -225,6 +225,38 @@ button:hover:not(:disabled) {
   padding: 42px;
 }
 
+@media (max-width: 768px) {
+  .practiceCard {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 24px 16px 80px; /* add bottom padding to prevent overlap with sticky bar */
+    margin: 20px auto;
+  }
+
+  .actions {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--paper);
+    padding: 12px 16px;
+    border-top: 1px solid var(--line);
+    flex-direction: row !important;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+    margin: 0 !important;
+  }
+
+  .actions button {
+    flex: 1;
+    margin: 0 4px;
+    padding: 12px 8px;
+    font-size: 14px;
+  }
+}
+
 .controls label {
   display: block;
   font-size: 14px;
@@ -327,6 +359,26 @@ button:disabled {
   border: 2px solid #caa98e;
   height: 324px;
   width: 324px;
+}
+
+.tianGrid.shake {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+  border-color: #ef4444; /* red outline when shaking */
+}
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
 }
 
 .currentCharacter {

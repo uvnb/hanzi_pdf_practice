@@ -87,16 +87,37 @@ export default function HanziPracticeBoard() {
     setInput(nextCharacter);
   }
 
+  const [isShaking, setIsShaking] = useState(false);
+
+  function triggerConfetti() {
+    import("canvas-confetti").then((confetti) => {
+      confetti.default({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ["#22c55e", "#f97316", "#3b82f6", "#eab308"],
+      });
+    });
+  }
+
   function startQuiz() {
     writerRef.current?.quiz({
-      onMistake: () => setMessage(t("mistake")),
-      onCorrectStroke: () => setMessage(t("correct")),
-      onComplete: ({ totalMistakes }) =>
-        setMessage(
-          totalMistakes === 0
-            ? t("completePerfect")
-            : t("completeMistakes", { count: totalMistakes }),
-        ),
+      onMistake: () => {
+        setMessage(t("mistake"));
+        setIsShaking(true);
+        setTimeout(() => setIsShaking(false), 500);
+      },
+      onCorrectStroke: () => {
+        setMessage(t("correct"));
+      },
+      onComplete: ({ totalMistakes }) => {
+        if (totalMistakes === 0) {
+          setMessage(t("completePerfect"));
+          triggerConfetti();
+        } else {
+          setMessage(t("completeMistakes", { count: totalMistakes }));
+        }
+      },
     });
   }
 
@@ -156,7 +177,7 @@ export default function HanziPracticeBoard() {
       </div>
       <div className="writerPanel">
         <div
-          className="tianGrid"
+          className={`tianGrid ${isShaking ? "shake" : ""}`}
           ref={targetRef}
           aria-label={t("writer", { character })}
         />
