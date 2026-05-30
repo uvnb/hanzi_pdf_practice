@@ -5,7 +5,7 @@ import httpx
 from pathlib import Path
 
 # Github repo containing HSK 1-6 vocabulary
-HSK_URL = "https://raw.githubusercontent.com/clem109/hsk-vocabulary/master/hsk-level-{level}.json"
+HSK_URL = "https://raw.githubusercontent.com/clem109/hsk-vocabulary/master/hsk-vocab-json/hsk-level-{level}.json"
 HANZI_DATA_URL = "https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/{char}.json"
 SEED_DIR = Path(__file__).parent.parent / "seed"
 
