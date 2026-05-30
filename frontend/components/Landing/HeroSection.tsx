@@ -16,25 +16,12 @@ interface HeroSectionProps {
     ctaPractice: string;
     ctaCourses: string;
   };
-  sidebar: {
-    home: string;
-    courses: string;
-    practice: string;
-    community: string;
-    about: string;
-  };
 }
 
-export default function HeroSection({ nav, hero, sidebar }: HeroSectionProps) {
+export default function HeroSection({ nav, hero }: HeroSectionProps) {
   return (
     <section className="heroSection" id="hero">
-      <aside className="heroSidebar" aria-label="Quick links">
-        <a href="#hero">{sidebar.home}</a>
-        <a href="#features">{sidebar.courses}</a>
-        <a href="#features">{sidebar.practice}</a>
-        <a href="#pricing">{sidebar.community}</a>
-        <a href="#footer">{sidebar.about}</a>
-      </aside>
+      <aside className="heroSidebar" aria-label="Quick links"></aside>
 
       <div className="heroMain">
         <nav className="heroTopNav">

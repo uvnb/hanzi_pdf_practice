@@ -31,7 +31,7 @@
    =========================== */
 .heroSection {
   display: grid;
-  grid-template-columns: 80px 1fr 45%;
+  grid-template-columns: 100px 1fr 45%;
   min-height: 100vh;
 }
 

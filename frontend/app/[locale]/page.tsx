@@ -26,13 +26,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           login: t("navLogin"),
           register: t("navRegister"),
         }}
-        sidebar={{
-          home: t("sideHome"),
-          courses: t("sideCourses"),
-          practice: t("sidePractice"),
-          community: t("sideCommunity"),
-          about: t("sideAbout"),
-        }}
       />
 
       <FeaturesSection
