@@ -10,7 +10,6 @@ interface HeroSectionProps {
   };
   hero: {
     title: string;
-    ctaPractice: string;
   };
   poem: {
     col1: string[];
@@ -60,9 +59,6 @@ export default function HeroSection({ nav, hero, poem }: HeroSectionProps) {
           </div>
         </div>
 
-        <Link className="heroCta" href="/practice">
-          {hero.ctaPractice}
-        </Link>
       </div>
     </section>
   );
