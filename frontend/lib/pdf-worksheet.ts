@@ -161,7 +161,7 @@ function drawHeader(
 
   if (bgImage) {
     context.save();
-    context.globalAlpha = 0.45;
+    context.globalAlpha = 0.25;
     context.drawImage(bgImage, 0, 0, PAGE_WIDTH, PAGE_HEIGHT);
     context.restore();
   }
