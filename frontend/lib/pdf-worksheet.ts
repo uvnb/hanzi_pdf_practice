@@ -165,19 +165,23 @@ function drawHeader(
   context.fillStyle = "#241e19";
   context.font = 'bold 42px Georgia, "Noto Serif SC", serif';
   context.fillText(labels.title, MARGIN, 94);
-  
-  context.textAlign = "right";
-  context.fillText(labels.page(pageNumber, pageCount), PAGE_WIDTH - MARGIN, 92);
-  context.textAlign = "left";
-  context.strokeStyle = "#ddcbbc";
-  context.beginPath();
-  context.moveTo(MARGIN, 174);
-  context.lineTo(PAGE_WIDTH - MARGIN, 174);
-  context.stroke();
 }
 
-function drawFooter(context: CanvasRenderingContext2D, labels: WorksheetLabels) {
-  // Footer text removed per user request
+function drawFooter(
+  context: CanvasRenderingContext2D,
+  pageNumber: number,
+  pageCount: number,
+  labels: WorksheetLabels
+) {
+  context.fillStyle = "#554b45";
+  context.font = "16px Arial, sans-serif";
+  context.textAlign = "center";
+  context.fillText(
+    labels.page(pageNumber, pageCount),
+    PAGE_WIDTH / 2,
+    PAGE_HEIGHT - 60
+  );
+  context.textAlign = "left";
 }
 
 function truncateText(
@@ -244,7 +248,7 @@ function createPageCanvas(
     drawCharacter(context, data[row].strokes, MARGIN, y, 1);
     drawCharacter(context, data[row].strokes, MARGIN + CELL_SIZE, y, 0.16);
   });
-  drawFooter(context, labels);
+  drawFooter(context, pageNumber, pageCount, labels);
   return canvas;
 }
 
