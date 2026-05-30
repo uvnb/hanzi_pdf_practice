@@ -115,61 +115,80 @@
   text-align: center;
   text-shadow: 2px 3px 8px rgba(255, 255, 255, 0.6);
 }
-
-/* --- poem box — double-border frame matching Stitch design --- */
-.heroPoemWrapper {
-  border: 1.5px solid rgba(0, 0, 0, 0.5);
-  padding: 6px;
-  margin-bottom: 36px;
-  position: relative;
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.heroPoemInner {
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  padding: 20px 28px 50px;
+/* --- poem box — new borderless layout matching the second design --- */
+.heroPoemLayout {
   display: flex;
   flex-direction: row-reverse;
-  gap: 18px;
-}
-
-.heroPoemCol {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.heroPoemWord {
-  font-family: var(--font-chinese-brush);
-  font-size: 18px;
-  color: #1a1a1a;
-  line-height: 1.35;
-  display: block;
-  text-align: center;
-  white-space: nowrap;
-}
-
-/* --- red seal stamp — positioned inside inner poem area --- */
-.heroSeal {
-  position: absolute;
-  bottom: 18px;
-  left: 18px;
-  width: 40px;
-  height: 40px;
-  border: 2.5px solid #c1272d;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: flex-start;
+  gap: 40px;
+  margin-bottom: 40px;
+  padding: 10px 20px;
+}
+
+/* Big title on the right */
+.heroPoemTitle {
+  font-family: var(--font-chinese-brush);
+  font-size: 38px;
+  color: #1a1a1a;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: 8px;
+  font-weight: 700;
+  text-shadow: 1px 1px 4px rgba(255,255,255,0.7);
+  margin-top: 10px;
+}
+
+/* 4 columns of the poem */
+.heroPoemText {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 25px;
+}
+
+.heroPoemLine {
+  font-family: var(--font-chinese-brush);
+  font-size: 32px;
+  color: #1a1a1a;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: 12px;
+  margin: 0;
+}
+
+/* Seal area on the left */
+.heroPoemAuthor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  align-self: stretch; /* Stretch to the bottom so the seal stays near bottom */
+  padding-bottom: 20px;
+}
+
+/* --- red seal stamp --- */
+.heroSeal {
+  width: 36px;
+  height: 36px;
+  border: 2px solid #c1272d;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  align-items: center;
+  justify-items: center;
   font-family: "Noto Serif SC", serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   color: #c1272d;
   background: rgba(255, 255, 255, 0.75);
-  line-height: 1.15;
 }
 
+.heroSeal span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
 /* --- CTA button — compact, not full-width --- */
 .heroCta {
   display: inline-block;

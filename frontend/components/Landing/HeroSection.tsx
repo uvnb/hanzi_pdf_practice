@@ -12,17 +12,12 @@ interface HeroSectionProps {
     title: string;
   };
   poem: {
-    col1: string[];
-    col2: string[];
-    col3: string[];
-    col4: string[];
+    title: string;
+    lines: string[];
   };
 }
 
 export default function HeroSection({ nav, hero, poem }: HeroSectionProps) {
-  /* Columns are rendered right-to-left as in traditional Chinese poetry */
-  const columns = [poem.col1, poem.col2, poem.col3, poem.col4];
-
   return (
     <section className="heroSection" id="hero">
       {/* ── Top navigation ── */}
@@ -42,20 +37,28 @@ export default function HeroSection({ nav, hero, poem }: HeroSectionProps) {
       <div className="heroMain">
         <h1 className="heroTitle">{hero.title}</h1>
 
-        {/* ── Poem box (4 vertical columns, read right→left) ── */}
-        <div className="heroPoemWrapper">
-          <div className="heroPoemInner">
-            {columns.map((col, i) => (
-              <div className="heroPoemCol" key={i}>
-                {col.map((word, j) => (
-                  <span className="heroPoemWord" key={j}>{word}</span>
-                ))}
-              </div>
+        {/* ── Poem layout (Vertical text, right-to-left) ── */}
+        <div className="heroPoemLayout">
+          {/* Title on the far right */}
+          <div className="heroPoemTitle">
+            {poem.title}
+          </div>
+
+          {/* 4 columns of the poem */}
+          <div className="heroPoemText">
+            {poem.lines.map((line, i) => (
+              <p className="heroPoemLine" key={i}>{line}</p>
             ))}
           </div>
-          <div className="heroSeal" aria-hidden="true">
-            <span>漢</span>
-            <span>字</span>
+
+          {/* Seal on the far left */}
+          <div className="heroPoemAuthor">
+            <div className="heroSeal" aria-hidden="true">
+              <span>齊</span>
+              <span>靜</span>
+              <span>春</span>
+              <span>印</span>
+            </div>
           </div>
         </div>
 

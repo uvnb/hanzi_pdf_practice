@@ -23,10 +23,13 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           login: t("navLogin"),
         }}
         poem={{
-          col1: ["Tạo", "nên", "dáng", "vóc", "nhân"],
-          col2: ["Bút", "viết", "cỏ", "cây", "tốn", "đá", "màu"],
-          col3: ["Đất", "tập", "chỉ", "hướng", "tìm", "đường", "tạ"],
-          col4: ["Con", "sìn", "cữ", "vạn", "tốn", "phất", "nong", "kiệt"],
+          title: "齐静春",
+          lines: [
+            "遇事不决",
+            "可问春风",
+            "春风不语",
+            "即随本心"
+          ]
         }}
       />
 
