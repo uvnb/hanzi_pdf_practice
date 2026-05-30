@@ -4,9 +4,10 @@ import HanziWriter from "hanzi-writer";
 import { useTranslations } from "next-intl";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import FavoriteButton from "@/components/Notebook/FavoriteButton";
+import PracticeStatsPanel from "@/components/HanziWriter/PracticeStatsPanel";
 import { playCorrectStroke, playMistake, playFanfare, speakCharacter } from "@/lib/audio";
 
-import { fetchHanziDetail, fetchHskList, HanziDetail } from "@/lib/hanzi-api";
+import { fetchHanziDetail, fetchHskList, logAttempt, HanziDetail } from "@/lib/hanzi-api";
 import { HanziMetadata } from "@/lib/pdf-worksheet";
 
 const DATA_CDN = "https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/";
@@ -132,6 +133,9 @@ export default function HanziPracticeBoard() {
         playCorrectStroke();
       },
       onComplete: ({ totalMistakes }) => {
+        // Log attempt to backend silently (fails gracefully if unauthenticated)
+        logAttempt({ character, mistakes: totalMistakes }).catch(() => {});
+        
         if (totalMistakes === 0) {
           setMessage(t("completePerfect"));
           playFanfare();
@@ -183,6 +187,8 @@ export default function HanziPracticeBoard() {
             ))}
           </div>
         </div>
+
+        <PracticeStatsPanel />
       </div>
 
       <div className="writerPanel">

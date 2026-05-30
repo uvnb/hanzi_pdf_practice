@@ -47,3 +47,47 @@ export async function fetchHskList(level: number): Promise<HanziMetadata[]> {
   }
   return await response.json();
 }
+
+export interface AttemptCreate {
+  character: string;
+  mistakes: number;
+}
+
+export interface AttemptRead {
+  character: string;
+  mistakes: number;
+  is_perfect: boolean;
+  practiced_at: string;
+}
+
+export interface PracticeStats {
+  total_attempts: number;
+  total_characters_practiced: number;
+  perfect_count: number;
+  total_mistakes: number;
+  accuracy_rate: number;
+  streak_days: number;
+  recent_attempts: AttemptRead[];
+}
+
+export async function fetchStats(): Promise<PracticeStats> {
+  const url = apiUrl("/api/practice/stats");
+  const response = await apiFetch(url);
+  if (!response.ok) {
+    throw new Error(`Stats API trả về lỗi ${response.status}.`);
+  }
+  return await response.json();
+}
+
+export async function logAttempt(payload: AttemptCreate): Promise<AttemptRead> {
+  const url = apiUrl("/api/practice");
+  const response = await apiFetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    throw new Error(`Log attempt API trả về lỗi ${response.status}.`);
+  }
+  return await response.json();
+}
