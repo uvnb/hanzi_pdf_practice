@@ -45,6 +45,10 @@ async def seed(refresh: bool = False, level: int = None) -> None:
                     inserted += 1
             await session.commit()
             print(f"  -> {inserted} inserted, {updated} refreshed.")
+    
+    # Dispose the engine to close connection pools and prevent hanging
+    from app.database import engine
+    await engine.dispose()
 
 
 if __name__ == "__main__":
