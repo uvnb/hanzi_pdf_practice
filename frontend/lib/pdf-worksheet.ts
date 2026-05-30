@@ -155,13 +155,14 @@ function drawHeader(
   style: GridStyle,
   labels: WorksheetLabels,
   bgImage: HTMLImageElement | null,
+  bgOpacity: number,
 ) {
   context.fillStyle = "#fffdf9";
   context.fillRect(0, 0, PAGE_WIDTH, PAGE_HEIGHT);
 
   if (bgImage) {
     context.save();
-    context.globalAlpha = 0.25;
+    context.globalAlpha = 1 - (bgOpacity / 100);
     context.drawImage(bgImage, 0, 0, PAGE_WIDTH, PAGE_HEIGHT);
     context.restore();
   }
@@ -240,6 +241,7 @@ function createPageCanvas(
   pageCount: number,
   labels: WorksheetLabels,
   bgImage: HTMLImageElement | null,
+  bgOpacity: number,
 ): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
   canvas.width = PAGE_WIDTH;
@@ -249,7 +251,7 @@ function createPageCanvas(
     throw new Error(labels.canvasError);
   }
 
-  drawHeader(context, pageNumber, pageCount, style, labels, bgImage);
+  drawHeader(context, pageNumber, pageCount, style, labels, bgImage, bgOpacity);
   characters.forEach((character, row) => {
     const y = GRID_TOP + row * ROW_PITCH;
     drawMetadata(context, character, metadata.get(character), y);
@@ -286,6 +288,7 @@ export async function buildWorksheet(
   characters: string[],
   style: GridStyle,
   background: string,
+  bgOpacity: number,
   labels: WorksheetLabels,
   metadata: HanziMetadata[] = [],
   onProgress?: (progress: string) => void,
@@ -328,7 +331,8 @@ export async function buildWorksheet(
       pageIndex + 1,
       pageCount,
       labels,
-      bgImageElement
+      bgImageElement,
+      bgOpacity
     );
     onProgress?.(labels.rendering(pageIndex + 1, pageCount));
     pages.push({

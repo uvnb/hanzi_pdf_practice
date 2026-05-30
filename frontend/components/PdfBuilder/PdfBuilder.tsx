@@ -36,7 +36,9 @@ export default function PdfBuilder() {
   );
   const [style, setStyle] = useState<GridStyle>("tian");
   const [background, setBackground] = useState<string>("1.jpeg");
+  const [bgOpacity, setBgOpacity] = useState<number>(70);
   const [customBackgroundUrl, setCustomBackgroundUrl] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [pdfBytes, setPdfBytes] = useState<Uint8Array | null>(null);
   const [status, setStatus] = useState<string>("");
@@ -65,7 +67,7 @@ export default function PdfBuilder() {
     }, 800);
 
     return () => clearTimeout(timer);
-  }, [characters, style, background, customBackgroundUrl]);
+  }, [characters, style, background, customBackgroundUrl, bgOpacity]);
 
   async function generatePreview() {
     setBusy(true);
@@ -84,6 +86,7 @@ export default function PdfBuilder() {
         characters,
         style,
         activeBackground,
+        bgOpacity,
         {
           title: t("worksheetTitle"),
           subtitleTian: t("worksheetSubtitleTian"),
@@ -164,6 +167,19 @@ export default function PdfBuilder() {
 
         <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "24px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <label style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)", margin: 0 }}>Độ mờ ảnh nền</label>
+            <select
+              value={bgOpacity}
+              onChange={(e) => setBgOpacity(Number(e.target.value))}
+              style={{ padding: "4px 8px", borderRadius: "6px", border: "1px solid var(--line)", background: "var(--paper)", color: "var(--ink)", outline: "none", fontSize: "14px", cursor: "pointer", maxWidth: 170 }}
+            >
+              {[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(val => (
+                <option key={val} value={val}>{val}%</option>
+              ))}
+            </select>
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <label style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)", margin: 0 }}>Background</label>
             <select
               value={background}
@@ -182,7 +198,26 @@ export default function PdfBuilder() {
             </select>
           </div>
           {background === "custom" && (
-            <div style={{ padding: "12px", border: "2px dashed var(--line)", borderRadius: "8px", textAlign: "center", background: "var(--paper)" }}>
+            <div 
+              style={{ 
+                padding: "24px 12px", 
+                border: `2px dashed ${isDragging ? 'var(--primary)' : 'var(--line)'}`, 
+                borderRadius: "8px", 
+                textAlign: "center", 
+                background: isDragging ? 'rgba(0,0,0,0.02)' : 'var(--paper)',
+                transition: "all 0.2s ease"
+              }}
+              onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+              onDragLeave={(e) => { e.preventDefault(); setIsDragging(false); }}
+              onDrop={(e) => {
+                e.preventDefault();
+                setIsDragging(false);
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                  if (customBackgroundUrl) URL.revokeObjectURL(customBackgroundUrl);
+                  setCustomBackgroundUrl(URL.createObjectURL(e.dataTransfer.files[0]));
+                }
+              }}
+            >
               <input
                 type="file"
                 accept="image/*"
@@ -195,6 +230,9 @@ export default function PdfBuilder() {
                 }}
                 style={{ fontSize: "14px", width: "100%", color: "var(--ink)" }}
               />
+              <div style={{ fontSize: "12px", color: "var(--ink)", marginTop: "8px", opacity: 0.7 }}>
+                Hoặc kéo thả ảnh vào đây
+              </div>
             </div>
           )}
         </div>
