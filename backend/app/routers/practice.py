@@ -1,13 +1,13 @@
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends
-from sqlalchemy import func, select
+from sqlalchemy import case, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_session
 from app.models.practice import PracticeAttempt
 from app.models.user import User
-from app.schemas.practice import AttemptCreate, AttemptRead, PracticeStats
+from app.schemas.practice import AttemptCreate, AttemptRead, PracticeStats, LeaderboardUser
 from app.security import get_current_user
 
 router = APIRouter(prefix="/api/practice", tags=["practice"])
@@ -101,3 +101,58 @@ async def get_stats(
         streak_days=streak_days,
         recent_attempts=[AttemptRead.model_validate(a) for a in recent],
     )
+
+
+@router.get("/leaderboard", response_model=list[LeaderboardUser])
+async def get_leaderboard(session: AsyncSession = Depends(get_session)):
+    top_users_query = (
+        select(
+            User.id,
+            User.name,
+            User.avatar_url,
+            func.count(PracticeAttempt.id).label("total_attempts"),
+            func.sum(case((PracticeAttempt.is_perfect == True, 1), else_=0)).label("perfect_count")
+        )
+        .join(PracticeAttempt, User.id == PracticeAttempt.user_id)
+        .group_by(User.id)
+        .order_by(func.count(PracticeAttempt.id).desc())
+        .limit(10)
+    )
+
+    result = await session.execute(top_users_query)
+    top_users = result.all()
+
+    leaderboard = []
+    today = datetime.now(timezone.utc).date()
+
+    for rank, row in enumerate(top_users, start=1):
+        user_id, name, avatar, attempts, perfect = row
+
+        dates_result = await session.scalars(
+            select(func.distinct(func.date(PracticeAttempt.practiced_at)))
+            .where(PracticeAttempt.user_id == user_id)
+            .order_by(func.date(PracticeAttempt.practiced_at).desc())
+        )
+        dates = list(dates_result)
+        streak_days = 0
+        for i, d in enumerate(dates):
+            expected = today - timedelta(days=i)
+            if d == expected:
+                streak_days += 1
+            else:
+                break
+
+        leaderboard.append(
+            LeaderboardUser(
+                id=str(user_id),
+                rank=rank,
+                name=name,
+                avatar=avatar or "https://i.pravatar.cc/150",
+                attempts=attempts or 0,
+                perfect=perfect or 0,
+                streak=streak_days,
+                isPremium=False
+            )
+        )
+
+    return leaderboard

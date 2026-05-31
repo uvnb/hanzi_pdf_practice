@@ -25,3 +25,14 @@ class PracticeStats(BaseModel):
     accuracy_rate: float  # 0.0 – 1.0
     streak_days: int
     recent_attempts: list[AttemptRead]
+
+
+class LeaderboardUser(BaseModel):
+    id: str
+    rank: int
+    name: str
+    avatar: str | None
+    attempts: int
+    perfect: int
+    streak: int
+    isPremium: bool = False

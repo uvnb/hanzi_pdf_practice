@@ -89,12 +89,6 @@ export default function AccountActions() {
       ) : null}
       {!loading && user ? (
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <Link href="/leaderboard" style={{ color: "var(--ink)", display: "flex", alignItems: "center" }} title="Bảng xếp hạng">
-            <TrophyIcon />
-          </Link>
-          <button type="button" style={{ color: "var(--ink)", background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", padding: 0 }} title="Thông báo">
-            <BellIcon />
-          </button>
           <div style={{ position: "relative" }} ref={dropdownRef}>
             <button
               type="button"

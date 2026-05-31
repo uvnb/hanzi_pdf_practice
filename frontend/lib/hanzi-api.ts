@@ -91,3 +91,23 @@ export async function logAttempt(payload: AttemptCreate): Promise<AttemptRead> {
   }
   return await response.json();
 }
+
+export interface LeaderboardUser {
+  id: string;
+  rank: number;
+  name: string;
+  avatar: string;
+  attempts: number;
+  perfect: number;
+  streak: number;
+  isPremium: boolean;
+}
+
+export async function fetchLeaderboard(): Promise<LeaderboardUser[]> {
+  const url = apiUrl("/api/practice/leaderboard");
+  const response = await apiFetch(url);
+  if (!response.ok) {
+    throw new Error(`Leaderboard API trả về lỗi ${response.status}.`);
+  }
+  return await response.json();
+}

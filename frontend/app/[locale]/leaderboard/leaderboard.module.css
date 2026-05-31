@@ -58,7 +58,7 @@
   align-items: flex-end;
   justify-content: center;
   gap: 16px;
-  margin-bottom: 32px;
+  margin: 0 auto 32px;
   max-width: 900px;
   width: 100%;
 }
@@ -202,6 +202,7 @@
   gap: 12px;
   width: 100%;
   max-width: 900px;
+  margin: 0 auto;
 }
 
 .listItem {

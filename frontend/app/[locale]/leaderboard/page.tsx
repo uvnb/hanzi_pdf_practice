@@ -16,47 +16,7 @@ const CrownIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"/></svg>
 );
 
-const MOCK_TOP3 = [
-  {
-    id: 2,
-    rank: 2,
-    name: "Khánh Nguyễn Duy",
-    avatar: "https://i.pravatar.cc/150?u=khanh",
-    attempts: 1240,
-    perfect: 450,
-    streak: 12,
-    isPremium: true,
-  },
-  {
-    id: 1,
-    rank: 1,
-    name: "Tâm Phạm thủy minh",
-    avatar: "https://i.pravatar.cc/150?u=tam",
-    attempts: 2560,
-    perfect: 980,
-    streak: 25,
-    isPremium: false,
-  },
-  {
-    id: 3,
-    rank: 3,
-    name: "Thuy Nguyen",
-    avatar: "https://i.pravatar.cc/150?u=thuy",
-    attempts: 1100,
-    perfect: 390,
-    streak: 8,
-    isPremium: true,
-  },
-];
-
-const MOCK_LIST = [
-  { id: 4, rank: "04", name: "Nam Tran", avatar: "https://i.pravatar.cc/150?u=nam", attempts: 980, perfect: 320, streak: 7, isPremium: true },
-  { id: 5, rank: "05", name: "Tài Tử", avatar: "https://i.pravatar.cc/150?u=tai", attempts: 850, perfect: 290, streak: 5, isPremium: true },
-  { id: 6, rank: "06", name: "Mỹ Duyên", avatar: "https://i.pravatar.cc/150?u=my", attempts: 810, perfect: 275, streak: 5, isPremium: true },
-  { id: 7, rank: "07", name: "Phan Trọng Nhân", avatar: "https://i.pravatar.cc/150?u=phan", attempts: 790, perfect: 260, streak: 4, isPremium: true },
-  { id: 8, rank: "08", name: "Hanh Nhu Luong", avatar: "https://i.pravatar.cc/150?u=hanh", attempts: 720, perfect: 210, streak: 4, isPremium: true },
-  { id: 9, rank: "09", name: "Dung Ha", avatar: "https://i.pravatar.cc/150?u=dung", attempts: 680, perfect: 195, streak: 3, isPremium: true },
-];
+import { fetchLeaderboard, LeaderboardUser } from "@/lib/hanzi-api";
 
 export default async function LeaderboardPage({
   params,
@@ -65,6 +25,24 @@ export default async function LeaderboardPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+
+  let users: LeaderboardUser[] = [];
+  try {
+    users = await fetchLeaderboard();
+  } catch (error) {
+    console.error("Failed to fetch leaderboard:", error);
+  }
+
+  const topThreeRaw = users.slice(0, 3);
+  let topThree: LeaderboardUser[] = [];
+  if (topThreeRaw.length === 3) {
+    topThree = [topThreeRaw[1], topThreeRaw[0], topThreeRaw[2]];
+  } else if (topThreeRaw.length === 2) {
+    topThree = [topThreeRaw[1], topThreeRaw[0]];
+  } else {
+    topThree = topThreeRaw;
+  }
+  const listUsers = users.slice(3);
 
   return (
     <main className="practicePage">
@@ -93,7 +71,7 @@ export default async function LeaderboardPage({
       </div>
 
       <div className={styles.topThree}>
-        {MOCK_TOP3.map((user) => (
+        {topThree.map((user) => (
           <div key={user.id} className={`${styles.card} ${styles[`rank${user.rank}`]}`}>
             <div className={styles.crown}><CrownIcon /></div>
             <div className={`${styles.badge} ${styles[`badge${user.rank}`]}`}>{user.rank}</div>
@@ -119,9 +97,9 @@ export default async function LeaderboardPage({
       </div>
 
       <div className={styles.list}>
-        {MOCK_LIST.map((user) => (
+        {listUsers.map((user) => (
           <div key={user.id} className={styles.listItem}>
-            <div className={styles.listRank}>{user.rank}</div>
+            <div className={styles.listRank}>{user.rank.toString().padStart(2, "0")}</div>
             <div className={styles.listAvatar}>
               <img src={user.avatar} alt={user.name} />
             </div>
