@@ -77,8 +77,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             period: t("tierProPeriod"),
             features: [t("tierProF1"), t("tierProF2"), t("tierProF3")],
             cta: t("tierProCta"),
-            popular: true,
-            badge: t("tierPopular")
           },
           {
             id: "yearly",

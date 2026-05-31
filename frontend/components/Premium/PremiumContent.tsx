@@ -76,8 +76,6 @@ export default function PremiumContent() {
       period: t("tierProPeriod"),
       features: [t("tierProF1"), t("tierProF2"), t("tierProF3")],
       cta: t("tierProCta"),
-      highlighted: true,
-      badge: t("tierPopular")
     },
     {
       id: "yearly",

@@ -1,3 +1,5 @@
+"use client";
+
 interface PricingTier {
   id: string;
   name: string;
@@ -16,6 +18,15 @@ interface PricingSectionProps {
 }
 
 export default function PricingSection({ title, tiers, onSelectPlan }: PricingSectionProps) {
+  const handleClick = (id: string) => {
+    if (onSelectPlan) {
+      onSelectPlan(id);
+    } else {
+      // Default behavior for landing page: navigate to premium page
+      window.location.href = `/premium`;
+    }
+  };
+
   return (
     <section className="pricingSection" id="pricing">
       <h2 className="pricingTitle">{title}</h2>
@@ -42,7 +53,7 @@ export default function PricingSection({ title, tiers, onSelectPlan }: PricingSe
               ))}
             </ul>
 
-            <button className="pricingCta" type="button" onClick={onSelectPlan ? () => onSelectPlan(tier.id) : undefined}>
+            <button className="pricingCta" type="button" onClick={() => handleClick(tier.id)}>
               {tier.cta}
             </button>
           </article>
