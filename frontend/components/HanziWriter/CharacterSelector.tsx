@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { FormEvent, useEffect, useState, useMemo } from "react";
 import { fetchHskList } from "@/lib/hanzi-api";
+import { useAuth } from "@/components/Auth/AuthProvider";
 import { HanziMetadata } from "@/lib/pdf-worksheet";
 import { HSK_TOPICS } from "@/lib/hsk-topics";
 
@@ -53,6 +54,9 @@ export default function CharacterSelector({ character, onSelectCharacter, onList
     }
   }
 
+  const { subscription } = useAuth();
+  const maxAllowedHsk = (subscription && subscription.plan !== 'free') ? 5 : 3;
+
   return (
     <div className="controls">
       <form className="searchForm" onSubmit={submitCharacter}>
@@ -79,9 +83,15 @@ export default function CharacterSelector({ character, onSelectCharacter, onList
             }}
             style={{ padding: "4px 8px", borderRadius: 6, border: "1px solid var(--line)", background: "var(--paper)", color: "var(--ink)", outline: "none" }}
           >
-            {[1, 2, 3, 4, 5, 6].map(level => (
-              <option key={level} value={level}>HSK {level}</option>
-            ))}
+            {[1, 2, 3, 4, 5, 6].map(level => {
+              const isLocked = level > maxAllowedHsk && level <= 5;
+              const notAvailable = level > 5;
+              return (
+                <option key={level} value={level} disabled={isLocked || notAvailable}>
+                  HSK {level} {isLocked ? "🔒 (Premium)" : (notAvailable ? "(Chưa ra mắt)" : "")}
+                </option>
+              );
+            })}
           </select>
         </div>
 

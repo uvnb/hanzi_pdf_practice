@@ -37,11 +37,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+from app.routers.payment import router as payment_router
+
 app.include_router(hanzi_router)
 app.include_router(auth_router)
 app.include_router(users_router)
 app.include_router(ai_router)
 app.include_router(practice_router)
+app.include_router(payment_router)
 
 
 @app.get("/api/health", tags=["system"])

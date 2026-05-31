@@ -60,8 +60,10 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       />
 
       <PricingSection
+        title={t("pricingTitle")}
         tiers={[
           {
+            id: "weekly",
             name: t("tierFree"),
             price: t("tierFreePrice"),
             period: t("tierFreePeriod"),
@@ -69,13 +71,17 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             cta: t("tierFreeCta"),
           },
           {
+            id: "monthly",
             name: t("tierPro"),
             price: t("tierProPrice"),
             period: t("tierProPeriod"),
             features: [t("tierProF1"), t("tierProF2"), t("tierProF3")],
             cta: t("tierProCta"),
+            popular: true,
+            badge: t("tierPopular")
           },
           {
+            id: "yearly",
             name: t("tierMaster"),
             price: t("tierMasterPrice"),
             period: t("tierMasterPeriod"),
@@ -83,7 +89,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             cta: t("tierMasterCta"),
           },
         ]}
-        title={t("pricingTitle")}
       />
 
       <LandingFooter

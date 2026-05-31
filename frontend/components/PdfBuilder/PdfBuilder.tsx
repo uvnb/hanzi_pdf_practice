@@ -3,6 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
+import { useAuth } from "@/components/Auth/AuthProvider";
+import { consumePdfQuota } from "@/lib/payment-api";
 import {
   buildWorksheet,
   collectHanzi,
@@ -10,9 +13,10 @@ import {
   HanziMetadata,
 } from "@/lib/pdf-worksheet";
 import { fetchHanziMetadata } from "@/lib/hanzi-api";
+import { Link } from "@/i18n/navigation";
 
 const DEFAULT_CHARACTERS = "你 好 我 学 中 文 人 大 小 国";
-const MAX_CHARACTERS = 100;
+const MAX_CHARACTERS = 100; // Will be overridden by subscription
 
 function triggerDownload(bytes: Uint8Array) {
   const pdfBuffer = new Uint8Array(bytes).buffer;
@@ -31,6 +35,9 @@ function triggerDownload(bytes: Uint8Array) {
 export default function PdfBuilder() {
   const t = useTranslations("Pdf");
   const searchParams = useSearchParams();
+  const { user, subscription, refresh } = useAuth();
+  const router = useRouter();
+  
   const [text, setText] = useState(
     () => searchParams.get("characters") || DEFAULT_CHARACTERS,
   );
@@ -56,10 +63,17 @@ export default function PdfBuilder() {
       setStatus(t("invalid"));
       return;
     }
-    if (characters.length > MAX_CHARACTERS) {
+    
+    let charLimit = 22; // Guest & Free
+    if (subscription) {
+      if (subscription.plan === 'yearly') charLimit = 9999;
+      else if (subscription.plan !== 'free') charLimit = 110;
+    }
+    
+    if (characters.length > charLimit) {
       setPreviewUrls([]);
       setPdfBytes(null);
-      setStatus(t("limit", { count: MAX_CHARACTERS }));
+      setStatus(`Vượt quá giới hạn của gói hiện tại (Tối đa ${charLimit} chữ/lần). Hãy giảm bớt số chữ hoặc Nâng cấp tài khoản.`);
       return;
     }
 
@@ -68,7 +82,7 @@ export default function PdfBuilder() {
     }, 800);
 
     return () => clearTimeout(timer);
-  }, [characters, style, background, customBackgroundUrl, bgOpacity]);
+  }, [characters, style, background, customBackgroundUrl, bgOpacity, subscription]);
 
   async function generatePreview() {
     setBusy(true);
@@ -123,21 +137,41 @@ export default function PdfBuilder() {
     }
   }
 
-  function downloadPdf() {
+  async function downloadPdf() {
+    if (!user) {
+      setStatus("Vui lòng đăng nhập để tạo và tải PDF.");
+      return;
+    }
+
     if (pdfBytes) {
-      triggerDownload(pdfBytes);
-      setStatus(
-        metadataCount > 0
-          ? t("downloadedAnnotated", {
-              pages: pageCount,
-              count: characters.length,
-              metadata: metadataCount,
-            })
-          : t("downloaded", {
-              pages: pageCount,
-              count: characters.length,
-            }),
-      );
+      try {
+        setBusy(true);
+        setStatus("Đang kiểm tra lượt tải...");
+        await consumePdfQuota();
+        
+        triggerDownload(pdfBytes);
+        setStatus(
+          metadataCount > 0
+            ? t("downloadedAnnotated", {
+                pages: pageCount,
+                count: characters.length,
+                metadata: metadataCount,
+              })
+            : t("downloaded", {
+                pages: pageCount,
+                count: characters.length,
+              }),
+        );
+        await refresh(); // Refresh to update PDF quota counter
+      } catch (err: any) {
+        if (err.message === "PDF_QUOTA_EXCEEDED") {
+          setStatus("QUOTA_EXCEEDED");
+        } else {
+          setStatus("Có lỗi xảy ra khi kiểm tra lượt tải.");
+        }
+      } finally {
+        setBusy(false);
+      }
     }
   }
 
@@ -249,7 +283,15 @@ export default function PdfBuilder() {
         </button>
         {status && (
           <p className="feedback pdfStatus" aria-live="polite">
-            {status}
+            {status === "QUOTA_EXCEEDED" ? (
+              <span style={{ color: "#ef4444" }}>
+                Bạn đã dùng hết lượt tải PDF hôm nay. 
+                <br />
+                <button onClick={() => router.push("/premium")} style={{ marginTop: "8px", padding: "8px 16px", background: "#f59e0b", color: "white", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "bold" }}>
+                  Nâng cấp tài khoản
+                </button>
+              </span>
+            ) : status}
           </p>
         )}
       </div>

@@ -10,6 +10,7 @@ import {
   useState,
 } from "react";
 import { apiFetch } from "@/lib/api-client";
+import { SubscriptionResponse, fetchSubscription } from "@/lib/payment-api";
 
 export interface SessionUser {
   id: string;
@@ -20,39 +21,48 @@ export interface SessionUser {
 
 interface AuthContextValue {
   user: SessionUser | null;
+  subscription: SubscriptionResponse | null;
   loading: boolean;
   loginWithGoogleCredential: (credential: string) => Promise<void>;
   logout: () => Promise<void>;
+  refresh: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<SessionUser | null>(null);
+  const [subscription, setSubscription] = useState<SubscriptionResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    let active = true;
-    apiFetch("/api/auth/me")
-      .then(async (response) => {
-        if (active && response.ok) {
-          setUser((await response.json()) as SessionUser);
+  const fetchAuth = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await apiFetch("/api/auth/me");
+      if (response.ok) {
+        const userData = (await response.json()) as SessionUser;
+        setUser(userData);
+        try {
+          const subData = await fetchSubscription();
+          setSubscription(subData);
+        } catch {
+          setSubscription(null);
         }
-      })
-      .catch(() => {
-        if (active) {
-          setUser(null);
-        }
-      })
-      .finally(() => {
-        if (active) {
-          setLoading(false);
-        }
-      });
-    return () => {
-      active = false;
-    };
+      } else {
+        setUser(null);
+        setSubscription(null);
+      }
+    } catch {
+      setUser(null);
+      setSubscription(null);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchAuth();
+  }, [fetchAuth]);
 
   const loginWithGoogleCredential = useCallback(async (credential: string) => {
     const response = await apiFetch("/api/auth/google", {
@@ -62,7 +72,14 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     if (!response.ok) {
       throw new Error("Đăng nhập Google không thành công.");
     }
-    setUser((await response.json()) as SessionUser);
+    const userData = (await response.json()) as SessionUser;
+    setUser(userData);
+    try {
+      const subData = await fetchSubscription();
+      setSubscription(subData);
+    } catch {
+      setSubscription(null);
+    }
   }, []);
 
   const logout = useCallback(async () => {
@@ -70,12 +87,13 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       await apiFetch("/api/auth/logout", { method: "POST" });
     } finally {
       setUser(null);
+      setSubscription(null);
     }
   }, []);
 
   const value = useMemo(
-    () => ({ user, loading, loginWithGoogleCredential, logout }),
-    [loading, loginWithGoogleCredential, logout, user],
+    () => ({ user, subscription, loading, loginWithGoogleCredential, logout, refresh: fetchAuth }),
+    [loading, loginWithGoogleCredential, logout, user, subscription, fetchAuth],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

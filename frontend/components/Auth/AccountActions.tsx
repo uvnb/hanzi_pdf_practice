@@ -31,7 +31,7 @@ const BellIcon = () => (
 
 export default function AccountActions() {
   const t = useTranslations("Nav");
-  const { loading, logout, user } = useAuth();
+  const { loading, logout, user, subscription } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -123,6 +123,37 @@ export default function AccountActions() {
               <div style={{ padding: "8px 16px", borderBottom: "1px solid var(--line)", marginBottom: "4px" }}>
                 <div style={{ fontWeight: 600, color: "var(--ink)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.name}</div>
                 <div style={{ fontSize: "12px", color: "var(--ink)", opacity: 0.7, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email}</div>
+                
+                {subscription && subscription.plan !== "free" && subscription.expires_at && (
+                  <div style={{ 
+                    marginTop: "8px", 
+                    padding: "6px 8px", 
+                    background: "rgba(245, 158, 11, 0.1)", 
+                    border: "1px solid rgba(245, 158, 11, 0.3)", 
+                    borderRadius: "4px", 
+                    fontSize: "12px",
+                    color: "#d97706",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "4px"
+                  }}>
+                    <div style={{ fontWeight: "bold", display: "flex", alignItems: "center", gap: "4px" }}>
+                      <CrownIcon /> Gói {subscription.plan === "weekly" ? "Trải nghiệm" : subscription.plan === "monthly" ? "Thường xuyên" : "Năm"}
+                    </div>
+                    <div>Còn lại: {(() => {
+                      const diff = new Date(subscription.expires_at).getTime() - Date.now();
+                      if (diff <= 0) return "Đã hết hạn";
+                      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                      return `${days} ngày ${hours} giờ`;
+                    })()}</div>
+                  </div>
+                )}
+                {subscription && subscription.plan === "free" && (
+                   <div style={{ marginTop: "8px", fontSize: "12px", color: "#ef4444" }}>
+                     Gói Free (Đã hết hạn hoặc chưa đăng ký)
+                   </div>
+                )}
               </div>
 
               <div style={{ padding: "4px 0" }}>
@@ -133,7 +164,7 @@ export default function AccountActions() {
                   onMouseLeave={(e) => e.currentTarget.style.background = "none"}
                 >
                   <CrownIcon />
-                  Nâng cấp Premium
+                  {subscription && subscription.plan !== "free" ? "Gia hạn Premium" : "Nâng cấp Premium"}
                 </button>
                 <button 
                   onClick={() => { setDropdownOpen(false); router.push("/leaderboard"); }}

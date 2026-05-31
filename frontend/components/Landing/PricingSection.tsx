@@ -1,4 +1,5 @@
 interface PricingTier {
+  id: string;
   name: string;
   price: string;
   period: string;
@@ -11,9 +12,10 @@ interface PricingTier {
 interface PricingSectionProps {
   title: string;
   tiers: PricingTier[];
+  onSelectPlan?: (planId: string) => void;
 }
 
-export default function PricingSection({ title, tiers }: PricingSectionProps) {
+export default function PricingSection({ title, tiers, onSelectPlan }: PricingSectionProps) {
   return (
     <section className="pricingSection" id="pricing">
       <h2 className="pricingTitle">{title}</h2>
@@ -22,7 +24,7 @@ export default function PricingSection({ title, tiers }: PricingSectionProps) {
         {tiers.map((tier) => (
           <article
             className={`pricingCard${tier.popular ? " popular" : ""}`}
-            key={tier.name}
+            key={tier.id}
           >
             {tier.badge ? (
               <span className="pricingBadge">{tier.badge}</span>
@@ -40,7 +42,7 @@ export default function PricingSection({ title, tiers }: PricingSectionProps) {
               ))}
             </ul>
 
-            <button className="pricingCta" type="button">
+            <button className="pricingCta" type="button" onClick={onSelectPlan ? () => onSelectPlan(tier.id) : undefined}>
               {tier.cta}
             </button>
           </article>
