@@ -22,6 +22,12 @@ const SettingsIcon = () => (
 const LogoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
 );
+const TrophyIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+);
+const BellIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+);
 
 export default function AccountActions() {
   const t = useTranslations("Nav");
@@ -82,20 +88,27 @@ export default function AccountActions() {
         </Link>
       ) : null}
       {!loading && user ? (
-        <div style={{ position: "relative" }} ref={dropdownRef}>
-          <button 
-            type="button" 
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-            style={{ display: "flex", alignItems: "center", border: "none", background: "none", cursor: "pointer", padding: 0 }}
-          >
-            {user.avatar_url ? (
-              <img src={user.avatar_url} alt={user.name} style={{ width: "32px", height: "32px", borderRadius: "50%", border: "1px solid var(--line)", objectFit: "cover" }} />
-            ) : (
-              <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--primary)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}>
-                {user.name.charAt(0).toUpperCase()}
-              </div>
-            )}
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <Link href="/leaderboard" style={{ color: "var(--ink)", display: "flex", alignItems: "center" }} title="Bảng xếp hạng">
+            <TrophyIcon />
+          </Link>
+          <button type="button" style={{ color: "var(--ink)", background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", padding: 0 }} title="Thông báo">
+            <BellIcon />
           </button>
+          <div style={{ position: "relative" }} ref={dropdownRef}>
+            <button
+              type="button"
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              style={{ display: "flex", alignItems: "center", border: "none", background: "none", cursor: "pointer", padding: 0 }}
+            >
+              {user.avatar_url ? (
+                <img src={user.avatar_url} alt={user.name} style={{ width: "32px", height: "32px", borderRadius: "50%", border: "1px solid var(--line)", objectFit: "cover" }} />
+              ) : (
+                <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--primary)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}>
+                  {user.name.charAt(0).toUpperCase()}
+                </div>
+              )}
+            </button>
           
           {dropdownOpen && (
             <div style={{ 
@@ -170,6 +183,7 @@ export default function AccountActions() {
               </div>
             </div>
           )}
+          </div>
         </div>
       ) : null}
       <LanguageSwitcher />
