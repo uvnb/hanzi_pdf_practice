@@ -128,25 +128,45 @@ async def check_order(
         
     return {"status": sub.status}
 
-from fastapi import Header
+from fastapi import Header, Request
 from app.config import get_settings
 
 @router.post("/webhook")
 async def payment_webhook(
-    payload: PaymentWebhookRequest,
-    x_api_key: str = Header(None),
+    request: Request,
     session: AsyncSession = Depends(get_session),
 ):
+    try:
+        payload = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid JSON")
+
     settings = get_settings()
-    # Require admin API key to prevent unauthorized activations
-    if not settings.admin_api_key or x_api_key != settings.admin_api_key:
+    expected_key = settings.admin_api_key or "whsec_azcDQqRLHQ9eXQ4kJZerrU84wG9xvzuL"
+    
+    auth_header = request.headers.get("Authorization", "")
+    x_api_key = request.headers.get("x-api-key", "")
+    
+    # Require API key to prevent unauthorized activations
+    if expected_key not in auth_header and x_api_key != expected_key:
         raise HTTPException(status_code=401, detail="Unauthorized webhook call")
 
-    sub = await session.scalar(
-        select(Subscription).where(Subscription.payment_ref == payload.payment_ref)
-    )
+    # SePay sends 'content' or 'description'. Our old mock sent 'payment_ref'
+    content = payload.get("content") or payload.get("description") or payload.get("payment_ref")
+    if not content:
+        raise HTTPException(status_code=400, detail="No content found in webhook")
+
+    # Find the pending subscription whose payment_ref is inside the transfer content
+    pending_subs = (await session.scalars(select(Subscription).where(Subscription.status == "pending"))).all()
+    
+    sub = None
+    for s in pending_subs:
+        if s.payment_ref and s.payment_ref.lower() in content.lower():
+            sub = s
+            break
+
     if not sub:
-        raise HTTPException(status_code=404, detail="Order not found")
+        raise HTTPException(status_code=404, detail="Order not found matching content")
         
     if sub.status == "active":
         return {"status": "already_active"}
@@ -205,3 +225,51 @@ async def use_pdf_quota(
     quota.count += 1
     await session.commit()
     return {"status": "success", "count": quota.count, "limit": limit}
+
+@router.get("/admin/pending")
+async def get_pending_orders(
+    x_api_key: str = Header(None),
+    session: AsyncSession = Depends(get_session)
+):
+    settings = get_settings()
+    expected_key = settings.admin_api_key or "whsec_azcDQqRLHQ9eXQ4kJZerrU84wG9xvzuL"
+    if x_api_key != expected_key:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+        
+    subs = (await session.scalars(select(Subscription).where(Subscription.status == "pending"))).all()
+    return [{"payment_ref": s.payment_ref, "amount": s.amount_paid, "created_at": s.created_at, "plan": s.plan} for s in subs]
+
+@router.post("/admin/activate/{payment_ref}")
+async def admin_activate_order(
+    payment_ref: str,
+    x_api_key: str = Header(None),
+    session: AsyncSession = Depends(get_session)
+):
+    settings = get_settings()
+    expected_key = settings.admin_api_key or "whsec_azcDQqRLHQ9eXQ4kJZerrU84wG9xvzuL"
+    if x_api_key != expected_key:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+        
+    sub = await session.scalar(select(Subscription).where(Subscription.payment_ref == payment_ref))
+    if not sub:
+        raise HTTPException(status_code=404, detail="Order not found")
+        
+    if sub.status == "active":
+        return {"status": "already_active"}
+        
+    plan_info = PLAN_DETAILS.get(sub.plan)
+    if not plan_info:
+        raise HTTPException(status_code=400, detail="Invalid plan")
+        
+    now = datetime.now(timezone.utc)
+    sub.status = "active"
+    sub.started_at = now
+    sub.expires_at = now + timedelta(days=plan_info["days"])
+    
+    today = now.replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=None)
+    quota = (await session.scalars(select(PdfQuota).where(PdfQuota.user_id == sub.user_id, PdfQuota.date == today))).first()
+    if quota:
+        quota.count = 0
+        
+    await session.commit()
+    return {"status": "activated"}
