@@ -42,10 +42,9 @@ export default function AccountActions() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [deleteCode, setDeleteCode] = useState("");
+  const [deleteEmail, setDeleteEmail] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
-  const [deleteMessage, setDeleteMessage] = useState("");
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -57,25 +56,9 @@ export default function AccountActions() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleRequestDelete = async () => {
-    if (!confirm("Bạn có chắc chắn muốn xóa tài khoản? Tất cả dữ liệu của bạn sẽ bị mất vĩnh viễn.")) return;
-    setDropdownOpen(false);
-    setDeleteModalOpen(true);
-    setDeleteMessage("Đang gửi mã xác nhận...");
-    setDeleteError("");
-    try {
-      const res = await fetch("/api/auth/request-delete", { method: "POST" });
-      if (!res.ok) throw new Error("Không thể gửi mã xác nhận");
-      setDeleteMessage("Mã 6 số đã được gửi đến email của bạn.");
-    } catch (err: any) {
-      setDeleteError(err.message);
-      setDeleteMessage("");
-    }
-  };
-
   const handleConfirmDelete = async () => {
-    if (deleteCode.length !== 6) {
-      setDeleteError("Vui lòng nhập đúng 6 số");
+    if (deleteEmail.trim().toLowerCase() !== user?.email?.toLowerCase()) {
+      setDeleteError("Vui lòng nhập chính xác email của bạn");
       return;
     }
     setIsDeleting(true);
@@ -84,11 +67,11 @@ export default function AccountActions() {
       const res = await fetch("/api/auth/confirm-delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: deleteCode })
+        body: JSON.stringify({ email: deleteEmail.trim() })
       });
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.detail || "Sai mã xác nhận");
+        throw new Error(data.detail || "Có lỗi xảy ra");
       }
       alert("Tài khoản đã được xóa thành công");
       window.location.href = "/";
@@ -248,7 +231,7 @@ export default function AccountActions() {
                   {t("logout")}
                 </button>
                 <button 
-                  onClick={handleRequestDelete}
+                  onClick={() => { setDropdownOpen(false); setDeleteModalOpen(true); setDeleteError(""); setDeleteEmail(""); }}
                   style={{ ...menuItemStyle, color: "#ef4444", fontSize: "13px", opacity: 0.8 }}
                   onMouseEnter={(e) => e.currentTarget.style.background = "rgba(239, 68, 68, 0.05)"}
                   onMouseLeave={(e) => e.currentTarget.style.background = "none"}
@@ -267,17 +250,15 @@ export default function AccountActions() {
         <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
           <div style={{ background: "var(--paper)", padding: "24px", borderRadius: "8px", width: "100%", maxWidth: "400px", color: "var(--ink)" }}>
             <h3 style={{ marginTop: 0 }}>Xác nhận xóa tài khoản</h3>
-            <p style={{ fontSize: "14px", opacity: 0.8 }}>Vui lòng kiểm tra hộp thư email (<strong>{user?.email}</strong>) để lấy mã xác nhận gồm 6 chữ số.</p>
-            {deleteMessage && <div style={{ fontSize: "14px", color: "#22c55e", marginBottom: "12px" }}>{deleteMessage}</div>}
+            <p style={{ fontSize: "14px", opacity: 0.8 }}>Hành động này không thể hoàn tác. Để tiếp tục, vui lòng nhập chính xác email của bạn (<strong>{user?.email}</strong>).</p>
             {deleteError && <div style={{ fontSize: "14px", color: "#ef4444", marginBottom: "12px" }}>{deleteError}</div>}
             
             <input 
-              type="text" 
-              placeholder="Mã 6 chữ số" 
-              maxLength={6}
-              value={deleteCode}
-              onChange={(e) => setDeleteCode(e.target.value.replace(/\D/g, ''))}
-              style={{ width: "100%", padding: "10px", borderRadius: "4px", border: "1px solid var(--line)", background: "var(--bg)", color: "var(--ink)", fontSize: "16px", textAlign: "center", letterSpacing: "4px", fontWeight: "bold" }}
+              type="email" 
+              placeholder="Nhập email của bạn" 
+              value={deleteEmail}
+              onChange={(e) => setDeleteEmail(e.target.value)}
+              style={{ width: "100%", padding: "10px", borderRadius: "4px", border: "1px solid var(--line)", background: "var(--bg)", color: "var(--ink)", fontSize: "14px" }}
             />
             
             <div style={{ display: "flex", gap: "12px", marginTop: "24px" }}>
@@ -289,8 +270,8 @@ export default function AccountActions() {
               </button>
               <button 
                 onClick={handleConfirmDelete}
-                disabled={isDeleting || deleteCode.length !== 6}
-                style={{ flex: 1, padding: "10px", background: "#ef4444", border: "none", borderRadius: "4px", color: "white", cursor: "pointer", opacity: (isDeleting || deleteCode.length !== 6) ? 0.5 : 1, fontWeight: "bold" }}
+                disabled={isDeleting || !deleteEmail}
+                style={{ flex: 1, padding: "10px", background: "#ef4444", border: "none", borderRadius: "4px", color: "white", cursor: "pointer", opacity: (isDeleting || !deleteEmail) ? 0.5 : 1, fontWeight: "bold" }}
               >
                 {isDeleting ? "Đang xóa..." : "Xác nhận xóa"}
               </button>
