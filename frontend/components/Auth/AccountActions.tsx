@@ -142,13 +142,13 @@ export default function AccountActions() {
                   Nâng cấp Premium
                 </button>
                 <button 
-                  onClick={() => setDropdownOpen(false)}
+                  onClick={() => { setDropdownOpen(false); router.push("/leaderboard"); }}
                   style={{ ...menuItemStyle }}
                   onMouseEnter={(e) => e.currentTarget.style.background = "rgba(0,0,0,0.03)"}
                   onMouseLeave={(e) => e.currentTarget.style.background = "none"}
                 >
-                  <UsersIcon />
-                  Giới thiệu bạn bè
+                  <TrophyIcon />
+                  Bảng xếp hạng
                 </button>
                 <button 
                   onClick={() => { setDropdownOpen(false); router.push("/terms"); }}
@@ -165,8 +165,8 @@ export default function AccountActions() {
                   onMouseEnter={(e) => e.currentTarget.style.background = "rgba(0,0,0,0.03)"}
                   onMouseLeave={(e) => e.currentTarget.style.background = "none"}
                 >
-                  <SettingsIcon />
-                  Cài đặt
+                  <BellIcon />
+                  Thông báo
                 </button>
               </div>
 
