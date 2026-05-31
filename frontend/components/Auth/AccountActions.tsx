@@ -29,6 +29,10 @@ const BellIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
 );
 
+const TrashIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+);
+
 export default function AccountActions() {
   const t = useTranslations("Nav");
   const { loading, logout, user, subscription } = useAuth();
@@ -36,6 +40,12 @@ export default function AccountActions() {
   const router = useRouter();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteCode, setDeleteCode] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+  const [deleteMessage, setDeleteMessage] = useState("");
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -44,10 +54,50 @@ export default function AccountActions() {
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleRequestDelete = async () => {
+    if (!confirm("Bạn có chắc chắn muốn xóa tài khoản? Tất cả dữ liệu của bạn sẽ bị mất vĩnh viễn.")) return;
+    setDropdownOpen(false);
+    setDeleteModalOpen(true);
+    setDeleteMessage("Đang gửi mã xác nhận...");
+    setDeleteError("");
+    try {
+      const res = await fetch("/api/auth/request-delete", { method: "POST" });
+      if (!res.ok) throw new Error("Không thể gửi mã xác nhận");
+      setDeleteMessage("Mã 6 số đã được gửi đến email của bạn.");
+    } catch (err: any) {
+      setDeleteError(err.message);
+      setDeleteMessage("");
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteCode.length !== 6) {
+      setDeleteError("Vui lòng nhập đúng 6 số");
+      return;
+    }
+    setIsDeleting(true);
+    setDeleteError("");
+    try {
+      const res = await fetch("/api/auth/confirm-delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: deleteCode })
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.detail || "Sai mã xác nhận");
+      }
+      alert("Tài khoản đã được xóa thành công");
+      window.location.href = "/";
+    } catch (err: any) {
+      setDeleteError(err.message);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const menuItemStyle = {
     display: "flex",
@@ -66,26 +116,18 @@ export default function AccountActions() {
   return (
     <>
       {!pathname.includes('/practice') && (
-        <Link className="pageAction" href="/practice">
-          {t("practice")}
-        </Link>
+        <Link className="pageAction" href="/practice">{t("practice")}</Link>
       )}
       {!pathname.includes('/pdf') && (
-        <Link className="pageAction" href="/pdf">
-          {t("pdf")}
-        </Link>
+        <Link className="pageAction" href="/pdf">{t("pdf")}</Link>
       )}
       {!pathname.includes('/notebook') && user && (
-        <Link className="pageAction" href="/notebook">
-          {t("notebook")}
-        </Link>
+        <Link className="pageAction" href="/notebook">{t("notebook")}</Link>
       )}
 
       {loading ? <span className="accountMuted">{t("loading")}</span> : null}
       {!loading && !user ? (
-        <Link className="navLink" href="/auth/login">
-          {t("login")}
-        </Link>
+        <Link className="navLink" href="/auth/login">{t("login")}</Link>
       ) : null}
       {!loading && user ? (
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
@@ -108,7 +150,7 @@ export default function AccountActions() {
             <div style={{ 
               position: "absolute", 
               top: "calc(100% + 12px)", 
-              right: 0, 
+              left: 0, 
               width: "220px", 
               background: "var(--paper)", 
               border: "1px solid var(--line)", 
@@ -205,12 +247,58 @@ export default function AccountActions() {
                   <LogoutIcon />
                   {t("logout")}
                 </button>
+                <button 
+                  onClick={handleRequestDelete}
+                  style={{ ...menuItemStyle, color: "#ef4444", fontSize: "13px", opacity: 0.8 }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = "rgba(239, 68, 68, 0.05)"}
+                  onMouseLeave={(e) => e.currentTarget.style.background = "none"}
+                >
+                  <TrashIcon />
+                  Xóa tài khoản
+                </button>
               </div>
             </div>
           )}
           </div>
         </div>
       ) : null}
+
+      {deleteModalOpen && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
+          <div style={{ background: "var(--paper)", padding: "24px", borderRadius: "8px", width: "100%", maxWidth: "400px", color: "var(--ink)" }}>
+            <h3 style={{ marginTop: 0 }}>Xác nhận xóa tài khoản</h3>
+            <p style={{ fontSize: "14px", opacity: 0.8 }}>Vui lòng kiểm tra hộp thư email (<strong>{user?.email}</strong>) để lấy mã xác nhận gồm 6 chữ số.</p>
+            {deleteMessage && <div style={{ fontSize: "14px", color: "#22c55e", marginBottom: "12px" }}>{deleteMessage}</div>}
+            {deleteError && <div style={{ fontSize: "14px", color: "#ef4444", marginBottom: "12px" }}>{deleteError}</div>}
+            
+            <input 
+              type="text" 
+              placeholder="Mã 6 chữ số" 
+              maxLength={6}
+              value={deleteCode}
+              onChange={(e) => setDeleteCode(e.target.value.replace(/\D/g, ''))}
+              style={{ width: "100%", padding: "10px", borderRadius: "4px", border: "1px solid var(--line)", background: "var(--bg)", color: "var(--ink)", fontSize: "16px", textAlign: "center", letterSpacing: "4px", fontWeight: "bold" }}
+            />
+            
+            <div style={{ display: "flex", gap: "12px", marginTop: "24px" }}>
+              <button 
+                onClick={() => setDeleteModalOpen(false)}
+                style={{ flex: 1, padding: "10px", background: "transparent", border: "1px solid var(--line)", borderRadius: "4px", color: "var(--ink)", cursor: "pointer" }}
+              >
+                Hủy bỏ
+              </button>
+              <button 
+                onClick={handleConfirmDelete}
+                disabled={isDeleting || deleteCode.length !== 6}
+                style={{ flex: 1, padding: "10px", background: "#ef4444", border: "none", borderRadius: "4px", color: "white", cursor: "pointer", opacity: (isDeleting || deleteCode.length !== 6) ? 0.5 : 1, fontWeight: "bold" }}
+              >
+                {isDeleting ? "Đang xóa..." : "Xác nhận xóa"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <LanguageSwitcher />
       <ThemeToggle />
     </>
