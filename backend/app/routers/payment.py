@@ -50,9 +50,9 @@ async def get_my_subscription(
     
     # Get today's PDF quota
     today = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=None)
-    quota = await session.scalar(
+    quota = (await session.scalars(
         select(PdfQuota).where(PdfQuota.user_id == user.id, PdfQuota.date == today)
-    )
+    )).first()
     count = quota.count if quota else 0
 
     if sub:
@@ -175,9 +175,9 @@ async def use_pdf_quota(
     limit = PLAN_DETAILS.get(sub.plan, {}).get("pdf_limit", FREE_PDF_LIMIT) if sub else FREE_PDF_LIMIT
 
     today = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=None)
-    quota = await session.scalar(
+    quota = (await session.scalars(
         select(PdfQuota).where(PdfQuota.user_id == user.id, PdfQuota.date == today)
-    )
+    )).first()
     
     if not quota:
         quota = PdfQuota(user_id=user.id, date=today, count=0)
