@@ -57,3 +57,15 @@ export async function consumePdfQuota(): Promise<{ status: string; count: number
   }
   return await response.json();
 }
+
+export async function simulateWebhook(paymentRef: string): Promise<{ status: string }> {
+  const url = apiUrl("/api/payments/webhook");
+  const response = await apiFetch(url, {
+    method: "POST",
+    body: JSON.stringify({ payment_ref: paymentRef }),
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to trigger webhook: ${response.status}`);
+  }
+  return await response.json();
+}
