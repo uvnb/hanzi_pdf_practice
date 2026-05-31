@@ -128,12 +128,20 @@ async def check_order(
         
     return {"status": sub.status}
 
+from fastapi import Header
+from app.config import get_settings
+
 @router.post("/webhook")
 async def payment_webhook(
     payload: PaymentWebhookRequest,
+    x_api_key: str = Header(None),
     session: AsyncSession = Depends(get_session),
 ):
-    # This is a manual webhook for now. In production, SePay will call this.
+    settings = get_settings()
+    # Require admin API key to prevent unauthorized activations
+    if not settings.admin_api_key or x_api_key != settings.admin_api_key:
+        raise HTTPException(status_code=401, detail="Unauthorized webhook call")
+
     sub = await session.scalar(
         select(Subscription).where(Subscription.payment_ref == payload.payment_ref)
     )
@@ -152,6 +160,14 @@ async def payment_webhook(
     sub.started_at = now
     sub.expires_at = now + timedelta(days=plan_info["days"])
     
+    # Reset today's PDF quota so user can immediately use their new limit
+    today = now.replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=None)
+    quota = (await session.scalars(
+        select(PdfQuota).where(PdfQuota.user_id == sub.user_id, PdfQuota.date == today)
+    )).first()
+    if quota:
+        quota.count = 0
+        
     await session.commit()
     return {"status": "activated"}
 

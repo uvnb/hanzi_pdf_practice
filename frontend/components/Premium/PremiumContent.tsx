@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import PricingSection from "@/components/Landing/PricingSection";
-import { createOrder, checkOrder, simulateWebhook, OrderResponse } from "@/lib/payment-api";
+import { createOrder, checkOrder, OrderResponse } from "@/lib/payment-api";
 import { useAuth } from "@/components/Auth/AuthProvider";
 import { useRouter } from "@/i18n/navigation";
 import "@/app/landing.css";
@@ -271,18 +271,6 @@ export default function PremiumContent() {
                     <div style={{ width: "16px", height: "16px", border: "2px solid var(--accent)", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite" }}></div>
                     Đang chờ thanh toán...
                   </div>
-                  <button 
-                    onClick={async () => {
-                      try {
-                        await simulateWebhook(order.payment_ref);
-                        setActivated(true);
-                        await refresh();
-                      } catch(e) {}
-                    }}
-                    style={{ marginTop: "16px", padding: "8px 16px", fontSize: "14px", background: "var(--accent)", border: "none", borderRadius: "8px", color: "white", cursor: "pointer", fontWeight: "bold" }}
-                  >
-                    Mô phỏng Webhook (Tự động xác nhận)
-                  </button>
                   <style dangerouslySetInnerHTML={{__html: `@keyframes spin { to { transform: rotate(360deg); } }`}}/>
                 </div>
               </>
