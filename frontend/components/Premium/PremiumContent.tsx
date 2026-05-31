@@ -237,15 +237,15 @@ export default function PremiumContent() {
                     <div className="info-item">
                       <span className="info-label">Chủ tài khoản</span>
                       <div className="info-value">
-                        VU THI TRANG NHUNG 
-                        <button className="copy-btn" onClick={() => navigator.clipboard.writeText("VU THI TRANG NHUNG")}>Copy</button>
+                        VU NGOC QUAN 
+                        <button className="copy-btn" onClick={() => navigator.clipboard.writeText("VU NGOC QUAN")}>Copy</button>
                       </div>
                     </div>
                     <div className="info-item">
                       <span className="info-label">Số tài khoản</span>
                       <div className="info-value">
-                        19036583859018 
-                        <button className="copy-btn" onClick={() => navigator.clipboard.writeText("19036583859018")}>Copy</button>
+                        19076437519010 
+                        <button className="copy-btn" onClick={() => navigator.clipboard.writeText("19076437519010")}>Copy</button>
                       </div>
                     </div>
                     <div className="info-item">

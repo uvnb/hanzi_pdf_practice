@@ -22,13 +22,13 @@ PLAN_DETAILS = {
 FREE_PDF_LIMIT = 1
 
 def generate_vietqr_url(amount: int, add_info: str) -> str:
-    # VietQR for Techcombank - VU THI TRANG NHUNG - 19036583859018
+    # VietQR for Techcombank - VU NGOC QUAN - 19076437519010
     params = {
         "amount": amount,
         "addInfo": add_info,
-        "accountName": "VU THI TRANG NHUNG"
+        "accountName": "VU NGOC QUAN"
     }
-    return f"https://img.vietqr.io/image/TCB-19036583859018-compact2.png?{urlencode(params)}"
+    return f"https://img.vietqr.io/image/TCB-19076437519010-compact2.png?{urlencode(params)}"
 
 @router.get("/me", response_model=SubscriptionResponse)
 async def get_my_subscription(
