@@ -153,12 +153,15 @@ def test_ai_enrichment_requires_admin_key_and_persists(monkeypatch) -> None:
 
     async def fake_enrich(character: str) -> GeneratedMetadata:
         return GeneratedMetadata(
+            hanzi=character,
             pinyin="xué",
             meaning_vi=f"học; Hán Việt: học ({character})",
             example_sentences=[
                 GeneratedExample(hanzi="我学习汉语。", pinyin="Wǒ xuéxí Hànyǔ.", vi="Tôi học tiếng Hán."),
                 GeneratedExample(hanzi="学生学习。", pinyin="Xuéshēng xuéxí.", vi="Học sinh học tập."),
             ],
+            radicals=["子", "冖"],
+            etymology_vi="Chữ gợi nhớ việc một đứa trẻ tiếp nhận tri thức.",
         )
 
     monkeypatch.setattr(ai_router, "enrich_character", fake_enrich)

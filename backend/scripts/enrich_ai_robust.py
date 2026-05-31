@@ -1,15 +1,29 @@
 import asyncio
+import os
 from sqlalchemy import select
 
 from app.database import AsyncSessionLocal, create_tables
 from app.models.hanzi import HanziCharacter
-from app.services.gemini_service import enrich_character
+from app.services.gemini_service import enrich_characters_batch
+
+
+def get_api_keys() -> list[str]:
+    keys = [
+        key.strip()
+        for key in os.getenv("GEMINI_API_KEYS", "").split(",")
+        if key.strip()
+    ]
+    if not keys:
+        raise RuntimeError("Set GEMINI_API_KEYS to one or more comma-separated keys")
+    return keys
 
 async def main():
     await create_tables()
 
+    api_keys = get_api_keys()
+    key_idx = 0
+
     async with AsyncSessionLocal() as session:
-        # Find characters that don't have etymology yet
         result = await session.scalars(
             select(HanziCharacter).where(HanziCharacter.ai_enriched == False)
         )
@@ -21,19 +35,21 @@ async def main():
 
         print(f"Found {len(characters)} characters to enrich.")
 
-        from app.services.gemini_service import enrich_characters_batch
-
-        batch_size = 15
-        for i in range(0, len(characters), batch_size):
+        batch_size = 10
+        i = 0
+        while i < len(characters):
             batch = characters[i:i + batch_size]
             char_strings = [c.character for c in batch]
-            print(f"Enriching batch {i//batch_size + 1}: {char_strings}...")
+            print(f"Enriching batch {i//batch_size + 1}/{len(characters)//batch_size + 1}: {char_strings}...")
 
             try:
-                metadata_list = await enrich_characters_batch(char_strings)
-
+                metadata_list = await enrich_characters_batch(
+                    char_strings,
+                    api_key=api_keys[key_idx],
+                )
                 meta_dict = {m.hanzi: m for m in metadata_list}
 
+                success_count = 0
                 for char_obj in batch:
                     metadata = meta_dict.get(char_obj.character)
                     if metadata:
@@ -46,17 +62,27 @@ async def main():
                         char_obj.radicals = metadata.radicals
                         char_obj.etymology_vi = metadata.etymology_vi
                         char_obj.ai_enriched = True
-                        print(f"  -> Successfully enriched {char_obj.character}")
+                        success_count += 1
                     else:
                         print(f"  -> Gemini missed {char_obj.character}")
-                
+
                 await session.commit()
-                # Sleep to respect rate limits (e.g. 15 RPM). We sleep 6 seconds.
-                await asyncio.sleep(6)
+                print(f"  -> Successfully enriched {success_count} characters in batch")
+
+                i += batch_size # Move to next batch ONLY if success
+                await asyncio.sleep(2) # Small sleep since we have many keys
+
             except Exception as e:
                 print(f"  -> Error enriching batch: {e}")
                 await session.rollback()
-                await asyncio.sleep(6)  # wait before retry/next batch
+
+                err_str = str(e)
+                if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
+                    print("Rate limit hit, switching API key...")
+                    key_idx = (key_idx + 1) % len(api_keys)
+
+                print("Retrying batch in 5 seconds...")
+                await asyncio.sleep(5)
 
 if __name__ == "__main__":
     asyncio.run(main())

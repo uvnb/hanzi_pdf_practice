@@ -71,7 +71,8 @@ async def fetch_hsk_level(level: int):
             else:
                 print(f"Skipped {char} - no SVG data found")
             
-            await asyncio.sleep(0.1) # Small delay to avoid rate limits
+            # No delay
+
             
         output_file = SEED_DIR / f"hsk{level}_chars.json"
         with open(output_file, "w", encoding="utf-8") as f:

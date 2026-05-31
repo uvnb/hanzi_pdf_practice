@@ -10,7 +10,7 @@ export default function PremiumContent() {
       name: t("tierFree"),
       price: t("tierFreePrice"),
       period: t("tierFreePeriod"),
-      features: [t("tierFreeF1"), t("tierFreeF2")],
+      features: [t("tierFreeF1"), t("tierFreeF2"), t("tierFreeF3")],
       cta: t("tierFreeCta"),
     },
     {
@@ -19,6 +19,8 @@ export default function PremiumContent() {
       period: t("tierProPeriod"),
       features: [t("tierProF1"), t("tierProF2"), t("tierProF3")],
       cta: t("tierProCta"),
+      highlighted: true,
+      badge: t("tierPopular")
     },
     {
       name: t("tierMaster"),

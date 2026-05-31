@@ -65,7 +65,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             name: t("tierFree"),
             price: t("tierFreePrice"),
             period: t("tierFreePeriod"),
-            features: [t("tierFreeF1"), t("tierFreeF2")],
+            features: [t("tierFreeF1"), t("tierFreeF2"), t("tierFreeF3")],
             cta: t("tierFreeCta"),
           },
           {
