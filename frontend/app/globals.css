@@ -112,7 +112,8 @@ a {
 .avatarDropdown {
   position: absolute;
   top: calc(100% + 12px);
-  right: 0;
+  left: 0;
+  right: auto;
   width: 220px;
   background: var(--paper);
   border: 1px solid var(--line);
