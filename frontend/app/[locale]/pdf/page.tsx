@@ -16,7 +16,6 @@ export default async function PdfPage({ params }: { params: Promise<{ locale: st
           汉字 Hanzi
         </Link>
         <div>
-          <p className="eyebrow">{t("eyebrow")}</p>
           <h1>{t("title")}</h1>
         </div>
         <div className="headerActions">
