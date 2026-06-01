@@ -23,6 +23,7 @@ export default function PremiumContent() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activated, setActivated] = useState(false);
+  const [claimed, setClaimed] = useState(false);
 
   const handleSelectPlan = async (planId: string) => {
     if (!user) {
@@ -32,6 +33,7 @@ export default function PremiumContent() {
     try {
       setLoading(true);
       setError(null);
+      setClaimed(false);
       const newOrder = await createOrder(planId);
       setOrder(newOrder);
     } catch (err: any) {
@@ -265,14 +267,28 @@ export default function PremiumContent() {
                   </div>
                 </div>
                 
-                <div style={{ textAlign: "center", marginTop: "32px", fontSize: "14px", opacity: 0.7 }}>
-                  Hệ thống sẽ tự động kích hoạt <span style={{ color: "var(--success, #22c55e)", fontWeight: "bold" }}>trong vòng vài giây</span> sau khi chuyển khoản.
-                  <div style={{ marginTop: "8px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
-                    <div style={{ width: "16px", height: "16px", border: "2px solid var(--accent)", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite" }}></div>
-                    Đang chờ thanh toán...
+                {claimed ? (
+                  <div style={{ textAlign: "center", marginTop: "32px", fontSize: "14px", color: "var(--ink)", background: "rgba(34, 197, 94, 0.1)", padding: "16px", borderRadius: "8px", border: "1px solid rgba(34, 197, 94, 0.3)" }}>
+                    <div style={{ fontWeight: "bold", color: "#16a34a", marginBottom: "8px" }}>✅ Đã ghi nhận yêu cầu</div>
+                    Nếu quá trình tự động gặp sự cố, Quản trị viên sẽ kiểm tra biến động số dư và kích hoạt tài khoản cho bạn trong chốc lát.
+                    <div style={{ marginTop: "12px", opacity: 0.8 }}>Bạn có thể đóng cửa sổ này và đợi.</div>
                   </div>
-                  <style dangerouslySetInnerHTML={{__html: `@keyframes spin { to { transform: rotate(360deg); } }`}}/>
-                </div>
+                ) : (
+                  <div style={{ textAlign: "center", marginTop: "32px", fontSize: "14px", opacity: 0.9 }}>
+                    Hệ thống sẽ tự động kích hoạt <span style={{ color: "var(--success, #22c55e)", fontWeight: "bold" }}>trong vòng vài giây</span> sau khi chuyển khoản.
+                    <div style={{ marginTop: "12px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+                      <div style={{ width: "16px", height: "16px", border: "2px solid var(--accent)", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite" }}></div>
+                      Đang chờ thanh toán...
+                    </div>
+                    <button 
+                      onClick={() => setClaimed(true)}
+                      style={{ marginTop: "16px", padding: "8px 16px", background: "transparent", border: "1px solid var(--accent)", color: "var(--accent)", borderRadius: "6px", cursor: "pointer", fontSize: "13px", fontWeight: "600" }}
+                    >
+                      Tôi đã chuyển khoản xong
+                    </button>
+                    <style dangerouslySetInnerHTML={{__html: `@keyframes spin { to { transform: rotate(360deg); } }`}}/>
+                  </div>
+                )}
               </>
             )}
           </div>
