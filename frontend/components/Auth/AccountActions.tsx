@@ -128,21 +128,7 @@ export default function AccountActions() {
             </button>
           
           {dropdownOpen && (
-            <div style={{ 
-              position: "absolute", 
-              top: "calc(100% + 12px)", 
-              left: 0, 
-              width: "220px", 
-              background: "var(--paper)", 
-              border: "1px solid var(--line)", 
-              borderRadius: "8px", 
-              boxShadow: "0 4px 12px rgba(0,0,0,0.1)", 
-              zIndex: 100,
-              display: "flex",
-              flexDirection: "column",
-              padding: "8px 0",
-              overflow: "hidden"
-            }}>
+            <div className="avatarDropdown">
               <div style={{ padding: "8px 16px", borderBottom: "1px solid var(--line)", marginBottom: "4px" }}>
                 <div style={{ fontWeight: 600, color: "var(--ink)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.name}</div>
                 <div style={{ fontSize: "12px", color: "var(--ink)", opacity: 0.7, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email}</div>

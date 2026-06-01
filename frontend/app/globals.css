@@ -109,6 +109,22 @@ a {
   margin-left: 0;
 }
 
+.avatarDropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 220px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+  overflow: hidden;
+}
+
 .accountMuted {
   color: var(--muted);
   font-size: 14px;
@@ -190,7 +206,7 @@ button:hover:not(:disabled) {
 }
 
 .pageHeader {
-  align-items: start;
+  align-items: center;
   border-bottom: 1px solid var(--line);
   gap: 30px;
   justify-content: start;
@@ -734,6 +750,7 @@ button:disabled {
 
   .pageAction {
     width: auto;
+    margin-left: 0;
   }
 
   .headerActions {
@@ -744,6 +761,11 @@ button:disabled {
     margin-left: 0;
     width: 100%;
     gap: 16px;
+  }
+
+  .avatarDropdown {
+    left: 0;
+    right: auto;
   }
 
   .pdfBuilder {
