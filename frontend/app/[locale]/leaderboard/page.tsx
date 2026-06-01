@@ -19,7 +19,6 @@ export default async function LeaderboardPage({
           汉字 Hanzi
         </Link>
         <div>
-          <p className="eyebrow">LEADERBOARD</p>
           <h1>Xếp hạng</h1>
         </div>
         <div className="headerActions">

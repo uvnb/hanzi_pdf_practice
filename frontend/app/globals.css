@@ -757,15 +757,15 @@ button:disabled {
     align-items: center;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: flex-start;
+    justify-content: flex-end;
     margin-left: 0;
     width: 100%;
     gap: 16px;
   }
 
   .avatarDropdown {
-    left: 0;
-    right: auto;
+    right: 0;
+    left: auto;
   }
 
   .pdfBuilder {
