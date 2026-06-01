@@ -224,8 +224,10 @@ export default function PremiumContent() {
                 
                 <div className="payment-box">
                   <div className="qr-side">
-                    <img src={order.qr_url} alt="QR Code" />
-                    <span style={{ fontSize: "14px", opacity: 0.7 }}>Quét mã QR để chuyển khoản</span>
+                    <img src="/qr_static.png" alt="QR Code" />
+                    <span style={{ fontSize: "14px", fontWeight: "bold", color: "#dc2626", textAlign: "center" }}>
+                      ⚠️ Quét mã và BẮT BUỘC nhập thủ công<br/>Nội dung CK ở bên phải
+                    </span>
                   </div>
                   
                   <div className="info-side">
