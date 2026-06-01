@@ -721,17 +721,29 @@ button:disabled {
 
   .pageHeader {
     flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .pageHeader h1 {
+    font-size: 36px;
+  }
+
+  .brand {
+    font-size: 32px;
   }
 
   .pageAction {
-    width: 100%;
+    width: auto;
   }
 
   .headerActions {
-    align-items: start;
-    flex-direction: column;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
     margin-left: 0;
     width: 100%;
+    gap: 16px;
   }
 
   .pdfBuilder {
