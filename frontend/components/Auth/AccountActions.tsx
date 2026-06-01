@@ -3,8 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/Auth/AuthProvider";
-import LanguageSwitcher from "@/components/Layout/LanguageSwitcher";
-import ThemeToggle from "@/components/Layout/ThemeToggle";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 
 const CrownIcon = () => (
@@ -280,8 +278,6 @@ export default function AccountActions() {
         </div>
       )}
 
-      <LanguageSwitcher />
-      <ThemeToggle />
     </>
   );
 }

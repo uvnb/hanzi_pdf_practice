@@ -1,5 +1,6 @@
 import { Link } from "@/i18n/navigation";
 import LanguageSwitcher from "@/components/Layout/LanguageSwitcher";
+import ThemeToggle from "@/components/Layout/ThemeToggle";
 
 interface HeroSectionProps {
   nav: {
@@ -30,6 +31,7 @@ export default function HeroSection({ nav, hero, poem }: HeroSectionProps) {
         </div>
         <div className="heroLang">
           <LanguageSwitcher />
+          <ThemeToggle />
         </div>
       </nav>
 
