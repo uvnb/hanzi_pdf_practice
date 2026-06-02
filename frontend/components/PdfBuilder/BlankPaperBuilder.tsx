@@ -376,7 +376,6 @@ export default function BlankPaperBuilder() {
               style={{ 
                 position: "relative", 
                 width: "100%", 
-                aspectRatio: "1 / 1.4142",
                 border: "1px solid var(--line)",
                 backgroundColor: "#fff",
                 overflow: "hidden",
@@ -392,7 +391,7 @@ export default function BlankPaperBuilder() {
                     width: "100%",
                     height: "100%",
                     backgroundImage: `url(${background === "custom" && customBackgroundUrl ? customBackgroundUrl : `/background_pdf/${background}`})`,
-                    backgroundSize: "cover",
+                    backgroundSize: "100% 100%", // stretches nicely just like PDF
                     backgroundPosition: "center",
                     opacity: bgOpacity / 100,
                   }}
@@ -402,12 +401,11 @@ export default function BlankPaperBuilder() {
                 src={`/templates_preview/${templateId.replace('.pdf', '.jpg')}`} 
                 alt={`${t("preview")} ${i + 1}`}
                 style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
+                  display: "block",
                   width: "100%",
-                  height: "100%",
-                  objectFit: "fill",
+                  height: "auto",
+                  position: "relative",
+                  zIndex: 1,
                   mixBlendMode: "multiply",
                 }}
               />
