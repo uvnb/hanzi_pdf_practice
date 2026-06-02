@@ -197,6 +197,10 @@ export default function PdfBuilder() {
           >
             <option value="tian">{t("tian")}</option>
             <option value="mi">{t("mi")}</option>
+            <option value="square">{t("square")}</option>
+            <option value="zhonggong">{t("zhonggong")}</option>
+            <option value="huigong">{t("huigong")}</option>
+            <option value="jiugong">{t("jiugong")}</option>
           </select>
         </div>
 
@@ -306,7 +310,14 @@ export default function PdfBuilder() {
           </div>
         ) : (
           <div className={`emptyPreview ${style}`}>
-            <span>{style === "tian" ? "田" : "米"}</span>
+            <span>
+              {style === "tian" ? "田" : 
+               style === "mi" ? "米" : 
+               style === "square" ? "口" : 
+               style === "zhonggong" ? "中" : 
+               style === "huigong" ? "回" : 
+               style === "jiugong" ? "九" : ""}
+            </span>
           </div>
         )}
       </div>

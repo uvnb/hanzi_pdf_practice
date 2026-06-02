@@ -1,6 +1,6 @@
 import { encodeJpegPagesAsPdf, JpegPage } from "@/lib/pdf-encoder";
 
-export type GridStyle = "tian" | "mi";
+export type GridStyle = "tian" | "mi" | "square" | "zhonggong" | "huigong" | "jiugong";
 
 interface CharacterData {
   strokes: string[];
@@ -110,19 +110,49 @@ function drawGuideGrid(
   context.strokeStyle = "#d6bca8";
   context.lineWidth = 1.4;
   context.strokeRect(x, y, CELL_SIZE, CELL_SIZE);
+  
+  if (style === "square") {
+    context.restore();
+    return;
+  }
+  
   context.setLineDash([5, 5]);
   context.strokeStyle = "#decbbc";
   context.beginPath();
-  context.moveTo(x + CELL_SIZE / 2, y);
-  context.lineTo(x + CELL_SIZE / 2, y + CELL_SIZE);
-  context.moveTo(x, y + CELL_SIZE / 2);
-  context.lineTo(x + CELL_SIZE, y + CELL_SIZE / 2);
-  if (style === "mi") {
-    context.moveTo(x, y);
-    context.lineTo(x + CELL_SIZE, y + CELL_SIZE);
-    context.moveTo(x + CELL_SIZE, y);
-    context.lineTo(x, y + CELL_SIZE);
+
+  if (style === "tian" || style === "mi") {
+    context.moveTo(x + CELL_SIZE / 2, y);
+    context.lineTo(x + CELL_SIZE / 2, y + CELL_SIZE);
+    context.moveTo(x, y + CELL_SIZE / 2);
+    context.lineTo(x + CELL_SIZE, y + CELL_SIZE / 2);
+    if (style === "mi") {
+      context.moveTo(x, y);
+      context.lineTo(x + CELL_SIZE, y + CELL_SIZE);
+      context.moveTo(x + CELL_SIZE, y);
+      context.lineTo(x, y + CELL_SIZE);
+    }
+  } else if (style === "zhonggong") {
+    const innerSize = CELL_SIZE * 0.65;
+    const offset = (CELL_SIZE - innerSize) / 2;
+    context.rect(x + offset, y + offset, innerSize, innerSize);
+  } else if (style === "huigong") {
+    const innerW = CELL_SIZE * 0.5;
+    const innerH = CELL_SIZE * 0.65;
+    const offsetX = (CELL_SIZE - innerW) / 2;
+    const offsetY = (CELL_SIZE - innerH) / 2;
+    context.rect(x + offsetX, y + offsetY, innerW, innerH);
+  } else if (style === "jiugong") {
+    const third = CELL_SIZE / 3;
+    context.moveTo(x + third, y);
+    context.lineTo(x + third, y + CELL_SIZE);
+    context.moveTo(x + third * 2, y);
+    context.lineTo(x + third * 2, y + CELL_SIZE);
+    context.moveTo(x, y + third);
+    context.lineTo(x + CELL_SIZE, y + third);
+    context.moveTo(x, y + third * 2);
+    context.lineTo(x + CELL_SIZE, y + third * 2);
   }
+  
   context.stroke();
   context.restore();
 }
