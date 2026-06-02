@@ -265,7 +265,8 @@ export default function PremiumContent() {
                 </div>
                 
                 <div style={{ textAlign: "center", marginTop: "32px", fontSize: "15px", color: "var(--ink)", fontWeight: "500", opacity: 0.9 }}>
-                  Vui lòng chờ, nếu tài khoản chưa được nâng cấp.
+                  Sau khi thanh toán, hãy chờ một khoảng thời gian.<br/>
+                  nếu cần gấp hãy ấn <a href="https://zalo.me/0333998435" target="_blank" rel="noreferrer" style={{ color: "#2563eb", textDecoration: "underline" }}>liên hệ</a>.
                 </div>
               </>
             )}
