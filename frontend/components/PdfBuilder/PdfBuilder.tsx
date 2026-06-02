@@ -51,6 +51,7 @@ export default function PdfBuilder() {
   const [pdfBytes, setPdfBytes] = useState<Uint8Array | null>(null);
   const [status, setStatus] = useState<string>("");
   const [busy, setBusy] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const characters = useMemo(() => collectHanzi(text), [text]);
 
   const [metadataCount, setMetadataCount] = useState(0);
