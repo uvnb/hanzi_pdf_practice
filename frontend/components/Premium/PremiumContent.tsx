@@ -34,6 +34,7 @@ export default function PremiumContent() {
       setError(null);
       const newOrder = await createOrder(planId);
       setOrder(newOrder);
+      localStorage.setItem("pending_upgrade", "true");
     } catch (err: any) {
       setError(err.message || "Đã xảy ra lỗi");
     } finally {
