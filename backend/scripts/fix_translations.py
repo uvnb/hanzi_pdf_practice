@@ -71,7 +71,7 @@ async def process_file(filepath):
         print(f"No changes needed for {filepath.name}")
 
 async def main():
-    for filename in ["hsk1_chars.json", "hsk2_chars.json", "hsk1_starter.json"]:
+    for filename in ["hsk1_chars.json", "hsk2_chars.json", "hsk3_chars.json", "hsk4_chars.json", "hsk5_chars.json", "hsk1_starter.json"]:
         filepath = SEED_DIR / filename
         if filepath.exists():
             await process_file(filepath)
