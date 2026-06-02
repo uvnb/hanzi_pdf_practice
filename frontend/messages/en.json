@@ -101,7 +101,8 @@
     "description": "Sign in with Google to save favorite characters and create PDFs from your notebook.",
     "missingConfig": "NEXT_PUBLIC_GOOGLE_CLIENT_ID is not configured.",
     "error": "Google sign-in failed.",
-    "genericError": "Unable to sign in."
+    "genericError": "Unable to sign in.",
+    "loading": "Please wait..."
   },
   "Landing": {
     "navHome": "Home",

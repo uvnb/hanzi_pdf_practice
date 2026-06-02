@@ -35,6 +35,8 @@ export default function GoogleLoginButton() {
   const router = useRouter();
   const t = useTranslations("Login");
 
+  const [isProcessing, setIsProcessing] = useState(false);
+
   useEffect(() => {
     if (!scriptReady || !GOOGLE_CLIENT_ID || !window.google || !containerRef.current) {
       return;
@@ -45,9 +47,13 @@ export default function GoogleLoginButton() {
       client_id: GOOGLE_CLIENT_ID,
       callback: ({ credential }) => {
         setError("");
+        setIsProcessing(true);
         void loginWithGoogleCredential(credential)
           .then(() => router.push("/notebook"))
-          .catch(() => setError(t("error")));
+          .catch(() => {
+            setError(t("error"));
+            setIsProcessing(false);
+          });
       },
     });
     window.google.accounts.id.renderButton(target, {
@@ -66,6 +72,18 @@ export default function GoogleLoginButton() {
     );
   }
 
+  if (isProcessing) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", height: "40px", color: "var(--ink)", fontWeight: 500 }}>
+        <svg style={{ animation: "spin 1s linear infinite", width: "20px", height: "20px" }} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" strokeOpacity="0.25"></circle>
+          <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>{t("loading") || "Vui lòng chờ..."}</span>
+      </div>
+    );
+  }
+
   return (
     <>
       <Script
@@ -75,6 +93,12 @@ export default function GoogleLoginButton() {
       />
       <div className="googleButton" ref={containerRef} />
       {error ? <p className="authError">{error}</p> : null}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}} />
     </>
   );
 }

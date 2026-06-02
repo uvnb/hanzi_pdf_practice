@@ -101,7 +101,8 @@
     "description": "Đăng nhập bằng Google để lưu chữ yêu thích và tạo phiếu PDF từ sổ tay.",
     "missingConfig": "Thiếu cấu hình NEXT_PUBLIC_GOOGLE_CLIENT_ID.",
     "error": "Đăng nhập Google không thành công.",
-    "genericError": "Không thể đăng nhập."
+    "genericError": "Không thể đăng nhập.",
+    "loading": "Vui lòng chờ..."
   },
   "Landing": {
     "navHome": "Trang chủ",
