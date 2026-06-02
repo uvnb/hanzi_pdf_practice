@@ -133,14 +133,20 @@ export default function BlankPaperBuilder() {
       const numPages = 1;
       
       for (let i = 0; i < numPages; i++) {
-        const page = pdfDoc.addPage([embeddedTemplate.width, embeddedTemplate.height]);
+        const isLandscape = embeddedTemplate.width > embeddedTemplate.height;
+        const A4_WIDTH = 595.32;
+        const A4_HEIGHT = 841.92;
+        const targetWidth = isLandscape ? A4_HEIGHT : A4_WIDTH;
+        const targetHeight = isLandscape ? A4_WIDTH : A4_HEIGHT;
+
+        const page = pdfDoc.addPage([targetWidth, targetHeight]);
         
         // Draw the template first. If it has a white background, it will be the base.
         page.drawPage(embeddedTemplate, {
           x: 0,
           y: 0,
-          width: embeddedTemplate.width,
-          height: embeddedTemplate.height,
+          width: targetWidth,
+          height: targetHeight,
         });
         
         // Draw the background image ON TOP with Multiply blend mode.
@@ -150,8 +156,8 @@ export default function BlankPaperBuilder() {
           page.drawImage(embeddedBg, {
             x: 0,
             y: 0,
-            width: embeddedTemplate.width,
-            height: embeddedTemplate.height,
+            width: targetWidth,
+            height: targetHeight,
             opacity: 1 - (bgOpacity / 100),
             blendMode: BlendMode.Multiply,
           });
@@ -400,10 +406,12 @@ export default function BlankPaperBuilder() {
                 style={{
                   display: "block",
                   width: "100%",
-                  height: "auto",
+                  height: "100%",
+                  aspectRatio: templateId.includes('horizontal') ? "1.4142 / 1" : "1 / 1.4142",
                   position: "relative",
                   zIndex: 1,
                   mixBlendMode: "multiply",
+                  objectFit: "fill"
                 }}
               />
             </div>
@@ -468,10 +476,12 @@ export default function BlankPaperBuilder() {
                 style={{
                   display: "block",
                   width: "100%",
-                  height: "auto",
+                  height: "100%",
+                  aspectRatio: templateId.includes('horizontal') ? "1.4142 / 1" : "1 / 1.4142",
                   position: "relative",
                   zIndex: 1,
                   mixBlendMode: "multiply",
+                  objectFit: "fill"
                 }}
               />
             </div>
