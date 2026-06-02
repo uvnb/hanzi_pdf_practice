@@ -66,7 +66,7 @@ export default function BlankPaperBuilder() {
   const [gridType, setGridType] = useState<keyof typeof TEMPLATES>("tian");
   const [templateId, setTemplateId] = useState<string>(TEMPLATES.tian[0].id);
   const [background, setBackground] = useState<string>("1.jpeg");
-  const [bgOpacity, setBgOpacity] = useState<number>(70);
+  const [bgOpacity, setBgOpacity] = useState<number>(60);
   const [customBackgroundUrl, setCustomBackgroundUrl] = useState<string | null>(null);
   const [customFileName, setCustomFileName] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -152,7 +152,7 @@ export default function BlankPaperBuilder() {
             y: 0,
             width: embeddedTemplate.width,
             height: embeddedTemplate.height,
-            opacity: bgOpacity / 100,
+            opacity: 1 - (bgOpacity / 100),
             blendMode: BlendMode.Multiply,
           });
         }
@@ -389,7 +389,7 @@ export default function BlankPaperBuilder() {
                     backgroundImage: `url(${background === "custom" && customBackgroundUrl ? customBackgroundUrl : `/background_pdf/${background}`})`,
                     backgroundSize: "100% 100%", // stretches nicely just like PDF
                     backgroundPosition: "center",
-                    opacity: bgOpacity / 100,
+                    opacity: 1 - (bgOpacity / 100),
                   }}
                 />
               )}
@@ -457,7 +457,7 @@ export default function BlankPaperBuilder() {
                     backgroundImage: `url(${background === "custom" && customBackgroundUrl ? customBackgroundUrl : `/background_pdf/${background}`})`,
                     backgroundSize: "100% 100%",
                     backgroundPosition: "center",
-                    opacity: bgOpacity / 100,
+                    opacity: 1 - (bgOpacity / 100),
                   }}
                 />
               )}

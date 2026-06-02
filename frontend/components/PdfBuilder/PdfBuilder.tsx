@@ -43,7 +43,7 @@ export default function PdfBuilder() {
   );
   const [style, setStyle] = useState<GridStyle>("tian");
   const [background, setBackground] = useState<string>("1.jpeg");
-  const [bgOpacity, setBgOpacity] = useState<number>(70);
+  const [bgOpacity, setBgOpacity] = useState<number>(60);
   const [customBackgroundUrl, setCustomBackgroundUrl] = useState<string | null>(null);
   const [customFileName, setCustomFileName] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
