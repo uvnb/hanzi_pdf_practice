@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/Auth/AuthProvider";
 import { consumePdfQuota } from "@/lib/payment-api";
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument, BlendMode } from "pdf-lib";
 import { Link } from "@/i18n/navigation";
 
 const TEMPLATES = {
@@ -150,6 +150,7 @@ export default function BlankPaperBuilder() {
             width: embeddedTemplate.width,
             height: embeddedTemplate.height,
             opacity: bgOpacity / 100,
+            blendMode: BlendMode.Multiply,
           });
         }
         
@@ -214,8 +215,28 @@ export default function BlankPaperBuilder() {
 
   return (
     <section className="pdfBuilder">
-      <div className="pdfControls">
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "24px" }}>
+      <div className="pdfControls" style={{ display: "flex", flexDirection: "column" }}>
+        
+        <label className="fieldLabel" style={{ marginBottom: "8px" }}>
+          Hướng dẫn sử dụng
+        </label>
+        <div style={{
+          width: "100%",
+          padding: "16px",
+          borderRadius: "8px",
+          border: "1px solid var(--line)",
+          background: "var(--paper)",
+          color: "var(--ink)",
+          fontSize: "14px",
+          lineHeight: 1.6,
+          minHeight: "155px",
+          marginBottom: "16px",
+        }}>
+          Chế độ <b>Giấy Trắng</b> giúp bạn luyện viết tự do mà không bị gò bó bởi chữ mẫu. <br/><br/>
+          Hãy chọn một loại lưới chuyên nghiệp, kết hợp cùng hình nền để in ra giấy hoặc dùng trên các ứng dụng ghi chú (GoodNotes, Notability...).
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "24px", flexGrow: 1 }}>
           
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <label style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)", margin: 0 }}>Kiểu lưới</label>
