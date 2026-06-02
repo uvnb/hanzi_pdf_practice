@@ -1,4 +1,7 @@
+"use client";
+
 import { Link } from "@/i18n/navigation";
+import { useAuth } from "@/components/Auth/AuthProvider";
 import LanguageSwitcher from "@/components/Layout/LanguageSwitcher";
 import ThemeToggle from "@/components/Layout/ThemeToggle";
 
@@ -8,6 +11,7 @@ interface HeroSectionProps {
     practice: string;
     pdf: string;
     login: string;
+    logout: string;
   };
   hero: {
     title: string;
@@ -19,6 +23,13 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ nav, hero, poem }: HeroSectionProps) {
+  const { user, logout } = useAuth();
+
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    await logout();
+  };
+
   return (
     <section className="heroSection" id="hero">
       {/* ── Top navigation ── */}
@@ -27,7 +38,11 @@ export default function HeroSection({ nav, hero, poem }: HeroSectionProps) {
           <a href="#hero" className="heroNavActive">{nav.home}</a>
           <Link href="/practice">{nav.practice}</Link>
           <Link href="/pdf">{nav.pdf}</Link>
-          <Link href="/auth/login">{nav.login}</Link>
+          {user ? (
+            <a href="#" onClick={handleLogout}>{nav.logout}</a>
+          ) : (
+            <Link href="/auth/login">{nav.login}</Link>
+          )}
         </div>
         <div className="heroLang">
           <LanguageSwitcher />

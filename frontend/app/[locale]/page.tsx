@@ -9,6 +9,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("Landing");
+  const tNav = await getTranslations("Nav");
 
   return (
     <div className="landing">
@@ -21,6 +22,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           practice: t("navPractice"),
           pdf: t("navPdf"),
           login: t("navLogin"),
+          logout: tNav("logout"),
         }}
         poem={{
           title: "齐静春",
