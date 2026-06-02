@@ -105,31 +105,38 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
+import { checkOrder } from "@/lib/payment-api";
+
 function GlobalPaymentSuccessModal() {
-  const { subscription, refresh } = useAuth();
+  const { refresh } = useAuth();
   const [show, setShow] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    if (subscription?.status === "active") {
-      const isPending = localStorage.getItem("pending_upgrade");
-      if (isPending === "true") {
-        setShow(true);
-        localStorage.removeItem("pending_upgrade");
-      }
-    }
-  }, [subscription]);
-
   // Polling & focus listener to detect activation without reloading
   useEffect(() => {
-    const checkStatus = () => {
-      if (localStorage.getItem("pending_upgrade") === "true") {
-        refresh();
+    let interval: NodeJS.Timeout;
+
+    const checkStatus = async () => {
+      const ref = localStorage.getItem("pending_upgrade_ref");
+      if (!ref) return;
+
+      try {
+        const { status } = await checkOrder(ref);
+        if (status === "active") {
+          localStorage.removeItem("pending_upgrade_ref");
+          setShow(true);
+          refresh(); // Update global auth state
+        }
+      } catch (err) {
+        // ignore errors
       }
     };
     
-    const interval = setInterval(checkStatus, 15000);
+    interval = setInterval(checkStatus, 15000);
     window.addEventListener("focus", checkStatus);
+    
+    // Initial check on mount
+    checkStatus();
     
     return () => {
       clearInterval(interval);
