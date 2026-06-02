@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/Auth/AuthProvider";
 import { consumePdfQuota } from "@/lib/payment-api";
 import { PDFDocument } from "pdf-lib";
+import { Link } from "@/i18n/navigation";
 
 const TEMPLATES = {
   tian: [
@@ -346,9 +347,9 @@ export default function BlankPaperBuilder() {
               <span style={{ color: "#ef4444" }}>
                 Bạn đã dùng hết lượt tải PDF hôm nay. 
                 <br />
-                <a href="/premium" style={{ display: "inline-block", marginTop: "8px", padding: "8px 16px", background: "#f59e0b", color: "white", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "bold", textDecoration: "none" }}>
+                <Link href="/premium" style={{ display: "inline-block", marginTop: "8px", padding: "8px 16px", background: "#f59e0b", color: "white", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "bold", textDecoration: "none" }}>
                   Nâng cấp tài khoản
-                </a>
+                </Link>
               </span>
             ) : status}
           </p>
