@@ -301,10 +301,31 @@ export default function PdfBuilder() {
       </div>
 
       <div className="previewPanel">
-        <p className="previewTitle">{t("preview")}</p>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+          <p className="previewTitle" style={{ margin: 0 }}>{t("preview")}</p>
+          <button 
+            onClick={() => setIsFullscreen(true)}
+            title="Phóng to"
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              color: "var(--ink)",
+              opacity: 0.7,
+              padding: "4px"
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+            </svg>
+          </button>
+        </div>
         {previewUrls.length > 0 ? (
           <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxHeight: "calc(100vh - 180px)", overflowY: "auto", paddingRight: "8px" }}>
             {previewUrls.map((url, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
               <img key={i} alt={`${t("preview")} ${i + 1}`} src={url} style={{ display: "block", width: "100%", border: "1px solid var(--line)" }} />
             ))}
           </div>
@@ -321,6 +342,43 @@ export default function PdfBuilder() {
           </div>
         )}
       </div>
+
+      {isFullscreen && previewUrls.length > 0 && (
+        <div 
+          style={{
+            position: "fixed",
+            top: 0, left: 0, right: 0, bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.85)",
+            zIndex: 9999,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            padding: "24px",
+            overflowY: "auto"
+          }}
+          onClick={() => setIsFullscreen(false)}
+        >
+          <div style={{ width: "100%", maxWidth: "900px", display: "flex", justifyContent: "flex-end", marginBottom: "16px" }}>
+            <button 
+              onClick={() => setIsFullscreen(false)}
+              style={{ background: "white", border: "none", borderRadius: "50%", width: "40px", height: "40px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center", color: "#333" }}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 6L6 18M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+          <div 
+            onClick={(e) => e.stopPropagation()} 
+            style={{ width: "100%", maxWidth: "900px", display: "flex", flexDirection: "column", gap: "24px", paddingBottom: "40px" }}
+          >
+            {previewUrls.map((url, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img key={i} alt={`${t("preview")} fullscreen ${i + 1}`} src={url} style={{ display: "block", width: "100%", boxShadow: "0 8px 32px rgba(0,0,0,0.3)" }} />
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 }
