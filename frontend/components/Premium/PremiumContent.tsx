@@ -222,7 +222,7 @@ export default function PremiumContent() {
                 
                 <div className="payment-box">
                   <div className="qr-side">
-                    <img src="/qr_static.png" alt="QR Code" />
+                    <img src={order.qr_url} alt="QR Code" />
                   </div>
                   
                   <div className="info-side">
