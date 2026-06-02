@@ -65,7 +65,6 @@ export default function BlankPaperBuilder() {
   
   const [gridType, setGridType] = useState<keyof typeof TEMPLATES>("tian");
   const [templateId, setTemplateId] = useState<string>(TEMPLATES.tian[0].id);
-  const [pageCount, setPageCount] = useState<number>(1);
   const [background, setBackground] = useState<string>("1.jpeg");
   const [bgOpacity, setBgOpacity] = useState<number>(70);
   const [customBackgroundUrl, setCustomBackgroundUrl] = useState<string | null>(null);
@@ -85,11 +84,9 @@ export default function BlankPaperBuilder() {
 
   // We no longer generate a live PDF preview, we use native HTML rendering instead for instant feedback!
 
-  let maxPages = 0; // Guest
+  let canDownload = false;
   if (subscription) {
-    if (subscription.plan === 'yearly') maxPages = 100; // Reasonable cap to prevent memory crash
-    else if (subscription.plan !== 'free') maxPages = 10; // Weekly/Monthly
-    else maxPages = 2; // Free
+    canDownload = true;
   }
 
   async function fetchImageBytes(url: string): Promise<ArrayBuffer> {
@@ -132,7 +129,7 @@ export default function BlankPaperBuilder() {
         }
       }
       
-      const numPages = pageCount;
+      const numPages = 1;
       
       for (let i = 0; i < numPages; i++) {
         const page = pdfDoc.addPage([embeddedTemplate.width, embeddedTemplate.height]);
@@ -171,13 +168,8 @@ export default function BlankPaperBuilder() {
   }
 
   async function handleDownload() {
-    if (maxPages === 0) {
+    if (!canDownload) {
       setStatus("Vui lòng đăng nhập để tải PDF.");
-      return;
-    }
-    
-    if (pageCount > maxPages) {
-      setStatus(`Gói hiện tại chỉ cho phép tạo tối đa ${maxPages} trang. Vui lòng nâng cấp tài khoản.`);
       return;
     }
 
@@ -253,23 +245,6 @@ export default function BlankPaperBuilder() {
             </select>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <label style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)", margin: 0 }}>Số trang</label>
-            <select
-              value={pageCount}
-              onChange={(e) => setPageCount(Number(e.target.value))}
-              disabled={maxPages === 0}
-              style={{ padding: "4px 8px", borderRadius: "6px", border: "1px solid var(--line)", background: "var(--paper)", color: "var(--ink)", outline: "none", fontSize: "14px", cursor: "pointer", maxWidth: 170 }}
-            >
-              {maxPages === 0 ? (
-                <option value={1}>1 trang (Cần đăng nhập)</option>
-              ) : (
-                Array.from({ length: Math.min(maxPages, 20) }).map((_, i) => (
-                  <option key={i + 1} value={i + 1}>{i + 1} trang</option>
-                ))
-              )}
-            </select>
-          </div>
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <label style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)", margin: 0 }}>Độ mờ ảnh nền</label>
@@ -348,7 +323,7 @@ export default function BlankPaperBuilder() {
           )}
         </div>
 
-        <button disabled={busy || maxPages === 0} onClick={handleDownload} type="button">
+        <button disabled={busy || !canDownload} onClick={handleDownload} type="button">
           {busy ? t("generating") : "Tải PDF Giấy Trắng"}
         </button>
         {status && (
@@ -398,7 +373,7 @@ export default function BlankPaperBuilder() {
                 />
               )}
               <img 
-                src={`/templates_preview/${templateId.replace('.pdf', '.jpg')}`} 
+                src={`/templates_preview/${templateId.replace('.pdf', '.png')}`} 
                 alt={`${t("preview")} ${i + 1}`}
                 style={{
                   display: "block",
