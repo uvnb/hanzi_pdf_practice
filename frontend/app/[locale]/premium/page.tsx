@@ -18,7 +18,6 @@ export default async function PremiumPage({
           汉字 Hanzi
         </Link>
         <div>
-          <p className="eyebrow">Upgrade</p>
           <h1>Nâng cấp tài khoản</h1>
         </div>
         <div className="headerActions">

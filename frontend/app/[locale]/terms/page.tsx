@@ -18,7 +18,6 @@ export default async function TermsPage({
           汉字 Hanzi
         </Link>
         <div>
-          <p className="eyebrow">Information</p>
           <h1>Chính sách sử dụng</h1>
         </div>
         <div className="headerActions">
