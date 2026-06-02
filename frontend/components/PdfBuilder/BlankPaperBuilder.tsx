@@ -143,6 +143,17 @@ export default function BlankPaperBuilder() {
       for (let i = 0; i < numPages; i++) {
         const page = pdfDoc.addPage([embeddedTemplate.width, embeddedTemplate.height]);
         
+        // Draw the template first. If it has a white background, it will be the base.
+        page.drawPage(embeddedTemplate, {
+          x: 0,
+          y: 0,
+          width: embeddedTemplate.width,
+          height: embeddedTemplate.height,
+        });
+        
+        // Draw the background image ON TOP with Multiply blend mode.
+        // This makes the white areas of the template transparent to the background,
+        // while the dark grid lines remain dark.
         if (embeddedBg) {
           page.drawImage(embeddedBg, {
             x: 0,
@@ -153,14 +164,6 @@ export default function BlankPaperBuilder() {
             blendMode: BlendMode.Multiply,
           });
         }
-        
-        // Draw the template on top. Assuming it has a transparent background.
-        page.drawPage(embeddedTemplate, {
-          x: 0,
-          y: 0,
-          width: embeddedTemplate.width,
-          height: embeddedTemplate.height,
-        });
       }
       
       const finalBytes = await pdfDoc.save();
@@ -382,7 +385,7 @@ export default function BlankPaperBuilder() {
         <div className="pdfPreview">
           {previewUrl ? (
             <iframe 
-              src={`${previewUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+              src={`${previewUrl}#toolbar=0&navpanes=0&scrollbar=0&view=Fit`}
               style={{ width: "100%", height: "100%", border: "none", borderRadius: "8px" }}
               title="PDF Preview"
             />
