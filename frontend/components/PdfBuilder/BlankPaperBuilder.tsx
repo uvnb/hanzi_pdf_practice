@@ -74,7 +74,6 @@ export default function BlankPaperBuilder() {
   
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<string>("");
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   // Update available templates when gridType changes
   useEffect(() => {
@@ -84,10 +83,7 @@ export default function BlankPaperBuilder() {
     }
   }, [gridType]);
 
-  // Generate a live preview when settings change
-  useEffect(() => {
-    generatePdf(true).catch(err => console.error(err));
-  }, [templateId, background, customBackgroundUrl, bgOpacity]);
+  // We no longer generate a live PDF preview, we use native HTML rendering instead for instant feedback!
 
   let maxPages = 0; // Guest
   if (subscription) {
@@ -102,14 +98,12 @@ export default function BlankPaperBuilder() {
     return res.arrayBuffer();
   }
 
-  async function generatePdf(isPreview: boolean = false) {
+  async function generatePdf() {
     if (!templateId) return;
     
     try {
-      if (!isPreview) {
-        setBusy(true);
-        setStatus("Đang tạo PDF...");
-      }
+      setBusy(true);
+      setStatus("Đang tạo PDF...");
       
       // Load the PDF template
       const templateRes = await fetch(`/templates/${templateId}`);
@@ -138,7 +132,7 @@ export default function BlankPaperBuilder() {
         }
       }
       
-      const numPages = isPreview ? 1 : pageCount;
+      const numPages = pageCount;
       
       for (let i = 0; i < numPages; i++) {
         const page = pdfDoc.addPage([embeddedTemplate.width, embeddedTemplate.height]);
@@ -168,18 +162,11 @@ export default function BlankPaperBuilder() {
       
       const finalBytes = await pdfDoc.save();
       
-      if (isPreview) {
-        if (previewUrl) URL.revokeObjectURL(previewUrl);
-        const pdfBuffer = new Uint8Array(finalBytes).buffer;
-        const blob = new Blob([pdfBuffer], { type: "application/pdf" });
-        setPreviewUrl(URL.createObjectURL(blob));
-      } else {
-        return finalBytes;
-      }
+      return finalBytes;
     } catch (err: any) {
-      if (!isPreview) setStatus("Lỗi khi tạo PDF: " + err.message);
+      setStatus("Lỗi khi tạo PDF: " + err.message);
     } finally {
-      if (!isPreview) setBusy(false);
+      setBusy(false);
     }
   }
 
@@ -199,7 +186,7 @@ export default function BlankPaperBuilder() {
     try {
       await consumePdfQuota();
       
-      const bytes = await generatePdf(false);
+      const bytes = await generatePdf();
       if (bytes) {
         triggerDownload(bytes, `hanzi-blank-paper-${templateId}`);
         setStatus("Tải thành công!");
@@ -382,18 +369,50 @@ export default function BlankPaperBuilder() {
 
       <div className="previewPanel">
         <p className="previewTitle">{t("preview")}</p>
-        <div className="pdfPreview">
-          {previewUrl ? (
-            <iframe 
-              src={`${previewUrl}#toolbar=0&navpanes=0&scrollbar=0&view=Fit`}
-              style={{ width: "100%", height: "100%", border: "none", borderRadius: "8px" }}
-              title="PDF Preview"
-            />
-          ) : (
-            <span className="emptyPreview">
-              <p>Đang tải bản xem trước...</p>
-            </span>
-          )}
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxHeight: "calc(100vh - 180px)", overflowY: "auto", paddingRight: "8px" }}>
+          {Array.from({ length: Math.min(pageCount, 10) }).map((_, i) => (
+            <div 
+              key={i}
+              style={{ 
+                position: "relative", 
+                width: "100%", 
+                aspectRatio: "1 / 1.4142",
+                border: "1px solid var(--line)",
+                backgroundColor: "#fff",
+                overflow: "hidden",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+              }}
+            >
+              {background !== "none" && (
+                <div 
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    backgroundImage: `url(${background === "custom" && customBackgroundUrl ? customBackgroundUrl : `/background_pdf/${background}`})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    opacity: bgOpacity / 100,
+                  }}
+                />
+              )}
+              <img 
+                src={`/templates_preview/${templateId.replace('.pdf', '.jpg')}`} 
+                alt={`${t("preview")} ${i + 1}`}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "fill",
+                  mixBlendMode: "multiply",
+                }}
+              />
+            </div>
+          ))}
         </div>
       </div>
     </section>
