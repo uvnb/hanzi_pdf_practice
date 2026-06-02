@@ -106,7 +106,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 }
 
 function GlobalPaymentSuccessModal() {
-  const { subscription } = useAuth();
+  const { subscription, refresh } = useAuth();
   const [show, setShow] = useState(false);
   const router = useRouter();
 
@@ -119,6 +119,23 @@ function GlobalPaymentSuccessModal() {
       }
     }
   }, [subscription]);
+
+  // Polling & focus listener to detect activation without reloading
+  useEffect(() => {
+    const checkStatus = () => {
+      if (localStorage.getItem("pending_upgrade") === "true") {
+        refresh();
+      }
+    };
+    
+    const interval = setInterval(checkStatus, 15000);
+    window.addEventListener("focus", checkStatus);
+    
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", checkStatus);
+    };
+  }, [refresh]);
 
   if (!show) return null;
 
