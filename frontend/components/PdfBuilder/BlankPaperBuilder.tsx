@@ -225,8 +225,7 @@ export default function BlankPaperBuilder() {
           Chế độ <b>Giấy Trắng</b> giúp bạn luyện viết tự do mà không bị gò bó bởi chữ mẫu. <br/><br/>
           Hãy chọn một loại lưới chuyên nghiệp, kết hợp cùng hình nền để in ra giấy hoặc dùng trên các ứng dụng ghi chú (GoodNotes, Notability...).
         </div>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "24px", flexGrow: 1 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "24px" }}>
           
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <label style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)", margin: 0 }}>Kiểu lưới</label>
@@ -370,7 +369,8 @@ export default function BlankPaperBuilder() {
       <div className="previewPanel">
         <p className="previewTitle">{t("preview")}</p>
         <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxHeight: "calc(100vh - 180px)", overflowY: "auto", paddingRight: "8px" }}>
-          {Array.from({ length: Math.min(pageCount, 10) }).map((_, i) => (
+          {/* Chỉ hiển thị 1 trang xem trước vì các trang trắng là hoàn toàn giống nhau */}
+          {Array.from({ length: 1 }).map((_, i) => (
             <div 
               key={i}
               style={{ 
