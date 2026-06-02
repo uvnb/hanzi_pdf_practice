@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/Auth/AuthProvider";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
@@ -37,12 +37,48 @@ export default function AccountActions() {
   const pathname = usePathname();
   const router = useRouter();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteEmail, setDeleteEmail] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
+  
+  const [readIds, setReadIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (user?.id) {
+      const read = localStorage.getItem(`read_notifications_${user.id}`);
+      if (read) {
+        try { setReadIds(JSON.parse(read)); } catch(e) {}
+      }
+    }
+  }, [user?.id]);
+
+  const notifications = useMemo(() => {
+    const list = [];
+    if (subscription && subscription.plan !== "free" && subscription.status === "active") {
+      list.push({
+        id: `upgrade-success-${subscription.started_at || '1'}`,
+        title: "Đã kích hoạt thành công!",
+        message: `Gói ${subscription.plan === "yearly" ? "Năm" : subscription.plan === "monthly" ? "Tháng" : "Tuần"} của bạn đã được kích hoạt.`,
+        date: new Date(subscription.started_at || Date.now()).toLocaleDateString("vi-VN")
+      });
+    }
+    return list;
+  }, [subscription]);
+  
+  const unreadCount = notifications.filter(n => !readIds.includes(n.id)).length;
+
+  const handleNotificationClick = () => {
+    setNotificationsOpen(true);
+    if (unreadCount > 0 && user?.id) {
+      const newReadIds = Array.from(new Set([...readIds, ...notifications.map(n => n.id)]));
+      setReadIds(newReadIds);
+      localStorage.setItem(`read_notifications_${user.id}`, JSON.stringify(newReadIds));
+    }
+  };
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -130,42 +166,73 @@ export default function AccountActions() {
           {dropdownOpen && (
             <div className="avatarDropdown">
               <div style={{ padding: "8px 16px", borderBottom: "1px solid var(--line)", marginBottom: "4px" }}>
-                <div style={{ fontWeight: 600, color: "var(--ink)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.name}</div>
-                <div style={{ fontSize: "12px", color: "var(--ink)", opacity: 0.7, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email}</div>
-                
-                {subscription && subscription.plan !== "free" && subscription.expires_at && (
-                  <div style={{ 
-                    marginTop: "8px", 
-                    padding: "6px 8px", 
-                    background: "rgba(245, 158, 11, 0.1)", 
-                    border: "1px solid rgba(245, 158, 11, 0.3)", 
-                    borderRadius: "4px", 
-                    fontSize: "12px",
-                    color: "#d97706",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "4px"
-                  }}>
-                    <div style={{ fontWeight: "bold", display: "flex", alignItems: "center", gap: "4px" }}>
-                      <CrownIcon /> Gói {subscription.plan === "weekly" ? "Trải nghiệm" : subscription.plan === "monthly" ? "Thường xuyên" : "Năm"}
-                    </div>
-                    <div>Còn lại: {(() => {
-                      const diff = new Date(subscription.expires_at).getTime() - Date.now();
-                      if (diff <= 0) return "Đã hết hạn";
-                      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                      return `${days} ngày ${hours} giờ`;
-                    })()}</div>
+                {notificationsOpen ? (
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px", paddingBottom: "4px" }}>
+                    <button 
+                      onClick={() => setNotificationsOpen(false)}
+                      style={{ background: "none", border: "none", cursor: "pointer", padding: "4px", display: "flex", alignItems: "center", color: "var(--ink)", opacity: 0.7 }}
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                    </button>
+                    <div style={{ fontWeight: "bold", fontSize: "16px", color: "var(--ink)" }}>Thông báo</div>
                   </div>
-                )}
-                {subscription && subscription.plan === "free" && (
-                   <div style={{ marginTop: "8px", fontSize: "12px", color: "#ef4444" }}>
-                     Gói Free (Đã hết hạn hoặc chưa đăng ký)
-                   </div>
+                ) : (
+                  <>
+                    <div style={{ fontWeight: 600, color: "var(--ink)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.name}</div>
+                    <div style={{ fontSize: "12px", color: "var(--ink)", opacity: 0.7, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email}</div>
+                    
+                    {subscription && subscription.plan !== "free" && subscription.expires_at && (
+                      <div style={{ 
+                        marginTop: "8px", 
+                        padding: "6px 8px", 
+                        background: "rgba(245, 158, 11, 0.1)", 
+                        border: "1px solid rgba(245, 158, 11, 0.3)", 
+                        borderRadius: "4px", 
+                        fontSize: "12px",
+                        color: "#d97706",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "4px"
+                      }}>
+                        <div style={{ fontWeight: "bold", display: "flex", alignItems: "center", gap: "4px" }}>
+                          <CrownIcon /> Gói {subscription.plan === "weekly" ? "Trải nghiệm" : subscription.plan === "monthly" ? "Thường xuyên" : "Năm"}
+                        </div>
+                        <div>Còn lại: {(() => {
+                          const diff = new Date(subscription.expires_at).getTime() - Date.now();
+                          if (diff <= 0) return "Đã hết hạn";
+                          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                          const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                          return `${days} ngày ${hours} giờ`;
+                        })()}</div>
+                      </div>
+                    )}
+                    {subscription && subscription.plan === "free" && (
+                       <div style={{ marginTop: "8px", fontSize: "12px", color: "#ef4444" }}>
+                         Gói Free (Đã hết hạn hoặc chưa đăng ký)
+                       </div>
+                    )}
+                  </>
                 )}
               </div>
 
-              <div style={{ padding: "4px 0" }}>
+              {notificationsOpen ? (
+                <div style={{ maxHeight: "300px", overflowY: "auto", padding: "8px 0" }}>
+                  {notifications.length === 0 ? (
+                    <div style={{ padding: "20px", textAlign: "center", color: "var(--ink)", opacity: 0.6, fontSize: "14px" }}>
+                      Chưa có thông báo nào.
+                    </div>
+                  ) : (
+                    notifications.map(n => (
+                      <div key={n.id} style={{ padding: "12px 16px", borderBottom: "1px solid rgba(0,0,0,0.05)" }}>
+                        <div style={{ fontWeight: "bold", color: "var(--accent)", fontSize: "14px", marginBottom: "4px" }}>{n.title}</div>
+                        <div style={{ color: "var(--ink)", opacity: 0.8, fontSize: "13px", lineHeight: 1.4 }}>{n.message}</div>
+                        <div style={{ color: "var(--ink)", opacity: 0.5, fontSize: "11px", marginTop: "6px" }}>{n.date}</div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              ) : (
+                <div style={{ padding: "4px 0" }}>
                 <button 
                   onClick={() => { setDropdownOpen(false); router.push("/premium"); }}
                   style={{ ...menuItemStyle, color: "#f59e0b" }}
@@ -194,15 +261,21 @@ export default function AccountActions() {
                   Chính sách sử dụng
                 </button>
                 <button 
-                  onClick={() => setDropdownOpen(false)}
-                  style={{ ...menuItemStyle }}
+                  onClick={handleNotificationClick}
+                  style={{ ...menuItemStyle, position: "relative" }}
                   onMouseEnter={(e) => e.currentTarget.style.background = "rgba(0,0,0,0.03)"}
                   onMouseLeave={(e) => e.currentTarget.style.background = "none"}
                 >
                   <BellIcon />
                   Thông báo
+                  {unreadCount > 0 && (
+                    <span style={{ position: "absolute", right: "16px", background: "#ef4444", color: "white", borderRadius: "10px", padding: "2px 6px", fontSize: "11px", fontWeight: "bold" }}>
+                      {unreadCount}
+                    </span>
+                  )}
                 </button>
               </div>
+              )}
 
               <div style={{ padding: "4px 0", borderTop: "1px solid var(--line)", marginTop: "4px" }}>
                 <button 

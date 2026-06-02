@@ -107,16 +107,21 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
 import { checkOrder } from "@/lib/payment-api";
 
+import { usePathname } from "next/navigation";
+
 function GlobalPaymentSuccessModal() {
-  const { refresh } = useAuth();
+  const { user, subscription, refresh } = useAuth();
   const [show, setShow] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   // Polling & focus listener to detect activation without reloading
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
     const checkStatus = async () => {
+      if (pathname.startsWith('/admin')) return; // Don't show on admin page
+      
       const ref = localStorage.getItem("pending_upgrade_ref");
       if (!ref) return;
 
@@ -124,8 +129,7 @@ function GlobalPaymentSuccessModal() {
         const { status } = await checkOrder(ref);
         if (status === "active") {
           localStorage.removeItem("pending_upgrade_ref");
-          setShow(true);
-          refresh(); // Update global auth state
+          refresh(); // Update global auth state, which will trigger the history check below
         }
       } catch (err) {
         // ignore errors
@@ -135,14 +139,37 @@ function GlobalPaymentSuccessModal() {
     interval = setInterval(checkStatus, 15000);
     window.addEventListener("focus", checkStatus);
     
-    // Initial check on mount
     checkStatus();
     
     return () => {
       clearInterval(interval);
       window.removeEventListener("focus", checkStatus);
     };
-  }, [refresh]);
+  }, [refresh, pathname]);
+
+  // Detect cross-device or non-pending_upgrade_ref upgrades
+  useEffect(() => {
+    if (subscription && user && !pathname.startsWith('/admin')) {
+      const key = `last_sub_${user.id}`;
+      const lastSubStr = localStorage.getItem(key);
+      
+      if (lastSubStr) {
+        try {
+          const lastSub = JSON.parse(lastSubStr);
+          const isNowActive = subscription.status === "active" && subscription.plan !== "free";
+          const wasNotActive = lastSub.plan === "free" || lastSub.status !== "active";
+          const changedPlan = lastSub.plan !== subscription.plan;
+          const extendedTime = new Date(subscription.expires_at || 0).getTime() > new Date(lastSub.expires_at || 0).getTime();
+          
+          if (isNowActive && (wasNotActive || changedPlan || extendedTime)) {
+            setShow(true);
+          }
+        } catch (e) {}
+      }
+      
+      localStorage.setItem(key, JSON.stringify(subscription));
+    }
+  }, [subscription, user, pathname]);
 
   if (!show) return null;
 
