@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import AccountActions from "@/components/Auth/AccountActions";
-import PdfBuilder from "@/components/PdfBuilder/PdfBuilder";
+import PdfTabs from "@/components/PdfBuilder/PdfTabs";
 import { Link } from "@/i18n/navigation";
 
 export default async function PdfPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -23,7 +23,7 @@ export default async function PdfPage({ params }: { params: Promise<{ locale: st
         </div>
       </header>
       <Suspense fallback={<p className="emptyState">{t("preparing")}</p>}>
-        <PdfBuilder />
+        <PdfTabs />
       </Suspense>
     </main>
   );
