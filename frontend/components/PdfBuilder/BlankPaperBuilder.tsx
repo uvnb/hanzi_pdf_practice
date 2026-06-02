@@ -127,7 +127,7 @@ export default function BlankPaperBuilder() {
       if (background !== "none") {
         const activeBackground = background === "custom" && customBackgroundUrl 
           ? customBackgroundUrl 
-          : `/${background}`;
+          : `/background_pdf/${background}`;
           
         const bgBytes = await fetchImageBytes(activeBackground);
         // Determine type
