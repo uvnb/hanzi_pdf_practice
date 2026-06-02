@@ -1,0 +1,68 @@
+2026-06-02T01:59:25.465693086Z [inf]  scheduling build on Metal builder "builder-emkgde"
+2026-06-02T01:59:32.268448685Z [inf]  unpacking archive
+2026-06-02T01:59:32.469399269Z [inf]  [internal] load build definition from backend/Dockerfile
+2026-06-02T01:59:32.469671907Z [inf]  [internal] load build definition from backend/Dockerfile
+2026-06-02T01:59:32.469680591Z [inf]  [internal] load build definition from backend/Dockerfile
+2026-06-02T01:59:32.470028562Z [inf]  [internal] load build definition from backend/Dockerfile
+2026-06-02T01:59:32.977577859Z [inf]  uploading snapshot
+2026-06-02T01:59:33.013147859Z [inf]  [internal] load build definition from backend/Dockerfile
+2026-06-02T01:59:33.060795762Z [inf]  [internal] load metadata for docker.io/library/python:3.12-slim
+2026-06-02T01:59:33.296430478Z [inf]  [internal] load metadata for docker.io/library/python:3.12-slim
+2026-06-02T01:59:33.297034713Z [inf]  [internal] load .dockerignore
+2026-06-02T01:59:33.297433542Z [inf]  [internal] load .dockerignore
+2026-06-02T01:59:33.297672320Z [inf]  [internal] load .dockerignore
+2026-06-02T01:59:34.379617144Z [inf]  [internal] load .dockerignore
+2026-06-02T01:59:34.436249089Z [inf]  [5/9] COPY alembic.ini .
+2026-06-02T01:59:34.436251493Z [inf]  [internal] load build context
+2026-06-02T01:59:34.436252044Z [inf]  [6/9] COPY migrations ./migrations
+2026-06-02T01:59:34.436260847Z [inf]  [7/9] COPY app ./app
+2026-06-02T01:59:34.436261448Z [inf]  [8/9] COPY scripts ./scripts
+2026-06-02T01:59:34.436261758Z [inf]  [9/9] COPY seed ./seed
+2026-06-02T01:59:34.436262139Z [inf]  [4/9] RUN pip install --no-cache-dir -r requirements.txt
+2026-06-02T01:59:34.436262540Z [inf]  [3/9] COPY requirements.txt .
+2026-06-02T01:59:34.436262800Z [inf]  [1/5] FROM docker.io/library/python:3.12-slim@sha256:090ba77e2958f6af52a5341f788b50b032dd4ca28377d2893dcf1ecbdfdfe203
+2026-06-02T01:59:34.436263060Z [inf]  [1/5] FROM docker.io/library/python:3.12-slim@sha256:090ba77e2958f6af52a5341f788b50b032dd4ca28377d2893dcf1ecbdfdfe203
+2026-06-02T01:59:34.436263321Z [inf]  [1/5] FROM docker.io/library/python:3.12-slim@sha256:090ba77e2958f6af52a5341f788b50b032dd4ca28377d2893dcf1ecbdfdfe203
+2026-06-02T01:59:34.436263591Z [inf]  [2/5] WORKDIR /app
+2026-06-02T01:59:34.436263851Z [inf]  [2/5] WORKDIR /app
+2026-06-02T01:59:34.436428298Z [inf]  [internal] load build context
+2026-06-02T01:59:34.436444172Z [inf]  [internal] load build context
+2026-06-02T01:59:34.806909999Z [inf]  [internal] load build context
+2026-06-02T01:59:35.530940078Z [inf]  [3/9] COPY requirements.txt .
+2026-06-02T01:59:35.530945056Z [inf]  [4/9] RUN pip install --no-cache-dir -r requirements.txt
+2026-06-02T01:59:35.530945697Z [inf]  [5/9] COPY alembic.ini .
+2026-06-02T01:59:35.530946318Z [inf]  [6/9] COPY migrations ./migrations
+2026-06-02T01:59:35.530946638Z [inf]  [7/9] COPY app ./app
+2026-06-02T01:59:35.705918625Z [inf]  [7/9] COPY app ./app
+2026-06-02T01:59:35.706089030Z [inf]  [8/9] COPY scripts ./scripts
+2026-06-02T01:59:36.595587264Z [inf]  [8/9] COPY scripts ./scripts
+2026-06-02T01:59:37.111721644Z [inf]  [9/9] COPY seed ./seed
+2026-06-02T01:59:38.089094314Z [inf]  [9/9] COPY seed ./seed
+2026-06-02T01:59:38.412103125Z [inf]  exporting to docker image format
+2026-06-02T01:59:43.357608872Z [inf]  exporting to docker image format
+2026-06-02T01:59:46.081617291Z [inf]  containerimage.descriptor: eyJtZWRpYVR5cGUiOiJhcHBsaWNhdGlvbi92bmQub2NpLmltYWdlLm1hbmlmZXN0LnYxK2pzb24iLCJkaWdlc3QiOiJzaGEyNTY6NzQzNjczZDFkYWUyM2YzNjk0MTE1NzliYjhiZGQ5N2VkNTlmMzQyYTM4MjA3NzQ1NDFlOWU2NTViYjg1NWZiNiIsInNpemUiOjI1NzEsImFubm90YXRpb25zIjp7Im9yZy5vcGVuY29udGFpbmVycy5pbWFnZS5jcmVhdGVkIjoiMjAyNi0wNi0wMlQwMTo1OTo0MloifSwicGxhdGZvcm0iOnsiYXJjaGl0ZWN0dXJlIjoiYW1kNjQiLCJvcyI6ImxpbnV4In19
+2026-06-02T01:59:46.081620295Z [inf]  containerimage.config.digest: sha256:76aad7ce55c4c150218455e3e995d0fc8c1fce33dc51fbb1f9de07ad2b2a9c85
+2026-06-02T01:59:46.081623681Z [inf]  containerimage.digest: sha256:743673d1dae23f369411579bb8bdd97ed59f342a3820774541e9e655bb855fb6
+2026-06-02T01:59:54.034354375Z [inf]  image push
+2026-06-02T01:59:59.715115343Z [inf]  
+2026-06-02T01:59:59.715118399Z [inf]  [35m====================
+Starting Healthcheck
+====================
+[0m
+2026-06-02T01:59:59.715119234Z [inf]  [37mPath: /[0m
+2026-06-02T01:59:59.715120299Z [inf]  [37mRetry window: 5m0s[0m
+2026-06-02T01:59:59.715121134Z [inf]  
+2026-06-02T02:00:09.772887142Z [inf]  [93mAttempt #1 failed with service unavailable. Continuing to retry for 4m49s[0m
+2026-06-02T02:00:20.862076103Z [inf]  [93mAttempt #2 failed with service unavailable. Continuing to retry for 4m38s[0m
+2026-06-02T02:00:32.893305289Z [inf]  [93mAttempt #3 failed with service unavailable. Continuing to retry for 4m26s[0m
+2026-06-02T02:00:46.926142067Z [inf]  [93mAttempt #4 failed with service unavailable. Continuing to retry for 4m12s[0m
+2026-06-02T02:01:04.958664234Z [inf]  [93mAttempt #5 failed with service unavailable. Continuing to retry for 3m54s[0m
+2026-06-02T02:01:30.989377924Z [inf]  [93mAttempt #6 failed with service unavailable. Continuing to retry for 3m28s[0m
+2026-06-02T02:02:11.019919441Z [inf]  [93mAttempt #7 failed with service unavailable. Continuing to retry for 2m48s[0m
+2026-06-02T02:02:51.049055320Z [inf]  [93mAttempt #8 failed with service unavailable. Continuing to retry for 2m8s[0m
+2026-06-02T02:03:31.080236687Z [inf]  [93mAttempt #9 failed with service unavailable. Continuing to retry for 1m28s[0m
+2026-06-02T02:04:11.109990972Z [inf]  [93mAttempt #10 failed with service unavailable. Continuing to retry for 48s[0m
+2026-06-02T02:04:51.146729419Z [inf]  [93mAttempt #11 failed with service unavailable. Continuing to retry for 8s[0m
+2026-06-02T02:04:51.188269790Z [inf]  
+2026-06-02T02:04:51.188272946Z [inf]  [91m1/1 replicas never became healthy![0m
+2026-06-02T02:04:51.188273598Z [inf]  [91mHealthcheck failed![0m
