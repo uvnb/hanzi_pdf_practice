@@ -120,7 +120,7 @@ function GlobalPaymentSuccessModal() {
     let interval: NodeJS.Timeout;
 
     const checkStatus = async () => {
-      if (pathname.startsWith('/admin')) return; // Don't show on admin page
+      if (pathname.includes('/admin')) return; // Don't show on admin page
       
       const ref = localStorage.getItem("pending_upgrade_ref");
       if (!ref) return;
@@ -149,7 +149,7 @@ function GlobalPaymentSuccessModal() {
 
   // Detect cross-device or non-pending_upgrade_ref upgrades
   useEffect(() => {
-    if (subscription && user && !pathname.startsWith('/admin')) {
+    if (subscription && user && !pathname.includes('/admin')) {
       const key = `last_sub_${user.id}`;
       const lastSubStr = localStorage.getItem(key);
       
