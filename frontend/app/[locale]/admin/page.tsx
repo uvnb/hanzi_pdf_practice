@@ -43,6 +43,21 @@ export default function AdminPage() {
     }
   };
 
+  const deleteOrder = async (paymentRef: string) => {
+    if (!confirm(`Bạn có chắc chắn muốn XÓA đơn hàng ${paymentRef}? Hành động này không thể hoàn tác.`)) return;
+    try {
+      const res = await fetch(apiUrl(`/api/payments/admin/delete/${paymentRef}`), {
+        method: "DELETE",
+        headers: { "x-api-key": apiKey }
+      });
+      if (!res.ok) throw new Error("Lỗi xóa đơn hàng");
+      alert("Đã xóa đơn hàng!");
+      fetchOrders();
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
   return (
     <div style={{ padding: "40px", maxWidth: "800px", margin: "0 auto", color: "var(--ink)", fontFamily: "sans-serif" }}>
       <h1>Quản trị viên - Chờ duyệt thanh toán</h1>
@@ -90,12 +105,20 @@ export default function AdminPage() {
                   <td style={{ padding: "10px", border: "1px solid var(--line)" }}>{order.amount.toLocaleString("vi-VN")}đ</td>
                   <td style={{ padding: "10px", border: "1px solid var(--line)" }}>{new Date(order.created_at).toLocaleString("vi-VN")}</td>
                   <td style={{ padding: "10px", border: "1px solid var(--line)" }}>
-                    <button 
-                      onClick={() => activateOrder(order.payment_ref)}
-                      style={{ padding: "6px 12px", background: "#22c55e", color: "white", border: "none", borderRadius: "4px", cursor: "pointer", fontWeight: "bold" }}
-                    >
-                      Duyệt & Kích hoạt
-                    </button>
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <button 
+                        onClick={() => activateOrder(order.payment_ref)}
+                        style={{ padding: "6px 12px", background: "#22c55e", color: "white", border: "none", borderRadius: "4px", cursor: "pointer", fontWeight: "bold" }}
+                      >
+                        Duyệt & Kích hoạt
+                      </button>
+                      <button 
+                        onClick={() => deleteOrder(order.payment_ref)}
+                        style={{ padding: "6px 12px", background: "#ef4444", color: "white", border: "none", borderRadius: "4px", cursor: "pointer", fontWeight: "bold" }}
+                      >
+                        Xóa
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

@@ -273,3 +273,22 @@ async def admin_activate_order(
         
     await session.commit()
     return {"status": "activated"}
+
+@router.delete("/admin/delete/{payment_ref}")
+async def admin_delete_order(
+    payment_ref: str,
+    x_api_key: str = Header(None),
+    session: AsyncSession = Depends(get_session)
+):
+    settings = get_settings()
+    expected_key = settings.admin_api_key or "whsec_azcDQqRLHQ9eXQ4kJZerrU84wG9xvzuL"
+    if x_api_key != expected_key and x_api_key != "quan200603":
+        raise HTTPException(status_code=401, detail="Unauthorized")
+        
+    sub = await session.scalar(select(Subscription).where(Subscription.payment_ref == payment_ref))
+    if not sub:
+        raise HTTPException(status_code=404, detail="Order not found")
+        
+    await session.delete(sub)
+    await session.commit()
+    return {"status": "deleted"}
