@@ -149,6 +149,38 @@ export default function AccountActions() {
       {!loading && user ? (
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <div style={{ position: "relative" }} ref={dropdownRef}>
+            {unreadCount > 0 && !dropdownOpen && (
+              <div style={{
+                position: "absolute",
+                right: "calc(100% + 12px)",
+                top: "50%",
+                transform: "translateY(-50%)",
+                background: "#ef4444",
+                color: "white",
+                padding: "6px 12px",
+                borderRadius: "20px",
+                fontSize: "13px",
+                fontWeight: "bold",
+                whiteSpace: "nowrap",
+                boxShadow: "0 4px 12px rgba(239, 68, 68, 0.3)",
+                pointerEvents: "none",
+                animation: "pulseText 2s infinite",
+                zIndex: 10
+              }}>
+                Bạn có thông báo mới
+                <div style={{
+                  position: "absolute",
+                  right: "-4px",
+                  top: "50%",
+                  marginTop: "-4px",
+                  width: "8px",
+                  height: "8px",
+                  background: "#ef4444",
+                  transform: "rotate(45deg)",
+                  zIndex: -1
+                }} />
+              </div>
+            )}
             <button
               type="button"
               onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -330,6 +362,10 @@ export default function AccountActions() {
           20%, 80% { transform: translate3d(1px, 0, 0) rotate(3deg); }
           30%, 50%, 70% { transform: translate3d(-2px, 0, 0) rotate(-3deg); }
           40%, 60% { transform: translate3d(2px, 0, 0) rotate(3deg); }
+        }
+        @keyframes pulseText {
+          0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
+          50% { opacity: 0.85; transform: translateY(-50%) scale(0.96); }
         }
       `}</style>
 
