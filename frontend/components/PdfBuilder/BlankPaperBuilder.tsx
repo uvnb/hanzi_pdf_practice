@@ -271,6 +271,13 @@ export default function BlankPaperBuilder() {
           )}
         </div>
 
+        <div style={{ marginBottom: "16px", padding: "12px", background: "var(--paper)", borderRadius: "8px", border: "1px solid var(--line)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--ink)" }}>Số lần tải còn lại trong ngày</span>
+          <span style={{ fontSize: "16px", fontWeight: 700, color: "var(--primary)" }}>
+            {subscription ? (subscription.plan === 'yearly' || subscription.pdf_limit >= 9999 ? 'Không giới hạn' : Math.max(0, subscription.pdf_limit - (subscription.pdf_count_today || 0))) : 0}
+          </span>
+        </div>
+
         <button disabled={busy || !canDownload || !pdfBytes} onClick={handleDownload} type="button">
           {busy ? t("generating") : "Tải PDF Giấy Trắng"}
         </button>
