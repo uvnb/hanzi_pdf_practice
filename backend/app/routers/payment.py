@@ -82,6 +82,34 @@ async def create_order(
     if payload.plan not in PLAN_DETAILS:
         raise HTTPException(status_code=400, detail="Invalid plan")
         
+    TIERS = {
+        "free": 0,
+        "weekly": 1,
+        "monthly": 2,
+        "yearly": 3
+    }
+    
+    # Check current active subscription tier
+    active_sub = await session.scalar(
+        select(Subscription)
+        .where(
+            Subscription.user_id == user.id,
+            Subscription.status == "active",
+            Subscription.expires_at > datetime.now(timezone.utc)
+        )
+        .order_by(Subscription.expires_at.desc())
+        .limit(1)
+    )
+    
+    current_tier = TIERS.get(active_sub.plan, 0) if active_sub else 0
+    requested_tier = TIERS.get(payload.plan, 0)
+    
+    if current_tier >= requested_tier and current_tier > 0:
+        raise HTTPException(
+            status_code=400, 
+            detail="Bạn đang sử dụng gói có cấp độ bằng hoặc cao hơn gói này. Vui lòng chọn gói cao hơn."
+        )
+        
     amount = PLAN_DETAILS[payload.plan]["amount"]
     
     # Check for existing pending order today

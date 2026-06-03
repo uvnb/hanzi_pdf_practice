@@ -32,7 +32,12 @@ export async function createOrder(plan: string): Promise<OrderResponse> {
     body: JSON.stringify({ plan }),
   });
   if (!response.ok) {
-    throw new Error(`Failed to create order: ${response.status}`);
+    let msg = `Failed to create order: ${response.status}`;
+    try {
+      const data = await response.json();
+      if (data.detail) msg = data.detail;
+    } catch (e) {}
+    throw new Error(msg);
   }
   return await response.json();
 }
