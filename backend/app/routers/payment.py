@@ -84,6 +84,27 @@ async def create_order(
         
     amount = PLAN_DETAILS[payload.plan]["amount"]
     
+    # Check for existing pending order today
+    today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    existing_pending = await session.scalar(
+        select(Subscription)
+        .where(
+            Subscription.user_id == user.id,
+            Subscription.plan == payload.plan,
+            Subscription.status == "pending",
+            Subscription.created_at >= today_start
+        )
+    )
+    
+    if existing_pending:
+        qr_url = generate_vietqr_url(existing_pending.amount_paid, existing_pending.payment_ref)
+        return OrderResponse(
+            payment_ref=existing_pending.payment_ref,
+            amount=existing_pending.amount_paid,
+            qr_url=qr_url,
+            status="pending"
+        )
+    
     # Generate unique ref: {email_prefix}_{plan[0].upper()}_{timestamp}
     email_prefix = user.email.split("@")[0].lower()
     # Remove any non-alphanumeric chars to be safe for bank transfer

@@ -115,14 +115,16 @@ function GlobalPaymentSuccessModal() {
   const router = useRouter();
   const pathname = usePathname();
 
-  // If on admin page, do not mount any logic
-  if (pathname?.includes('/admin')) return null;
+  // The condition is checked inside useEffects or at the return statement,
+  // to avoid breaking React Hook order rules.
 
   // Polling & focus listener to detect activation without reloading
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
     const checkStatus = async () => {
+      if (pathname?.includes('/admin')) return;
+      
       const ref = localStorage.getItem("pending_upgrade_ref");
       if (!ref) return;
 
@@ -158,7 +160,7 @@ function GlobalPaymentSuccessModal() {
 
   // Detect cross-device or non-pending_upgrade_ref upgrades
   useEffect(() => {
-    if (subscription && user) {
+    if (subscription && user && !pathname?.includes('/admin')) {
       const key = `last_sub_${user.id}`;
       const lastSubStr = localStorage.getItem(key);
       
@@ -180,7 +182,7 @@ function GlobalPaymentSuccessModal() {
     }
   }, [subscription, user, pathname]);
 
-  if (!show) return null;
+  if (!show || pathname?.includes('/admin')) return null;
 
   return (
     <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.6)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" }}>
