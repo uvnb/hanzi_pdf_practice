@@ -2,8 +2,8 @@ name: Tu dong Dong Mo server Railway
 
 on:
   schedule:
-    - cron: '0 17 * * *'   # 12h đêm VN (17:00 UTC) -> TAT
-    - cron: '30 0 * * *'   # 7h30 sáng VN (00:30 UTC) -> BAT
+    - cron: '13 17 * * *'   # ~12h13 đêm VN (17:13 UTC) -> TAT
+    - cron: '37 0 * * *'    # ~7h37 sáng VN (00:37 UTC) -> BAT
   workflow_dispatch:
     inputs:
       action:
