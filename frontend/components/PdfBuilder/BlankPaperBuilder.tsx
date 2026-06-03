@@ -4,47 +4,16 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/Auth/AuthProvider";
 import { consumePdfQuota } from "@/lib/payment-api";
-import { PDFDocument, BlendMode } from "pdf-lib";
+import { buildBlankWorksheet, GridStyle } from "@/lib/pdf-worksheet";
 import { Link } from "@/i18n/navigation";
-
-const TEMPLATES = {
-  tian: [
-    { id: "tian_10c_13h.pdf", name: "10 cột - 13 hàng" },
-    { id: "tian_14c_20h.pdf", name: "14 cột - 20 hàng" },
-  ],
-  mi: [
-    { id: "mi_11c_16h.pdf", name: "11 cột - 16 hàng" },
-  ],
-  square: [
-    { id: "square_8c_12h.pdf", name: "8 cột - 12 hàng" },
-    { id: "square_10c_14h.pdf", name: "10 cột - 14 hàng" },
-    { id: "square_11c_15h.pdf", name: "11 cột - 15 hàng" },
-    { id: "square_12c_16h.pdf", name: "12 cột - 16 hàng" },
-    { id: "square_13c_17h.pdf", name: "13 cột - 17 hàng" },
-    { id: "square_horizontal.pdf", name: "Ô vuông ngang" },
-  ],
-  jiugong: [
-    { id: "jiugong_thi.pdf", name: "Giấy thi" },
-  ],
-  vertical: [
-    { id: "vertical_7c.pdf", name: "7 cột" },
-    { id: "vertical_10c.pdf", name: "10 cột" },
-    { id: "vertical_12c.pdf", name: "12 cột" },
-  ],
-  horizontal: [
-    { id: "horizontal_13h.pdf", name: "13 hàng" },
-    { id: "horizontal_15h.pdf", name: "15 hàng" },
-    { id: "horizontal_vertical.pdf", name: "Ngang - Dọc" },
-  ]
-};
 
 const GRID_TYPES = [
   { id: "tian", name: "Ô điền" },
   { id: "mi", name: "Ô mễ" },
   { id: "square", name: "Ô vuông" },
+  { id: "zhonggong", name: "Trung cung" },
+  { id: "huigong", name: "Hồi cung" },
   { id: "jiugong", name: "Ô cửu cung" },
-  { id: "vertical", name: "Ô dọc" },
-  { id: "horizontal", name: "Ô ngang" },
 ];
 
 function triggerDownload(bytes: Uint8Array, filename: string) {
@@ -63,112 +32,76 @@ export default function BlankPaperBuilder() {
   const t = useTranslations("Pdf");
   const { user, subscription, refresh } = useAuth();
   
-  const [gridType, setGridType] = useState<keyof typeof TEMPLATES>("tian");
-  const [templateId, setTemplateId] = useState<string>(TEMPLATES.tian[0].id);
+  const [gridType, setGridType] = useState<GridStyle>("tian");
+  const [columns, setColumns] = useState(10);
+  const [rows, setRows] = useState(13);
+  
   const [background, setBackground] = useState<string>("1.jpeg");
   const [bgOpacity, setBgOpacity] = useState<number>(60);
   const [customBackgroundUrl, setCustomBackgroundUrl] = useState<string | null>(null);
   const [customFileName, setCustomFileName] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [pdfBytes, setPdfBytes] = useState<Uint8Array | null>(null);
+
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<string>("");
   const [isFullscreen, setIsFullscreen] = useState(false);
-
-  // Update available templates when gridType changes
-  useEffect(() => {
-    const list = TEMPLATES[gridType];
-    if (list && list.length > 0) {
-      setTemplateId(list[0].id);
-    }
-  }, [gridType]);
-
-  // We no longer generate a live PDF preview, we use native HTML rendering instead for instant feedback!
 
   let canDownload = false;
   if (subscription) {
     canDownload = true;
   }
 
-  async function fetchImageBytes(url: string): Promise<ArrayBuffer> {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error("Failed to load background image");
-    return res.arrayBuffer();
-  }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      generatePreview();
+    }, 800);
 
-  async function generatePdf() {
-    if (!templateId) return;
-    
+    return () => clearTimeout(timer);
+  }, [gridType, columns, rows, background, customBackgroundUrl, bgOpacity]);
+
+  async function generatePreview() {
+    setBusy(true);
     try {
-      setBusy(true);
-      setStatus("Đang tạo PDF...");
+      setStatus("Đang tạo bản xem trước...");
+      const activeBackground = background === "custom" && customBackgroundUrl 
+        ? customBackgroundUrl 
+        : background;
       
-      // Load the PDF template
-      const templateRes = await fetch(`/templates/${templateId}`);
-      if (!templateRes.ok) throw new Error("Template not found");
-      const templateBytes = await templateRes.arrayBuffer();
+      const generated = await buildBlankWorksheet(
+        gridType,
+        columns,
+        rows,
+        activeBackground,
+        bgOpacity,
+        {
+          title: "",
+          subtitleTian: "",
+          subtitleMi: "",
+          page: () => "",
+          sample: "",
+          trace: "",
+          selfPractice: "",
+          footer: "",
+          loading: () => "",
+          rendering: () => "",
+          packaging: "",
+          strokeMissing: () => "",
+          strokeInvalid: () => "",
+          canvasError: t("canvasError"),
+          imageError: t("imageError"),
+          emptyError: "",
+        },
+        setStatus
+      );
       
-      const templateDoc = await PDFDocument.load(templateBytes);
-      const pdfDoc = await PDFDocument.create();
-      
-      // Embed the first page of the template
-      const [embeddedTemplate] = await pdfDoc.embedPdf(templateDoc, [0]);
-      
-      // Prepare background image
-      let embeddedBg = null;
-      if (background !== "none") {
-        const activeBackground = background === "custom" && customBackgroundUrl 
-          ? customBackgroundUrl 
-          : `/background_pdf/${background}`;
-          
-        const bgBytes = await fetchImageBytes(activeBackground);
-        // Determine type
-        if (activeBackground.toLowerCase().endsWith('.png') || activeBackground.startsWith('data:image/png')) {
-          embeddedBg = await pdfDoc.embedPng(bgBytes);
-        } else {
-          embeddedBg = await pdfDoc.embedJpg(bgBytes);
-        }
-      }
-      
-      const numPages = 1;
-      
-      for (let i = 0; i < numPages; i++) {
-        const isLandscape = embeddedTemplate.width > embeddedTemplate.height;
-        const A4_WIDTH = 595.32;
-        const A4_HEIGHT = 841.92;
-        const targetWidth = isLandscape ? A4_HEIGHT : A4_WIDTH;
-        const targetHeight = isLandscape ? A4_WIDTH : A4_HEIGHT;
-
-        const page = pdfDoc.addPage([targetWidth, targetHeight]);
-        
-        // Draw the template first. If it has a white background, it will be the base.
-        page.drawPage(embeddedTemplate, {
-          x: 0,
-          y: 0,
-          width: targetWidth,
-          height: targetHeight,
-        });
-        
-        // Draw the background image ON TOP with Multiply blend mode.
-        // This makes the white areas of the template transparent to the background,
-        // while the dark grid lines remain dark.
-        if (embeddedBg) {
-          page.drawImage(embeddedBg, {
-            x: 0,
-            y: 0,
-            width: targetWidth,
-            height: targetHeight,
-            opacity: 1 - (bgOpacity / 100),
-            blendMode: BlendMode.Multiply,
-          });
-        }
-      }
-      
-      const finalBytes = await pdfDoc.save();
-      
-      return finalBytes;
+      setPreviewUrls(generated.previewUrls);
+      setPdfBytes(generated.pdfBytes);
+      setStatus("");
     } catch (err: any) {
-      setStatus("Lỗi khi tạo PDF: " + err.message);
+      setStatus(err.message || "Lỗi");
     } finally {
       setBusy(false);
     }
@@ -180,25 +113,23 @@ export default function BlankPaperBuilder() {
       return;
     }
 
-    setBusy(true);
-    setStatus("Đang kiểm tra lượt tải...");
-    try {
-      await consumePdfQuota();
-      
-      const bytes = await generatePdf();
-      if (bytes) {
-        triggerDownload(bytes, `hanzi-blank-paper-${templateId}`);
+    if (pdfBytes) {
+      setBusy(true);
+      setStatus("Đang kiểm tra lượt tải...");
+      try {
+        await consumePdfQuota();
+        triggerDownload(pdfBytes, `hanzi-blank-paper.pdf`);
         setStatus("Tải thành công!");
         await refresh();
+      } catch (err: any) {
+        if (err.message === "PDF_QUOTA_EXCEEDED") {
+          setStatus("QUOTA_EXCEEDED");
+        } else {
+          setStatus("Có lỗi xảy ra khi kiểm tra lượt tải.");
+        }
+      } finally {
+        setBusy(false);
       }
-    } catch (err: any) {
-      if (err.message === "PDF_QUOTA_EXCEEDED") {
-        setStatus("QUOTA_EXCEEDED");
-      } else {
-        setStatus("Có lỗi xảy ra khi kiểm tra lượt tải.");
-      }
-    } finally {
-      setBusy(false);
     }
   }
 
@@ -222,7 +153,7 @@ export default function BlankPaperBuilder() {
           marginBottom: "16px",
         }}>
           Chế độ <b>Giấy Trắng</b> giúp bạn luyện viết tự do mà không bị gò bó bởi chữ mẫu. <br/><br/>
-          Hãy chọn một loại lưới chuyên nghiệp, kết hợp cùng hình nền để in ra giấy hoặc dùng trên các ứng dụng ghi chú (GoodNotes, Notability...).
+          Hãy chọn một loại lưới chuyên nghiệp, thiết lập số dòng và số cột mong muốn, kết hợp cùng hình nền để in ra giấy hoặc dùng trên các ứng dụng ghi chú (GoodNotes, Notability...).
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "24px" }}>
           
@@ -230,7 +161,7 @@ export default function BlankPaperBuilder() {
             <label style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)", margin: 0 }}>Kiểu lưới</label>
             <select
               value={gridType}
-              onChange={(e) => setGridType(e.target.value as keyof typeof TEMPLATES)}
+              onChange={(e) => setGridType(e.target.value as GridStyle)}
               style={{ padding: "4px 8px", borderRadius: "6px", border: "1px solid var(--line)", background: "var(--paper)", color: "var(--ink)", outline: "none", fontSize: "14px", cursor: "pointer", maxWidth: 170 }}
             >
               {GRID_TYPES.map(g => (
@@ -240,18 +171,28 @@ export default function BlankPaperBuilder() {
           </div>
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <label style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)", margin: 0 }}>Loại</label>
-            <select
-              value={templateId}
-              onChange={(e) => setTemplateId(e.target.value)}
-              style={{ padding: "4px 8px", borderRadius: "6px", border: "1px solid var(--line)", background: "var(--paper)", color: "var(--ink)", outline: "none", fontSize: "14px", cursor: "pointer", maxWidth: 170 }}
-            >
-              {TEMPLATES[gridType]?.map(t => (
-                <option key={t.id} value={t.id}>{t.name}</option>
-              ))}
-            </select>
+            <label style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)", margin: 0 }}>Số cột</label>
+            <input
+              type="number"
+              min={1}
+              max={30}
+              value={columns}
+              onChange={(e) => setColumns(Number(e.target.value))}
+              style={{ padding: "4px 8px", borderRadius: "6px", border: "1px solid var(--line)", background: "var(--paper)", color: "var(--ink)", outline: "none", fontSize: "14px", width: "170px" }}
+            />
           </div>
 
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <label style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)", margin: 0 }}>Số dòng</label>
+            <input
+              type="number"
+              min={1}
+              max={40}
+              value={rows}
+              onChange={(e) => setRows(Number(e.target.value))}
+              style={{ padding: "4px 8px", borderRadius: "6px", border: "1px solid var(--line)", background: "var(--paper)", color: "var(--ink)", outline: "none", fontSize: "14px", width: "170px" }}
+            />
+          </div>
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <label style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)", margin: 0 }}>Độ mờ ảnh nền</label>
@@ -330,7 +271,7 @@ export default function BlankPaperBuilder() {
           )}
         </div>
 
-        <button disabled={busy || !canDownload} onClick={handleDownload} type="button">
+        <button disabled={busy || !canDownload || !pdfBytes} onClick={handleDownload} type="button">
           {busy ? t("generating") : "Tải PDF Giấy Trắng"}
         </button>
         {status && (
@@ -371,8 +312,7 @@ export default function BlankPaperBuilder() {
           </button>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxHeight: "calc(100vh - 180px)", overflowY: "auto", paddingRight: "8px" }}>
-          {/* Chỉ hiển thị 1 trang xem trước vì các trang trắng là hoàn toàn giống nhau */}
-          {Array.from({ length: 1 }).map((_, i) => (
+          {previewUrls.map((url, i) => (
             <div 
               key={i}
               style={{ 
@@ -384,34 +324,16 @@ export default function BlankPaperBuilder() {
                 boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
               }}
             >
-              {background !== "none" && (
-                <div 
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    backgroundImage: `url(${background === "custom" && customBackgroundUrl ? customBackgroundUrl : `/background_pdf/${background}`})`,
-                    backgroundSize: "100% 100%", // stretches nicely just like PDF
-                    backgroundPosition: "center",
-                    opacity: 1 - (bgOpacity / 100),
-                  }}
-                />
-              )}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
-                src={`/templates_preview/${templateId.replace('.pdf', '.png')}`} 
+                src={url} 
                 alt={`${t("preview")} ${i + 1}`}
                 style={{
                   display: "block",
                   width: "100%",
-                  height: "100%",
-                  aspectRatio: templateId.includes('horizontal') ? "1.4142 / 1" : "1 / 1.4142",
+                  height: "auto",
                   position: "relative",
                   zIndex: 1,
-                  mixBlendMode: "multiply",
-                  objectFit: "fill"
                 }}
               />
             </div>
@@ -448,43 +370,31 @@ export default function BlankPaperBuilder() {
             onClick={(e) => e.stopPropagation()} 
             style={{ width: "100%", maxWidth: "900px", display: "flex", flexDirection: "column", gap: "24px", paddingBottom: "40px" }}
           >
-            <div 
-              style={{ 
-                position: "relative", 
-                width: "100%", 
-                backgroundColor: "#fff",
-                overflow: "hidden",
-                boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
-              }}
-            >
-              {background !== "none" && (
-                <div 
+            {previewUrls.map((url, i) => (
+              <div 
+                key={i}
+                style={{ 
+                  position: "relative", 
+                  width: "100%", 
+                  backgroundColor: "#fff",
+                  overflow: "hidden",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  src={url} 
+                  alt={`${t("preview")} fullscreen`}
                   style={{
-                    position: "absolute",
-                    top: 0, left: 0, width: "100%", height: "100%",
-                    backgroundImage: `url(${background === "custom" && customBackgroundUrl ? customBackgroundUrl : `/background_pdf/${background}`})`,
-                    backgroundSize: "100% 100%",
-                    backgroundPosition: "center",
-                    opacity: 1 - (bgOpacity / 100),
+                    display: "block",
+                    width: "100%",
+                    height: "auto",
+                    position: "relative",
+                    zIndex: 1,
                   }}
                 />
-              )}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img 
-                src={`/templates_preview/${templateId.replace('.pdf', '.png')}`} 
-                alt={`${t("preview")} fullscreen`}
-                style={{
-                  display: "block",
-                  width: "100%",
-                  height: "100%",
-                  aspectRatio: templateId.includes('horizontal') ? "1.4142 / 1" : "1 / 1.4142",
-                  position: "relative",
-                  zIndex: 1,
-                  mixBlendMode: "multiply",
-                  objectFit: "fill"
-                }}
-              />
-            </div>
+              </div>
+            ))}
           </div>
         </div>
       )}

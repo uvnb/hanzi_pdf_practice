@@ -105,11 +105,12 @@ function drawGuideGrid(
   x: number,
   y: number,
   style: GridStyle,
+  cellSize: number = CELL_SIZE,
 ) {
   context.save();
   context.strokeStyle = "#d6bca8";
   context.lineWidth = 1.4;
-  context.strokeRect(x, y, CELL_SIZE, CELL_SIZE);
+  context.strokeRect(x, y, cellSize, cellSize);
   
   if (style === "square") {
     context.restore();
@@ -121,36 +122,36 @@ function drawGuideGrid(
   context.beginPath();
 
   if (style === "tian" || style === "mi") {
-    context.moveTo(x + CELL_SIZE / 2, y);
-    context.lineTo(x + CELL_SIZE / 2, y + CELL_SIZE);
-    context.moveTo(x, y + CELL_SIZE / 2);
-    context.lineTo(x + CELL_SIZE, y + CELL_SIZE / 2);
+    context.moveTo(x + cellSize / 2, y);
+    context.lineTo(x + cellSize / 2, y + cellSize);
+    context.moveTo(x, y + cellSize / 2);
+    context.lineTo(x + cellSize, y + cellSize / 2);
     if (style === "mi") {
       context.moveTo(x, y);
-      context.lineTo(x + CELL_SIZE, y + CELL_SIZE);
-      context.moveTo(x + CELL_SIZE, y);
-      context.lineTo(x, y + CELL_SIZE);
+      context.lineTo(x + cellSize, y + cellSize);
+      context.moveTo(x + cellSize, y);
+      context.lineTo(x, y + cellSize);
     }
   } else if (style === "zhonggong") {
-    const innerSize = CELL_SIZE * 0.65;
-    const offset = (CELL_SIZE - innerSize) / 2;
+    const innerSize = cellSize * 0.65;
+    const offset = (cellSize - innerSize) / 2;
     context.rect(x + offset, y + offset, innerSize, innerSize);
   } else if (style === "huigong") {
-    const innerW = CELL_SIZE * 0.5;
-    const innerH = CELL_SIZE * 0.65;
-    const offsetX = (CELL_SIZE - innerW) / 2;
-    const offsetY = (CELL_SIZE - innerH) / 2;
+    const innerW = cellSize * 0.5;
+    const innerH = cellSize * 0.65;
+    const offsetX = (cellSize - innerW) / 2;
+    const offsetY = (cellSize - innerH) / 2;
     context.rect(x + offsetX, y + offsetY, innerW, innerH);
   } else if (style === "jiugong") {
-    const third = CELL_SIZE / 3;
+    const third = cellSize / 3;
     context.moveTo(x + third, y);
-    context.lineTo(x + third, y + CELL_SIZE);
+    context.lineTo(x + third, y + cellSize);
     context.moveTo(x + third * 2, y);
-    context.lineTo(x + third * 2, y + CELL_SIZE);
+    context.lineTo(x + third * 2, y + cellSize);
     context.moveTo(x, y + third);
-    context.lineTo(x + CELL_SIZE, y + third);
+    context.lineTo(x + cellSize, y + third);
     context.moveTo(x, y + third * 2);
-    context.lineTo(x + CELL_SIZE, y + third * 2);
+    context.lineTo(x + cellSize, y + third * 2);
   }
   
   context.stroke();
@@ -374,9 +375,72 @@ export async function buildWorksheet(
   }
 
   onProgress?.(labels.packaging);
-  return {
-    pdfBytes: encodeJpegPagesAsPdf(pages),
-    previewUrls,
-    pageCount,
-  };
+  const pdfBytes = encodeJpegPagesAsPdf(pages);
+  return { pdfBytes, previewUrls, pageCount };
+}
+
+export async function buildBlankWorksheet(
+  style: GridStyle,
+  columns: number,
+  rows: number,
+  background: string,
+  bgOpacity: number,
+  labels: WorksheetLabels,
+  onProgress?: (progress: string) => void,
+): Promise<WorksheetResult> {
+  const pageCount = 1;
+  
+  let bgImageElement: HTMLImageElement | null = null;
+  if (background && background !== "none") {
+    try {
+      const src = background.startsWith("blob:") || background.startsWith("data:") 
+        ? background 
+        : `/background_pdf/${background}`;
+      bgImageElement = await loadImage(src);
+    } catch (e) {
+      console.error("Failed to load background image", e);
+    }
+  }
+
+  const previewUrls: string[] = [];
+  const pages: JpegPage[] = [];
+
+  const canvas = document.createElement("canvas");
+  canvas.width = PAGE_WIDTH;
+  canvas.height = PAGE_HEIGHT;
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error(labels.canvasError);
+
+  const availableWidth = PAGE_WIDTH - 180;
+  const availableHeight = PAGE_HEIGHT - 210;
+  
+  const cellSizeW = availableWidth / columns;
+  const cellSizeH = availableHeight / rows;
+  const cellSize = Math.min(cellSizeW, cellSizeH);
+  
+  const gridWidth = cellSize * columns;
+  const gridHeight = cellSize * rows;
+  const startX = (PAGE_WIDTH - gridWidth) / 2;
+  const startY = 120 + (availableHeight - gridHeight) / 2;
+
+  drawHeader(context, 1, 1, style, labels, bgImageElement, bgOpacity);
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < columns; col++) {
+      drawGuideGrid(context, startX + col * cellSize, startY + row * cellSize, style, cellSize);
+    }
+  }
+
+  drawFooter(context, 1, 1, labels);
+
+  if (onProgress) onProgress(labels.packaging);
+  const pageJpeg = await canvasToJpeg(canvas, labels);
+  pages.push({ bytes: pageJpeg, width: PAGE_WIDTH, height: PAGE_HEIGHT });
+  
+  const previewUrl = URL.createObjectURL(new Blob([pageJpeg], { type: "image/jpeg" }));
+  previewUrls.push(previewUrl);
+
+  const pdfBytes = await encodeJpegPagesAsPdf(pages);
+
+  return { pdfBytes, previewUrls, pageCount };
 }
