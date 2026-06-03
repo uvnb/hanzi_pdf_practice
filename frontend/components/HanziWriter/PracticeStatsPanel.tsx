@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 import { fetchStats, PracticeStats as StatsData } from "@/lib/hanzi-api";
 
-export default function PracticeStatsPanel() {
+export default function PracticeStatsPanel({ refreshKey = 0 }: { refreshKey?: number }) {
   const [stats, setStats] = useState<StatsData | null>(null);
 
   useEffect(() => {
     fetchStats()
       .then(setStats)
       .catch(() => {}); // Fails silently if not logged in
-  }, []);
+  }, [refreshKey]);
 
   if (!stats) return null;
 

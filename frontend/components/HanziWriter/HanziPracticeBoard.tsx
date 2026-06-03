@@ -26,6 +26,7 @@ export default function HanziPracticeBoard() {
   const [hskList, setHskList] = useState<HanziMetadata[]>([]);
   const [isComplete, setIsComplete] = useState(false);
   const [mistakesCount, setMistakesCount] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   // Fetch character details when character changes
   useEffect(() => {
@@ -110,7 +111,9 @@ export default function HanziPracticeBoard() {
       },
       onComplete: ({ totalMistakes }) => {
         // Log attempt to backend silently (fails gracefully if unauthenticated)
-        logAttempt({ character, mistakes: totalMistakes }).catch(() => {});
+        logAttempt({ character, mistakes: totalMistakes })
+          .then(() => setRefreshKey(prev => prev + 1))
+          .catch(() => {});
         
         setIsComplete(true);
         setMistakesCount(totalMistakes);
@@ -216,7 +219,7 @@ export default function HanziPracticeBoard() {
 
       <div className="infoPanel" style={{ display: "flex", flexDirection: "column" }}>
         <CharacterInfo character={character} detail={detail} />
-        <PracticeStatsPanel />
+        <PracticeStatsPanel refreshKey={refreshKey} />
       </div>
     </section>
   );
