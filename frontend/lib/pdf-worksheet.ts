@@ -437,7 +437,7 @@ export async function buildBlankWorksheet(
   const pageJpeg = await canvasToJpeg(canvas, labels);
   pages.push({ bytes: pageJpeg, width: PAGE_WIDTH, height: PAGE_HEIGHT });
   
-  const previewUrl = URL.createObjectURL(new Blob([pageJpeg], { type: "image/jpeg" }));
+  const previewUrl = URL.createObjectURL(new Blob([pageJpeg as any], { type: "image/jpeg" }));
   previewUrls.push(previewUrl);
 
   const pdfBytes = await encodeJpegPagesAsPdf(pages);
