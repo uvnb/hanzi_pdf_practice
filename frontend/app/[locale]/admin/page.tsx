@@ -35,6 +35,7 @@ export default function AdminPage() {
         headers: { "x-api-key": apiKey }
       });
       if (!res.ok) throw new Error("Lỗi kích hoạt");
+      localStorage.setItem('admin_approved', Date.now().toString());
       alert("Kích hoạt thành công!");
       fetchOrders();
     } catch (err: any) {

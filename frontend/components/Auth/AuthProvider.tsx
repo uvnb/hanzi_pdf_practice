@@ -115,13 +115,14 @@ function GlobalPaymentSuccessModal() {
   const router = useRouter();
   const pathname = usePathname();
 
+  // If on admin page, do not mount any logic
+  if (pathname?.includes('/admin')) return null;
+
   // Polling & focus listener to detect activation without reloading
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
     const checkStatus = async () => {
-      if (pathname.includes('/admin')) return; // Don't show on admin page
-      
       const ref = localStorage.getItem("pending_upgrade_ref");
       if (!ref) return;
 
@@ -136,20 +137,28 @@ function GlobalPaymentSuccessModal() {
       }
     };
     
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'admin_approved' && e.newValue) {
+        refresh(); // Refresh immediately when admin approves
+      }
+    };
+    
     interval = setInterval(checkStatus, 15000);
     window.addEventListener("focus", checkStatus);
+    window.addEventListener("storage", handleStorage);
     
     checkStatus();
     
     return () => {
       clearInterval(interval);
       window.removeEventListener("focus", checkStatus);
+      window.removeEventListener("storage", handleStorage);
     };
-  }, [refresh, pathname]);
+  }, [refresh]);
 
   // Detect cross-device or non-pending_upgrade_ref upgrades
   useEffect(() => {
-    if (subscription && user && !pathname.includes('/admin')) {
+    if (subscription && user) {
       const key = `last_sub_${user.id}`;
       const lastSubStr = localStorage.getItem(key);
       

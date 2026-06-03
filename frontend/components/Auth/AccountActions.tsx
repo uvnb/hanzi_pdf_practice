@@ -152,15 +152,37 @@ export default function AccountActions() {
             <button
               type="button"
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              style={{ display: "flex", alignItems: "center", border: "none", background: "none", cursor: "pointer", padding: 0 }}
+              style={{ 
+                display: "flex", 
+                alignItems: "center", 
+                border: "none", 
+                background: "none", 
+                cursor: "pointer", 
+                padding: 0,
+                animation: unreadCount > 0 ? "shake 0.82s cubic-bezier(.36,.07,.19,.97) both infinite" : "none"
+              }}
             >
-              {user.avatar_url ? (
-                <img src={user.avatar_url} alt={user.name} style={{ width: "32px", height: "32px", borderRadius: "50%", border: "1px solid var(--line)", objectFit: "cover" }} />
-              ) : (
-                <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--primary)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}>
-                  {user.name.charAt(0).toUpperCase()}
-                </div>
-              )}
+              <div style={{ position: "relative" }}>
+                {user.avatar_url ? (
+                  <img src={user.avatar_url} alt={user.name} style={{ width: "32px", height: "32px", borderRadius: "50%", border: "1px solid var(--line)", objectFit: "cover" }} />
+                ) : (
+                  <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--primary)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}>
+                    {user.name.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                {unreadCount > 0 && (
+                  <div style={{
+                    position: "absolute",
+                    top: "-2px",
+                    right: "-2px",
+                    width: "10px",
+                    height: "10px",
+                    background: "#ef4444",
+                    borderRadius: "50%",
+                    border: "2px solid var(--paper)"
+                  }} />
+                )}
+              </div>
             </button>
           
           {dropdownOpen && (
@@ -302,6 +324,14 @@ export default function AccountActions() {
           </div>
         </div>
       ) : null}
+      <style>{`
+        @keyframes shake {
+          10%, 90% { transform: translate3d(-1px, 0, 0) rotate(-3deg); }
+          20%, 80% { transform: translate3d(1px, 0, 0) rotate(3deg); }
+          30%, 50%, 70% { transform: translate3d(-2px, 0, 0) rotate(-3deg); }
+          40%, 60% { transform: translate3d(2px, 0, 0) rotate(3deg); }
+        }
+      `}</style>
 
       {deleteModalOpen && (
         <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
