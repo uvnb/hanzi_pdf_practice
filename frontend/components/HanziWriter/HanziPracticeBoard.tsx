@@ -167,7 +167,7 @@ export default function HanziPracticeBoard() {
 
   return (
     <section className="practiceCard">
-      <CharacterSelector character={character} onSelectCharacter={setCharacter} onListLoaded={setHskList} />
+      <CharacterSelector character={character} expectedHskLevel={detail?.hsk_level || undefined} onSelectCharacter={setCharacter} onListLoaded={setHskList} />
 
       <div className="writerPanel">
         <div className="navGridContainer">

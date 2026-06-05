@@ -9,11 +9,12 @@ import { HSK_TOPICS } from "@/lib/hsk-topics";
 
 interface Props {
   character: string;
+  expectedHskLevel?: number;
   onSelectCharacter: (char: string) => void;
   onListLoaded?: (list: HanziMetadata[]) => void;
 }
 
-export default function CharacterSelector({ character, onSelectCharacter, onListLoaded }: Props) {
+export default function CharacterSelector({ character, expectedHskLevel, onSelectCharacter, onListLoaded }: Props) {
   const t = useTranslations("Board");
   const [input, setInput] = useState(character);
   const [hskLevel, setHskLevel] = useState<number>(1);
@@ -24,6 +25,13 @@ export default function CharacterSelector({ character, onSelectCharacter, onList
   useEffect(() => {
     setInput(character);
   }, [character]);
+
+  useEffect(() => {
+    if (expectedHskLevel && expectedHskLevel >= 1 && expectedHskLevel <= 6) {
+      setHskLevel(expectedHskLevel);
+      setSelectedTopic("Tất cả");
+    }
+  }, [expectedHskLevel]);
 
   useEffect(() => {
     if (selectedBtnRef.current) {
