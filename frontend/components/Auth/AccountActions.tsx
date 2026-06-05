@@ -26,6 +26,11 @@ const TrophyIcon = () => (
 const BellIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
 );
+const MusicIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+  </svg>
+);
 
 const TrashIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
@@ -46,6 +51,62 @@ export default function AccountActions() {
   const [deleteError, setDeleteError] = useState("");
   
   const [readIds, setReadIds] = useState<string[]>([]);
+
+  // Music state
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(0.5);
+  const [customTrackName, setCustomTrackName] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    // Initialize audio only once
+    if (typeof window !== "undefined" && !audioRef.current) {
+      audioRef.current = new Audio("/audio/bg-music.mp3");
+      audioRef.current.loop = true;
+      audioRef.current.volume = volume;
+    }
+    return () => {
+      // We don't want to destroy the audio when AccountActions unmounts
+      // because it might be a page transition where we want music to keep playing?
+      // Actually, AccountActions is in the global layout, so it rarely unmounts.
+    };
+  }, []);
+
+  const togglePlay = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      setIsPlaying(true);
+      audioRef.current.play().catch(() => setIsPlaying(false));
+    }
+  };
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+    const newVol = parseFloat(e.target.value);
+    setVolume(newVol);
+    if (audioRef.current) {
+      audioRef.current.volume = newVol;
+    }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = url;
+      audioRef.current.load();
+      setIsPlaying(true);
+      audioRef.current.play().catch(() => setIsPlaying(false));
+      setCustomTrackName(file.name);
+    }
+  };
 
   useEffect(() => {
     if (user?.id) {
@@ -314,6 +375,59 @@ export default function AccountActions() {
                   <ShieldCheckIcon />
                   Chính sách sử dụng
                 </button>
+
+                {/* Music Widget Integrated */}
+                <div style={{ padding: "8px 16px", background: "rgba(0,0,0,0.02)", borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)", margin: "4px 0" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--ink)", fontWeight: "500", fontSize: "14px" }}>
+                      <MusicIcon /> Nhạc nền
+                    </div>
+                    <button 
+                      onClick={togglePlay}
+                      style={{ 
+                        background: "var(--primary)", 
+                        color: "white", 
+                        border: "none", 
+                        borderRadius: "50%", 
+                        width: "28px", 
+                        height: "28px", 
+                        display: "flex", 
+                        alignItems: "center", 
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
+                      }}
+                    >
+                      {isPlaying ? (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                      ) : (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style={{ marginLeft: "2px" }}><path d="M8 5v14l11-7z"/></svg>
+                      )}
+                    </button>
+                  </div>
+                  
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                    <input 
+                      type="range" min="0" max="1" step="0.05" value={volume} 
+                      onChange={handleVolumeChange} 
+                      style={{ flex: 1, accentColor: "var(--primary)", height: "4px", cursor: "pointer" }}
+                    />
+                  </div>
+
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "8px" }}>
+                    <div style={{ fontSize: "11px", color: "var(--ink)", opacity: 0.7, maxWidth: "120px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                      {customTrackName || "Nhạc thư giãn"}
+                    </div>
+                    <button 
+                      onClick={() => fileInputRef.current?.click()}
+                      style={{ background: "none", border: "1px dashed var(--line)", borderRadius: "4px", padding: "2px 6px", fontSize: "11px", color: "var(--ink)", cursor: "pointer" }}
+                    >
+                      Tải lên (mp3)
+                    </button>
+                    <input type="file" accept="audio/*" ref={fileInputRef} style={{ display: "none" }} onChange={handleFileUpload} />
+                  </div>
+                </div>
                 <button 
                   onClick={handleNotificationClick}
                   style={{ ...menuItemStyle, position: "relative" }}
