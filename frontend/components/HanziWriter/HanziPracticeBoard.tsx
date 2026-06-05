@@ -23,6 +23,16 @@ export default function HanziPracticeBoard() {
   const [message, setMessage] = useState(() => t("defaultMessage"));
   const [loading, setLoading] = useState(true);
   const [isShaking, setIsShaking] = useState(false);
+
+  // Load last practiced character on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("last_practiced_char");
+      if (saved && /\p{Script=Han}/u.test(saved)) {
+        setCharacter(saved);
+      }
+    }
+  }, []);
   const [hskList, setHskList] = useState<HanziMetadata[]>([]);
   const [isComplete, setIsComplete] = useState(false);
   const [mistakesCount, setMistakesCount] = useState(0);
@@ -31,6 +41,9 @@ export default function HanziPracticeBoard() {
   // Fetch character details when character changes
   useEffect(() => {
     setIsComplete(false);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("last_practiced_char", character);
+    }
     fetchHanziDetail(character)
       .then(setDetail)
       .catch((err) => {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { FormEvent, useEffect, useState, useMemo } from "react";
+import { FormEvent, useEffect, useState, useMemo, useRef } from "react";
 import { fetchHskList } from "@/lib/hanzi-api";
 import { useAuth } from "@/components/Auth/AuthProvider";
 import { HanziMetadata } from "@/lib/pdf-worksheet";
@@ -19,6 +19,17 @@ export default function CharacterSelector({ character, onSelectCharacter, onList
   const [hskLevel, setHskLevel] = useState<number>(1);
   const [hskList, setHskList] = useState<HanziMetadata[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<string>("Tất cả");
+  const selectedBtnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    setInput(character);
+  }, [character]);
+
+  useEffect(() => {
+    if (selectedBtnRef.current) {
+      selectedBtnRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }, [character, hskList, selectedTopic]);
 
   useEffect(() => {
     fetchHskList(hskLevel).then((list) => {
@@ -33,11 +44,19 @@ export default function CharacterSelector({ character, onSelectCharacter, onList
   }, [hskList]);
 
   const filteredList = useMemo(() => {
-    if (selectedTopic === "Tất cả") return hskList;
-    const topic = availableTopics.find(t => t.name === selectedTopic);
-    if (!topic) return hskList;
-    return hskList.filter(sample => topic.chars.includes(sample.character));
-  }, [hskList, selectedTopic, availableTopics]);
+    let list = hskList;
+    if (selectedTopic !== "Tất cả") {
+      const topic = availableTopics.find(t => t.name === selectedTopic);
+      if (topic) {
+        list = hskList.filter(sample => topic.chars.includes(sample.character));
+      }
+    }
+    // Inject the current character if it's not in the list so it always appears
+    if (!list.some(s => s.character === character) && /\p{Script=Han}/u.test(character)) {
+      list = [{ character, pinyin: "", meaning_vi: "Tùy chỉnh" }, ...list];
+    }
+    return list;
+  }, [hskList, selectedTopic, availableTopics, character]);
 
   useEffect(() => {
     if (onListLoaded) onListLoaded(filteredList);
@@ -115,19 +134,23 @@ export default function CharacterSelector({ character, onSelectCharacter, onList
           {filteredList.length === 0 ? (
             <p style={{ fontSize: 13, color: "var(--muted)" }}>Chưa có dữ liệu</p>
           ) : (
-            filteredList.map((sample) => (
-              <button
-                className={sample.character === character ? "selected" : undefined}
-                key={sample.character}
-                onClick={() => {
-                  onSelectCharacter(sample.character);
-                  setInput(sample.character);
-                }}
-                type="button"
-              >
-                {sample.character}
-              </button>
-            ))
+            filteredList.map((sample) => {
+              const isSelected = sample.character === character;
+              return (
+                <button
+                  className={isSelected ? "selected" : undefined}
+                  key={sample.character}
+                  ref={isSelected ? selectedBtnRef : null}
+                  onClick={() => {
+                    onSelectCharacter(sample.character);
+                    setInput(sample.character);
+                  }}
+                  type="button"
+                >
+                  {sample.character}
+                </button>
+              );
+            })
           )}
         </div>
       </div>
