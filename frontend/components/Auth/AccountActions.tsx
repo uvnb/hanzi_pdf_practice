@@ -414,7 +414,7 @@ export default function AccountActions() {
                         <button 
                           onClick={(e) => { e.stopPropagation(); togglePlay(e); }}
                           style={{ 
-                            background: "var(--primary)", 
+                            background: "var(--accent)", 
                             color: "white", 
                             border: "none", 
                             borderRadius: "50%", 
@@ -442,7 +442,7 @@ export default function AccountActions() {
                             onInput={(e) => { e.stopPropagation(); handleVolumeChange(e as any); }}
                             onMouseDown={(e) => e.stopPropagation()}
                             onTouchStart={(e) => e.stopPropagation()}
-                            style={{ width: "100%", accentColor: "var(--primary)", cursor: "pointer" }}
+                            style={{ width: "100%", accentColor: "var(--accent)", cursor: "pointer" }}
                           />
                         </div>
                       </div>
