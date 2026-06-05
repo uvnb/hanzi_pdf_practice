@@ -56,6 +56,7 @@ export default function AccountActions() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.5);
   const [customTrackName, setCustomTrackName] = useState<string | null>(null);
+  const [musicExpanded, setMusicExpanded] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -376,58 +377,6 @@ export default function AccountActions() {
                   Chính sách sử dụng
                 </button>
 
-                {/* Music Widget Integrated */}
-                <div style={{ padding: "8px 16px", background: "rgba(0,0,0,0.02)", borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)", margin: "4px 0" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--ink)", fontWeight: "500", fontSize: "14px" }}>
-                      <MusicIcon /> Nhạc nền
-                    </div>
-                    <button 
-                      onClick={togglePlay}
-                      style={{ 
-                        background: "var(--primary)", 
-                        color: "white", 
-                        border: "none", 
-                        borderRadius: "50%", 
-                        width: "28px", 
-                        height: "28px", 
-                        display: "flex", 
-                        alignItems: "center", 
-                        justifyContent: "center",
-                        cursor: "pointer",
-                        boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
-                      }}
-                    >
-                      {isPlaying ? (
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                      ) : (
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style={{ marginLeft: "2px" }}><path d="M8 5v14l11-7z"/></svg>
-                      )}
-                    </button>
-                  </div>
-                  
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-                    <input 
-                      type="range" min="0" max="1" step="0.05" value={volume} 
-                      onChange={handleVolumeChange} 
-                      style={{ flex: 1, accentColor: "var(--primary)", height: "4px", cursor: "pointer" }}
-                    />
-                  </div>
-
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "8px" }}>
-                    <div style={{ fontSize: "11px", color: "var(--ink)", opacity: 0.7, maxWidth: "120px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                      {customTrackName || "Nhạc thư giãn"}
-                    </div>
-                    <button 
-                      onClick={() => fileInputRef.current?.click()}
-                      style={{ background: "none", border: "1px dashed var(--line)", borderRadius: "4px", padding: "2px 6px", fontSize: "11px", color: "var(--ink)", cursor: "pointer" }}
-                    >
-                      Tải lên (mp3)
-                    </button>
-                    <input type="file" accept="audio/*" ref={fileInputRef} style={{ display: "none" }} onChange={handleFileUpload} />
-                  </div>
-                </div>
                 <button 
                   onClick={handleNotificationClick}
                   style={{ ...menuItemStyle, position: "relative" }}
@@ -442,6 +391,76 @@ export default function AccountActions() {
                     </span>
                   )}
                 </button>
+
+                {/* Collapsible Music Menu */}
+                <div style={{ borderTop: "1px solid var(--line)", marginTop: "4px", paddingTop: "4px" }}>
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); setMusicExpanded(!musicExpanded); }}
+                    style={{ ...menuItemStyle, justifyContent: "space-between" }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = "rgba(0,0,0,0.03)"}
+                    onMouseLeave={(e) => e.currentTarget.style.background = "none"}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      <MusicIcon /> Nhạc nền
+                    </div>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: musicExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </button>
+
+                  {musicExpanded && (
+                    <div style={{ padding: "8px 16px 12px 44px", background: "rgba(0,0,0,0.01)" }} onClick={(e) => e.stopPropagation()}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); togglePlay(e); }}
+                          style={{ 
+                            background: "var(--primary)", 
+                            color: "white", 
+                            border: "none", 
+                            borderRadius: "50%", 
+                            minWidth: "32px", 
+                            maxWidth: "32px",
+                            height: "32px", 
+                            display: "flex", 
+                            alignItems: "center", 
+                            justifyContent: "center",
+                            cursor: "pointer",
+                            padding: 0
+                          }}
+                        >
+                          {isPlaying ? (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                          ) : (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style={{ marginLeft: "2px" }}><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                          )}
+                        </button>
+                        <div style={{ flex: 1, display: "flex", alignItems: "center", gap: "8px" }}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                          <input 
+                            type="range" min="0" max="1" step="0.05" value={volume} 
+                            onChange={(e) => { e.stopPropagation(); handleVolumeChange(e); }}
+                            onInput={(e) => { e.stopPropagation(); handleVolumeChange(e as any); }}
+                            onMouseDown={(e) => e.stopPropagation()}
+                            onTouchStart={(e) => e.stopPropagation()}
+                            style={{ width: "100%", accentColor: "var(--primary)", cursor: "pointer" }}
+                          />
+                        </div>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                        <div style={{ fontSize: "12px", color: "var(--ink)", opacity: 0.7, maxWidth: "120px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          {customTrackName || "Nhạc thư giãn"}
+                        </div>
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
+                          style={{ background: "white", border: "1px dashed var(--line)", borderRadius: "4px", padding: "4px 8px", fontSize: "11px", color: "var(--ink)", cursor: "pointer", minWidth: "max-content" }}
+                        >
+                          Tải lên (mp3)
+                        </button>
+                      </div>
+                      <input type="file" accept="audio/*" ref={fileInputRef} style={{ display: "none" }} onChange={handleFileUpload} onClick={(e) => e.stopPropagation()} />
+                    </div>
+                  )}
+                </div>
               </div>
               )}
 
