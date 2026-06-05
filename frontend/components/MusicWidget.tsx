@@ -67,7 +67,7 @@ export default function MusicWidget() {
   if (!isExpanded) {
     return (
       <>
-        <div style={{ position: "relative" }}>
+        <div style={{ position: "fixed", top: "80px", right: "24px", zIndex: 50 }}>
           <button 
             onClick={() => setIsExpanded(true)}
             style={{
@@ -109,7 +109,7 @@ export default function MusicWidget() {
   }
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "fixed", top: "80px", right: "24px", zIndex: 50 }}>
       <div style={{
         position: "absolute",
         top: "45px", // Dropdown below the icon
